@@ -26,7 +26,7 @@
         /* --- MAIN UI --- */
         #mainUI { display: none; }
         .app-bar { padding: 16px 24px; display: flex; align-items: center; gap: 16px; background: var(--m3-surface); position: sticky; top: 0; z-index: 100; }
-        .search-field { background: var(--m3-surface-container); height: 56px; flex: 1; border-radius: 28px; display: flex; align-items: center; padding: 0 20px; transition: 0.3s; }
+        .search-field { background: var(--m3-surface-container); height: 56px; flex: 1; border-radius: 28px; display: flex; align-items: center; padding: 0 20px; }
         .search-field input { border: none; background: transparent; outline: none; width: 100%; margin-left: 12px; font-family: inherit; font-size: 1rem; }
 
         /* --- GRID & CARDS --- */
@@ -48,7 +48,7 @@
         .btn { padding: 12px 24px; border-radius: 100px; border: none; font-family: inherit; font-weight: 500; cursor: pointer; display: flex; align-items: center; gap: 8px; }
         .btn-primary { background: var(--m3-primary); color: white; }
         .btn-tonal { background: var(--m3-primary-container); color: var(--m3-on-primary-container); }
-        .btn-text { background: transparent; color: var(--m3-primary); }
+        .btn-text { background: transparent; color: var(--m3-primary); font-size: 0.85rem; }
 
         #loadingScreen { position: fixed; inset: 0; background: var(--m3-surface); display: flex; align-items: center; justify-content: center; z-index: 2000; }
     </style>
@@ -64,7 +64,11 @@
             <input type="email" id="email" class="m3-input" placeholder="Email">
             <input type="password" id="password" class="m3-input" placeholder="Password">
             <button class="btn btn-primary" id="authBtn" style="width:100%; justify-content:center">Sign In</button>
-            <button class="btn btn-text" id="toggleAuth" style="width:100%; justify-content:center; margin-top:10px">Create an account</button>
+            
+            <div style="margin-top: 16px; display: flex; flex-direction: column; gap: 4px;">
+                <button class="btn btn-text" id="toggleAuth" style="justify-content:center">Create an account</button>
+                <button class="btn btn-text" id="forgotBtn" style="justify-content:center; opacity: 0.7;">Forgot password?</button>
+            </div>
         </div>
     </section>
 
@@ -92,7 +96,14 @@
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/12.7.0/firebase-app.js";
         import { getDatabase, ref, onValue } from "https://www.gstatic.com/firebasejs/12.7.0/firebase-database.js";
-        import { getAuth, onAuthStateChanged, signInWithEmailAndPassword, createUserWithEmailAndPassword, signOut } from "https://www.gstatic.com/firebasejs/12.7.0/firebase-auth.js";
+        import { 
+            getAuth, 
+            onAuthStateChanged, 
+            signInWithEmailAndPassword, 
+            createUserWithEmailAndPassword, 
+            sendPasswordResetEmail,
+            signOut 
+        } from "https://www.gstatic.com/firebasejs/12.7.0/firebase-auth.js";
 
         const firebaseConfig = {
             apiKey: "AIzaSyA0q57Bv_I4uuRn7cig64DPKa2oviyGHdw",
@@ -122,13 +133,29 @@
             }
         });
 
+        // Sign In / Register
         document.getElementById('authBtn').onclick = async () => {
             const email = document.getElementById('email').value;
             const pass = document.getElementById('password').value;
+            if(!email || !pass) return alert("Please fill in all fields.");
+
             try {
                 if (isLoginMode) await signInWithEmailAndPassword(auth, email, pass);
                 else await createUserWithEmailAndPassword(auth, email, pass);
             } catch (err) { alert(err.message); }
+        };
+
+        // Forgot Password
+        document.getElementById('forgotBtn').onclick = async () => {
+            const email = document.getElementById('email').value;
+            if (!email) return alert("Please enter your email address first.");
+
+            try {
+                await sendPasswordResetEmail(auth, email);
+                alert("Password reset link sent to your email!");
+            } catch (err) {
+                alert(err.message);
+            }
         };
 
         document.getElementById('toggleAuth').onclick = () => {
@@ -136,6 +163,7 @@
             document.getElementById('authTitle').innerText = isLoginMode ? "Xperia Cloud" : "Create Account";
             document.getElementById('authBtn').innerText = isLoginMode ? "Sign In" : "Register";
             document.getElementById('toggleAuth').innerText = isLoginMode ? "Create an account" : "Back to Sign In";
+            document.getElementById('forgotBtn').style.display = isLoginMode ? 'flex' : 'none';
         };
 
         window.signOutUser = () => signOut(auth);
@@ -153,11 +181,11 @@
             const search = document.getElementById('searchInput').value.toLowerCase();
             grid.innerHTML = devices.map((d, i) => {
                 if(search && !d.name.toLowerCase().includes(search)) return '';
-                const latest = d.variants[0]?.firmwares[0]?.ver || "No Data";
+                const latest = d.variants?.[0]?.firmwares?.[0]?.ver || "N/A";
                 return `
                 <div class="m3-card" onclick="openSheet(${i})">
                     <h3 style="margin:0">${d.name}</h3>
-                    <p style="font-size:0.85rem; color:var(--m3-outline); margin:8px 0">${d.variants.length} Variants</p>
+                    <p style="font-size:0.85rem; color:var(--m3-outline); margin:8px 0">${d.variants?.length || 0} Variants</p>
                     <div style="background:white; display:inline-block; padding:4px 12px; border-radius:8px; font-size:0.75rem; font-weight:700">Latest: ${latest}</div>
                 </div>`;
             }).join('');
@@ -168,7 +196,7 @@
             document.getElementById('sheetTitle').innerText = d.name;
             const body = document.getElementById('sheetBody');
             
-            body.innerHTML = d.variants.map(v => `
+            body.innerHTML = (d.variants || []).map(v => `
                 <div class="variant-section">
                     <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:12px">
                         <span style="font-weight:700">${v.model} (${v.region})</span>
