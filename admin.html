@@ -1,0 +1,305 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Xperia Admin Pro | Database Editor</title>
+    
+    <link href="https://fonts.googleapis.com/css2?family=Google+Sans:wght@400;500;700&family=Material+Symbols+Rounded:opsz,wght,FILL,GRAD@24,400,0,0" rel="stylesheet">
+    
+    <style>
+        :root {
+            --md-primary: #006495;
+            --md-surface: #fdfcff;
+            --md-outline: #e0e2ec;
+            --md-error: #ba1a1a;
+            --card-shadow: 0 2px 8px rgba(0,0,0,0.05);
+        }
+
+        body { 
+            background: var(--md-surface); 
+            font-family: 'Google Sans', sans-serif; 
+            margin: 0; padding-bottom: 120px;
+            color: #1a1c1e;
+        }
+
+        /* --- Header --- */
+        header {
+            background: white; padding: 16px 32px;
+            display: flex; align-items: center; justify-content: space-between;
+            border-bottom: 1px solid var(--md-outline);
+            position: sticky; top: 0; z-index: 1000;
+        }
+
+        .search-container {
+            background: #f0f1f8; border-radius: 100px;
+            padding: 8px 16px; display: flex; align-items: center; gap: 8px;
+            width: 350px;
+        }
+
+        .search-container input {
+            border: none; background: transparent; outline: none; width: 100%;
+            font-family: inherit;
+        }
+
+        /* --- Grid Layout --- */
+        #adminGrid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(480px, 1fr));
+            gap: 24px; padding: 32px;
+        }
+
+        /* --- Device Card --- */
+        .device-card {
+            background: white; border-radius: 20px;
+            border: 1px solid var(--md-outline);
+            padding: 24px; box-shadow: var(--card-shadow);
+            position: relative; animation: fadeIn 0.3s ease;
+        }
+
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } }
+
+        .card-header { display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 20px; }
+
+        .input-group { margin-bottom: 12px; }
+        .label { font-size: 0.7rem; font-weight: 700; color: var(--md-primary); margin-left: 4px; text-transform: uppercase; }
+
+        input, select {
+            width: 100%; padding: 12px; border-radius: 12px;
+            border: 1px solid var(--md-outline); font-family: inherit;
+            box-sizing: border-box; transition: 0.2s;
+        }
+
+        input:focus { border-color: var(--md-primary); outline: none; background: #f8fbff; }
+
+        /* --- Firmware Rows --- */
+        .fw-section { margin-top: 20px; padding-top: 20px; border-top: 1px dashed var(--md-outline); }
+        
+        .fw-row {
+            display: grid; grid-template-columns: 1fr 1fr 0.6fr 40px;
+            gap: 8px; margin-bottom: 8px; align-items: center;
+        }
+
+        .btn-icon {
+            background: transparent; border: none; cursor: pointer;
+            padding: 8px; border-radius: 50%; display: flex; align-items: center;
+        }
+
+        .btn-icon:hover { background: #f0f1f8; }
+        .btn-icon.delete:hover { color: var(--md-error); background: #ffdad6; }
+
+        /* --- Bottom Controls --- */
+        .controls {
+            position: fixed; bottom: 32px; left: 50%; transform: translateX(-50%);
+            display: flex; gap: 16px; background: rgba(255,255,255,0.8);
+            backdrop-filter: blur(10px); padding: 12px 24px;
+            border-radius: 24px; border: 1px solid var(--md-outline);
+            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+        }
+
+        .btn-fab {
+            padding: 14px 28px; border-radius: 16px; border: none;
+            font-family: inherit; font-weight: 600; cursor: pointer;
+            display: flex; align-items: center; gap: 10px; transition: 0.3s;
+        }
+
+        .btn-add { background: #e1e2ec; color: #1a1c1e; }
+        .btn-save { background: var(--md-primary); color: white; }
+        .btn-save:disabled { opacity: 0.5; cursor: not-allowed; }
+
+    </style>
+</head>
+<body>
+
+    <header>
+        <div style="display:flex; align-items:center; gap:12px;">
+            <span class="material-symbols-rounded" style="color:var(--md-primary); font-size:32px;">database</span>
+            <h1 style="margin:0; font-size: 1.4rem; letter-spacing: -0.5px;">Xperia Database Admin</h1>
+        </div>
+        
+        <div class="search-container">
+            <span class="material-symbols-rounded">search</span>
+            <input type="text" id="searchBar" placeholder="Search by name or model..." oninput="filterDevices()">
+        </div>
+    </header>
+
+    <main id="adminGrid">
+        </main>
+
+    <div class="controls">
+        <button class="btn-fab btn-add" onclick="createNewDevice()">
+            <span class="material-symbols-rounded">add_circle</span> Add Device
+        </button>
+        <button class="btn-fab btn-save" id="saveBtn">
+            <span class="material-symbols-rounded">cloud_upload</span> Sync to Firebase
+        </button>
+    </div>
+
+    <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/12.7.0/firebase-app.js";
+        import { getDatabase, ref, set, onValue } from "https://www.gstatic.com/firebasejs/12.7.0/firebase-database.js";
+
+        const firebaseConfig = {
+            apiKey: "AIzaSyA0q57Bv_I4uuRn7cig64DPKa2oviyGHdw",
+            authDomain: "xperia-tracker.firebaseapp.com",
+            databaseURL: "https://xperia-tracker-default-rtdb.firebaseio.com",
+            projectId: "xperia-tracker",
+            appId: "1:1028462018440:web:54a8a9d6ae759f2644043d"
+        };
+
+        const app = initializeApp(firebaseConfig);
+        const db = getDatabase(app);
+        let deviceData = [];
+
+        // 1. LOAD DATA (One-time fetch to prevent UI flickers while editing)
+        onValue(ref(db, 'devices'), (snapshot) => {
+            deviceData = snapshot.val() || [];
+            render(deviceData);
+        }, { onlyOnce: true });
+
+        // 2. CREATE NEW DEVICE
+        window.createNewDevice = () => {
+            deviceData.unshift({
+                name: "Xperia New",
+                variants: [{ model: "XQ-", region: "Global", firmwares: [] }]
+            });
+            render(deviceData);
+        };
+
+        // 3. ADD FIRMWARE ROW
+        window.addFwRow = (dIdx) => {
+            // Because we re-render, we scrape first to save current typed progress
+            const currentUI = scrapeUI();
+            currentUI[dIdx].variants[0].firmwares.unshift({ ver: "", date: "", android: "15" });
+            deviceData = currentUI;
+            render(deviceData);
+        };
+
+        // 4. RENDER ENGINE
+        function render(data) {
+            const grid = document.getElementById('adminGrid');
+            grid.innerHTML = data.map((d, i) => `
+                <div class="device-card" data-device-index="${i}">
+                    <div class="card-header">
+                        <div style="flex:1">
+                            <span class="label">Device Name</span>
+                            <input type="text" class="input-name" value="${d.name}" placeholder="Xperia 1 VI">
+                        </div>
+                        <button class="btn-icon delete" onclick="removeDevice(${i})">
+                            <span class="material-symbols-rounded">delete</span>
+                        </button>
+                    </div>
+
+                    <div style="display:grid; grid-template-columns: 1fr 1fr; gap:12px;">
+                        <div class="input-group">
+                            <span class="label">Model ID</span>
+                            <input type="text" class="input-model" value="${d.variants[0].model}" placeholder="XQ-EC72">
+                        </div>
+                        <div class="input-group">
+                            <span class="label">Region</span>
+                            <input type="text" class="input-region" value="${d.variants[0].region || ''}" placeholder="Global">
+                        </div>
+                    </div>
+
+                    <div class="fw-section">
+                        <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:12px;">
+                            <span style="font-weight:700; font-size:0.8rem; color:#444;">FIRMWARE LOGS</span>
+                            <button onclick="addFwRow(${i})" style="font-size:0.7rem; cursor:pointer; padding:4px 8px;">+ ADD NEW</button>
+                        </div>
+                        <div class="fw-list">
+                            ${(d.variants[0].firmwares || []).map((f, fi) => `
+                                <div class="fw-row">
+                                    <input type="text" class="fw-ver" placeholder="69.x.x.x" value="${f.ver}">
+                                    <input type="date" class="fw-date" value="${f.date}">
+                                    <select class="fw-android">
+                                        <option value="13" ${f.android=='13'?'selected':''}>Android 13</option>
+                                        <option value="14" ${f.android=='14'?'selected':''}>Android 14</option>
+                                        <option value="15" ${f.android=='15'?'selected':''}>Android 15</option>
+                                    </select>
+                                    <button class="btn-icon delete" onclick="this.parentElement.remove()">
+                                        <span class="material-symbols-rounded" style="font-size:18px">close</span>
+                                    </button>
+                                </div>
+                            `).join('')}
+                        </div>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        window.removeDevice = (idx) => {
+            if(confirm("Delete this device?")) {
+                const current = scrapeUI();
+                current.splice(idx, 1);
+                deviceData = current;
+                render(deviceData);
+            }
+        };
+
+        // 5. THE SCRAPER (The Fix)
+        function scrapeUI() {
+            const cards = document.querySelectorAll('.device-card');
+            const data = [];
+            
+            cards.forEach(card => {
+                const firmwareRows = [];
+                card.querySelectorAll('.fw-row').forEach(row => {
+                    firmwareRows.push({
+                        ver: row.querySelector('.fw-ver').value,
+                        date: row.querySelector('.fw-date').value,
+                        android: row.querySelector('.fw-android').value
+                    });
+                });
+
+                data.push({
+                    name: card.querySelector('.input-name').value,
+                    variants: [{
+                        model: card.querySelector('.input-model').value,
+                        region: card.querySelector('.input-region').value,
+                        firmwares: firmwareRows
+                    }]
+                });
+            });
+            return data;
+        }
+
+        // 6. SYNC TO FIREBASE
+        document.getElementById('saveBtn').onclick = async () => {
+            const btn = document.getElementById('saveBtn');
+            const finalData = scrapeUI(); // Scrape exactly what is on screen
+            
+            btn.disabled = true;
+            btn.innerHTML = `<span class="material-symbols-rounded">sync</span> Syncing...`;
+
+            try {
+                await set(ref(db, 'devices'), finalData);
+                
+                btn.innerHTML = `<span class="material-symbols-rounded">check_circle</span> Database Updated`;
+                btn.style.background = "#4caf50";
+                
+                setTimeout(() => {
+                    btn.disabled = false;
+                    btn.style.background = "";
+                    btn.innerHTML = `<span class="material-symbols-rounded">cloud_upload</span> Sync to Firebase`;
+                }, 2500);
+            } catch (err) {
+                alert("Firebase Error: " + err.message);
+                btn.disabled = false;
+                btn.innerHTML = `Error - Try Again`;
+            }
+        };
+
+        // 7. FILTER SEARCH
+        window.filterDevices = () => {
+            const term = document.getElementById('searchBar').value.toLowerCase();
+            const cards = document.querySelectorAll('.device-card');
+            
+            cards.forEach(card => {
+                const text = card.innerText.toLowerCase();
+                card.style.display = text.includes(term) ? "block" : "none";
+            });
+        };
+
+    </script>
+</body>
+</html>
