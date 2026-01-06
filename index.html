@@ -354,7 +354,7 @@
 
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/12.7.0/firebase-app.js";
-        import { getDatabase, ref, onValue, push } from "https://www.gstatic.com/firebasejs/12.7.0/firebase-database.js";
+        import { getDatabase, ref, onValue, push, set, get, update, serverTimestamp  } from "https://www.gstatic.com/firebasejs/12.7.0/firebase-database.js";
         import { getAuth, signInWithEmailAndPassword, onAuthStateChanged, signOut, createUserWithEmailAndPassword,
         sendPasswordResetEmail} from "https://www.gstatic.com/firebasejs/12.7.0/firebase-auth.js";
 
@@ -372,6 +372,9 @@
 
         let state = { devices: [], currentDeviceIdx: null, currentVariantIdx: null, currentFwId: null, filter: 'all', searchQuery: '', userRating: 0 };
         let userNameL = "";
+        let userIDL = "";
+
+        let ratingID = -1;
 
         // --- AUTH LOGIC ---
         window.handleLogin = () => {
@@ -431,7 +434,8 @@
                 const userName = user.displayName || (user.email ? user.email.split('@')[0] : 'User');
                 
                 userNameL = userName;
-                
+                userIDL = user.uid;
+
                 // 2. Update Top Bar (The Circle)
                 const profileBtn = document.getElementById('profileBtn');
                 if (profileBtn) profileBtn.innerText = initial;
@@ -637,17 +641,20 @@
         };
 
         function loadCommunityData(fwId) {
-            onValue(ref(db, `feedback/${fwId}`), snap => {
+            const currentDeviceName = state.devices[state.currentDeviceIdx]?.name;
+            const modelCode = state.devices[state.currentDeviceIdx]?.variants[state.currentVariantIdx]?.model;
+
+            onValue(ref(db, `feedback/${currentDeviceName}/${modelCode}/${fwId}`), snap => {
                 const data = snap.val() || {};
                 let bugs = [], imps = [], totalRating = 0, count = 0;
                 
                 Object.values(data).forEach(entry => {
-                    if(entry.rating) { totalRating += entry.rating; count++; }
+                    //if(entry.rating) { totalRating += entry.rating; count++; }
                     if(entry.type === 'bug' && entry.comment) bugs.push(entry);
                     if(entry.type === 'improvement' && entry.comment) imps.push(entry);
                 });
 
-                document.getElementById('avgRatingScore').innerText = count > 0 ? (totalRating / count).toFixed(1) : "0.0";
+                //document.getElementById('avgRatingScore').innerText = count > 0 ? (totalRating / count).toFixed(1) : "No Ratings";
 
                 const bugContainer = document.getElementById('bugContainer');
                 if (bugs.length > 0) {
@@ -663,6 +670,30 @@
                 } else {
                     impContainer.innerHTML = '<p style="color:var(--m3-out); font-size:0.8rem; margin:0;">Stable performance reported.</p>';
                 }
+            });
+
+            onValue(ref(db, `ratings/${currentDeviceName}/${modelCode}/${state.currentFwId}`), snap => {
+                const data = snap.val() || {};
+                let totalRating = 0, count = 0;
+                
+                Object.values(data).forEach(entry => {
+                    totalRating += entry.rating; 
+
+                    if (entry.userId === userIDL){
+                        showRating(entry.rating);
+                        ratingID = count;
+                    }
+
+                    count++; 
+                });
+
+                document.getElementById('avgRatingScore').innerText = count > 0 ? (totalRating / count).toFixed(1) : "No Ratings";
+            });
+        }
+
+        function showRating(starRating){
+            document.querySelectorAll('#starSelector span').forEach((s, i) => {
+                s.classList.toggle('active', i < starRating);
             });
         }
 
@@ -703,19 +734,49 @@
             renderTier3();
         });
 
-        window.submitStarOnly = () => {
+        window.submitStarOnly = async () => {
             const user = auth.currentUser;
             if (!user) return alert("You must be signed in.");
             if(!state.userRating) return alert("Select stars!");
             
-            push(ref(db, `feedback/${state.currentFwId}`), { 
-                rating: state.userRating, 
-                userId: user.uid, 
-                userName: user.displayName || user.email.split('@')[0],
-                userEmail: user.email,
-                timestamp: Date.now() 
-            });
-            alert("Vote recorded!");
+            const currentDeviceName = state.devices[state.currentDeviceIdx]?.name;
+            const modelCode = state.devices[state.currentDeviceIdx]?.variants[state.currentVariantIdx]?.model;
+
+            if(!currentDeviceName || !modelCode) return alert("Error determining device.");
+
+            const ratingRef = ref(db, `ratings/${currentDeviceName}/${modelCode}/${state.currentFwId}`);
+            
+            try {
+                // Fetch existing ratings at this path to see if user has already voted
+                const snapshot = await get(ratingRef);
+                const data = snapshot.val() || {};
+                
+                // Find existing key for this user
+                let existingKey = null;
+                Object.keys(data).forEach(key => {
+                    if(data[key].userId === user.uid) existingKey = key;
+                });
+
+                const payload = { 
+                    rating: state.userRating, 
+                    userId: user.uid, 
+                    userName: user.displayName || user.email.split('@')[0],
+                    userEmail: user.email,
+                    timestamp: Date.now() 
+                };
+
+                if(existingKey) {
+                    // UPDATE existing vote
+                    await update(ref(db, `ratings/${currentDeviceName}/${modelCode}/${state.currentFwId}/${existingKey}`), payload);
+                    alert("Vote updated!");
+                } else {
+                    // PUSH new vote
+                    await push(ratingRef, payload);
+                    alert("Vote recorded!");
+                }
+            } catch (err) {
+                alert("Error: " + err.message);
+            }
         };
 
         window.submitTextReport = () => {
@@ -725,7 +786,10 @@
             const type = document.getElementById('contributionType').value;
             if(!comment) return alert("Please enter details.");
             
-            push(ref(db, `feedback/${state.currentFwId}`), { 
+            const currentDeviceName = state.devices[state.currentDeviceIdx]?.name;
+            const modelCode = state.devices[state.currentDeviceIdx]?.variants[state.currentVariantIdx]?.model;
+
+            push(ref(db, `feedback/${currentDeviceName}/${modelCode}/${state.currentFwId}`), { 
                 comment, 
                 type, 
                 userId: user.uid, 
