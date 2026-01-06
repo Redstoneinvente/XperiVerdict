@@ -3,76 +3,118 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Xperia CMS | Workspace</title>
-    <link href="https://fonts.googleapis.com/css2?family=Google+Sans:wght@400;500;700&family=Material+Symbols+Rounded:opsz,wght,FILL,GRAD@24,400,0,0&family=Roboto+Mono:wght@500&display=swap" rel="stylesheet">
+    <title>XperiVerdict | Nexus Admin</title>
+    <link href="https://fonts.googleapis.com/css2?family=Google+Sans:wght@500;700&family=Google+Sans+Text:wght@400;500&family=Material+Symbols+Rounded:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200&display=swap" rel="stylesheet">
     <style>
         :root {
-            --m3-surface: #f7f9ff;
-            --m3-surface-container: #edf1f9;
-            --m3-primary: #006495;
-            --m3-primary-container: #d1e4ff;
-            --m3-on-primary-container: #001d36;
-            --m3-error: #ba1a1a;
-            --m3-outline: #74777f;
+            --m3-p: #6750a4;
+            --m3-on-p: #ffffff;
+            --m3-p-c: #eaddff;
+            --m3-on-p-c: #21005d;
+            --m3-surf: #f6f2f7;
+            --m3-out: #79747e;
+            --m3-err: #b3261e;
+            --ease: cubic-bezier(0.2, 0, 0, 1);
         }
 
-        body { background-color: var(--m3-surface); color: #1a1c1e; font-family: 'Google Sans', sans-serif; margin: 0; }
+        body { font-family: 'Google Sans Text', sans-serif; background: var(--m3-surf); margin: 0; display: flex; height: 100vh; overflow: hidden; color: #1d1b20; }
+        nav { width: 300px; background: white; border-right: 1px solid rgba(0,0,0,0.05); padding: 24px; display: flex; flex-direction: column; gap: 8px; }
+        .nav-btn { padding: 16px 24px; border-radius: 28px; cursor: pointer; border: none; background: transparent; text-align: left; font-weight: 500; display: flex; align-items: center; gap: 12px; transition: 0.2s; color: #49454f; }
+        .nav-btn.active { background: var(--m3-p-c); color: var(--m3-on-p-c); }
+        .nav-btn:hover:not(.active) { background: rgba(0,0,0,0.04); }
 
-        /* --- DASHBOARD VIEW --- */
-        #dashboardView { padding: 32px; max-width: 1200px; margin: 0 auto; }
-        .db-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 20px; margin-top: 24px; }
+        main { flex: 1; overflow-y: auto; padding: 40px; }
+        .section { display: none; max-width: 1000px; margin: 0 auto; animation: fadeIn 0.4s var(--ease); }
+        .section.active { display: block; }
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+
+        .admin-card { background: white; border-radius: 28px; padding: 28px; margin-bottom: 24px; border: 1px solid rgba(0,0,0,0.03); position: relative; }
+        h1 { font-family: 'Google Sans'; font-size: 2.5rem; margin-bottom: 32px; letter-spacing: -0.5px; }
         
-        .db-card {
-            background: white; border-radius: 28px; padding: 24px; cursor: pointer;
-            border: 1px solid var(--m3-surface-container); transition: 0.2s;
-            display: flex; flex-direction: column; justify-content: space-between; height: 160px;
-        }
-        .db-card:hover { background: var(--m3-primary-container); transform: translateY(-4px); }
+        .m3-field { margin-bottom: 20px; }
+        .m3-field label { display: block; font-size: 0.8rem; font-weight: 700; margin-bottom: 8px; color: var(--m3-p); margin-left: 4px; }
+        input, textarea, select { width: 100%; padding: 16px; border-radius: 12px; border: 1px solid var(--m3-out); font-family: inherit; box-sizing: border-box; background: transparent; }
+        textarea { height: 100px; resize: none; }
 
-        /* --- EDITOR VIEW --- */
-        #editorView { display: none; padding: 32px; max-width: 900px; margin: 0 auto; min-height: 100vh; }
-        .editor-header { display: flex; align-items: center; gap: 16px; margin-bottom: 32px; position: sticky; top: 0; background: var(--m3-surface); padding: 10px 0; z-index: 10; }
-        .device-workspace { background: white; border-radius: 32px; padding: 40px; box-shadow: 0 4px 20px rgba(0,0,0,0.05); }
+        #modalOverlay { position: fixed; inset: 0; background: rgba(0,0,0,0.4); display: none; place-items: center; z-index: 1000; backdrop-filter: blur(4px); }
+        .m3-dialog { background: var(--m3-surf); width: 95%; max-width: 550px; padding: 24px; border-radius: 28px; box-shadow: 0 10px 40px rgba(0,0,0,0.2); max-height: 90vh; overflow-y: auto; }
 
-        /* --- COMPONENTS --- */
-        .variant-card { background: var(--m3-surface-container); border-radius: 24px; padding: 24px; margin-top: 20px; }
-        .fw-row { display: grid; grid-template-columns: 1.5fr 1fr 0.8fr 44px; gap: 8px; margin-top: 8px; }
+        .btn { padding: 12px 24px; border-radius: 20px; border: none; cursor: pointer; font-weight: 600; display: inline-flex; align-items: center; gap: 8px; transition: 0.2s; }
+        .btn-p { background: var(--m3-p); color: white; }
+        .btn-text { background: transparent; color: var(--m3-p); }
+
+        .variant-chip { display: inline-flex; align-items: center; gap: 12px; background: #fff; padding: 8px 16px; border-radius: 16px; margin: 6px; font-size: 0.9rem; border: 1px solid rgba(0,0,0,0.08); }
         
-        .btn { border: none; border-radius: 100px; padding: 12px 24px; font-family: inherit; font-weight: 500; cursor: pointer; display: flex; align-items: center; gap: 8px; }
-        .btn-primary { background: var(--m3-primary); color: white; }
-        .btn-tonal { background: var(--m3-primary-container); color: var(--m3-on-primary-container); }
-        .btn-icon { background: transparent; border: none; cursor: pointer; padding: 8px; border-radius: 50%; }
+        table { width: 100%; border-collapse: collapse; }
+        th { text-align: left; padding: 16px; color: var(--m3-out); font-size: 0.75rem; text-transform: uppercase; }
+        td { padding: 16px; border-top: 1px solid var(--m3-surf); font-size: 0.9rem; }
+        
+        .type-tag { font-size: 0.7rem; padding: 2px 8px; border-radius: 6px; font-weight: 800; text-transform: uppercase; }
+        .tag-os { background: #e3f2fd; color: #1976d2; }
+        .tag-sec { background: #f1f8e9; color: #388e3c; }
 
-        .input-m3 { width: 100%; padding: 12px; border-radius: 12px; border: 1px solid var(--m3-outline); font-family: inherit; margin-top: 4px; box-sizing: border-box; background: white; }
-        .label { font-size: 0.75rem; font-weight: 700; color: var(--m3-primary); text-transform: uppercase; }
-
-        .fab { position: fixed; bottom: 32px; right: 32px; box-shadow: 0 10px 30px rgba(0,0,0,0.1); }
+        .history-item { padding: 12px; border-bottom: 1px solid rgba(0,0,0,0.05); }
     </style>
 </head>
 <body>
 
-    <section id="dashboardView">
-        <div style="display:flex; justify-content:space-between; align-items:center">
-            <h1>Xperia Fleet</h1>
-            <button class="btn btn-primary" onclick="initNewDevice()">+ New Device</button>
+    <div id="modalOverlay">
+        <div class="m3-dialog">
+            <h2 id="modalTitle">Modal</h2>
+            <div id="modalBody"></div>
+            <div style="display: flex; justify-content: flex-end; gap: 8px; margin-top: 24px;">
+                <button class="btn btn-text" onclick="closeModal()">Close</button>
+                <button class="btn btn-p" id="modalConfirmBtn">Confirm</button>
+            </div>
         </div>
-        <div id="dbGrid" class="db-grid"></div>
-    </section>
+    </div>
 
-    <section id="editorView">
-        <div class="editor-header">
-            <button class="btn-icon" onclick="exitEditor()"><span class="material-symbols-rounded">arrow_back</span></button>
-            <h2 id="workspaceTitle" style="margin:0">Editor</h2>
-            <div style="flex:1"></div>
-            <button class="btn btn-primary" onclick="saveActiveDevice()">Save Device</button>
+    <nav>
+        <div style="padding: 16px; margin-bottom: 20px;">
+            <h2 style="margin: 0; color: var(--m3-p);">XperiVerdict</h2>
+            <div style="font-size: 0.7rem; font-weight: 800; opacity: 0.5;">ADMIN CONSOLE</div>
         </div>
+        <button class="nav-btn active" onclick="switchTab('tabStructure')"><span class="material-symbols-rounded">database</span> Hierarchy</button>
+        <button class="nav-btn" onclick="switchTab('tabHistory')"><span class="material-symbols-rounded">history</span> Firmware Vault</button>
+        <button class="nav-btn" onclick="switchTab('tabFeedback')"><span class="material-symbols-rounded">gavel</span> Moderation</button>
+    </nav>
 
-        <div class="device-workspace" id="workspaceContent"></div>
-    </section>
+    <main>
+        <section id="tabStructure" class="section active">
+            <h1>Hardware</h1>
+            <div class="admin-card">
+                <button class="btn btn-p" onclick="openDeviceModal()"><span class="material-symbols-rounded">add</span> New Series</button>
+            </div>
+            <div id="hierarchyControls"></div>
+        </section>
+
+        <section id="tabHistory" class="section">
+            <h1>Firmware Vault</h1>
+            <div class="admin-card">
+                <input type="text" id="historySearch" placeholder="Search builds..." oninput="renderMasterHistory()" style="margin-bottom: 20px;">
+                <table id="masterHistoryTable">
+                    <thead>
+                        <tr><th>Device</th><th>Build</th><th>Type</th><th>Android</th><th>Date</th></tr>
+                    </thead>
+                    <tbody id="historyTableBody"></tbody>
+                </table>
+            </div>
+        </section>
+
+        <section id="tabFeedback" class="section">
+            <h1>User Intel</h1>
+            <div class="admin-card">
+                <table id="moderationTable">
+                    <thead><tr><th>FW</th><th>Type</th><th>Comment</th><th>Actions</th></tr></thead>
+                    <tbody id="feedbackTableBody"></tbody>
+                </table>
+            </div>
+        </section>
+    </main>
 
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/12.7.0/firebase-app.js";
-        import { getDatabase, ref, set, onValue } from "https://www.gstatic.com/firebasejs/12.7.0/firebase-database.js";
+        import { getDatabase, ref, onValue, set, remove, update } from "https://www.gstatic.com/firebasejs/12.7.0/firebase-database.js";
 
         const firebaseConfig = {
             apiKey: "AIzaSyA0q57Bv_I4uuRn7cig64DPKa2oviyGHdw",
@@ -84,151 +126,174 @@
 
         const app = initializeApp(firebaseConfig);
         const db = getDatabase(app);
-        
-        let allDevices = [];
-        let activeIndex = null;
+        let currentData = {};
 
-        onValue(ref(db, 'devices'), (snap) => {
-            allDevices = snap.val() || [];
-            renderDashboard();
+        window.switchTab = (id) => {
+            document.querySelectorAll('.section, .nav-btn').forEach(el => el.classList.remove('active'));
+            document.getElementById(id).classList.add('active');
+            event.currentTarget.classList.add('active');
+        };
+
+        const modal = document.getElementById('modalOverlay');
+        window.openModal = (title, html, onConfirm, showConfirm = true) => {
+            document.getElementById('modalTitle').innerText = title;
+            document.getElementById('modalBody').innerHTML = html;
+            modal.style.display = 'grid';
+            const cBtn = document.getElementById('modalConfirmBtn');
+            cBtn.style.display = showConfirm ? 'inline-flex' : 'none';
+            if(onConfirm) cBtn.onclick = () => { onConfirm(); closeModal(); };
+        };
+        window.closeModal = () => modal.style.display = 'none';
+
+        onValue(ref(db, '/'), snap => {
+            currentData = snap.val() || {};
+            renderHierarchy();
+            renderModeration();
+            renderMasterHistory();
         });
 
-        function renderDashboard() {
-            const grid = document.getElementById('dbGrid');
-            grid.innerHTML = allDevices.map((d, i) => `
-                <div class="db-card" onclick="openEditor(${i})">
-                    <div>
-                        <span class="label">${d.variants?.length || 0} Variants</span>
-                        <h3 style="margin:8px 0">${d.name}</h3>
+        // --- DEVICE MODAL (MODIFIED) ---
+        window.openDeviceModal = (dIdx = null) => {
+            const isEdit = dIdx !== null;
+            const dev = isEdit ? currentData.devices[dIdx] : { name: '', desc: '' };
+            
+            const html = `
+                <div class="m3-field"><label>Series Name</label><input type="text" id="in_devName" value="${dev.name}" placeholder="Xperia 1 VI"></div>
+                <div class="m3-field"><label>Series Description</label><textarea id="in_devDesc" placeholder="Legacy flagship series...">${dev.desc || ''}</textarea></div>
+            `;
+            
+            openModal(isEdit ? "Edit Series" : "New Series", html, () => {
+                const name = document.getElementById('in_devName').value;
+                const desc = document.getElementById('in_devDesc').value;
+                if(!name) return;
+                
+                if(isEdit) {
+                    update(ref(db, `devices/${dIdx}`), { name, desc });
+                } else {
+                    const list = currentData.devices || [];
+                    list.push({ name, desc, variants: [] });
+                    set(ref(db, 'devices'), list);
+                }
+            });
+        };
+
+        // --- FIRMWARE MODAL (MODIFIED) ---
+        window.openFwModal = (dIdx, vIdx) => {
+            const html = `
+                <div class="m3-field"><label>Build Number</label><input type="text" id="in_fVer"></div>
+                <div style="display:grid; grid-template-columns: 1fr 1fr; gap:12px;">
+                    <div class="m3-field"><label>Android Version</label><input type="text" id="in_fAnd" value="15"></div>
+                    <div class="m3-field"><label>Update Type</label>
+                        <select id="in_fType">
+                            <option value="security">Security Patch</option>
+                            <option value="os">OS Upgrade</option>
+                        </select>
                     </div>
-                    <span class="material-symbols-rounded" style="align-self:flex-end; color:var(--m3-primary)">edit_square</span>
+                </div>
+                <div class="m3-field"><label>Changelog / Notes</label><textarea id="in_fLog" placeholder="Optimized thermals, updated security string..."></textarea></div>
+            `;
+            
+            openModal("Add Firmware", html, () => {
+                const ver = document.getElementById('in_fVer').value;
+                const android = document.getElementById('in_fAnd').value;
+                const type = document.getElementById('in_fType').value;
+                const log = document.getElementById('in_fLog').value;
+                
+                const fws = currentData.devices[dIdx].variants[vIdx].firmwares || [];
+                fws.unshift({ ver, android, type, log, date: new Date().toISOString().split('T')[0] });
+                set(ref(db, `devices/${dIdx}/variants/${vIdx}/firmwares`), fws);
+            });
+        };
+
+        function renderHierarchy() {
+            const container = document.getElementById('hierarchyControls');
+            if(!currentData.devices) return;
+            container.innerHTML = currentData.devices.map((dev, dIdx) => `
+                <div class="admin-card">
+                    <button class="btn btn-text" style="position:absolute; right:12px; top:12px;" onclick="openDeviceModal(${dIdx})"><span class="material-symbols-rounded">edit</span></button>
+                    <h2 style="margin:0">${dev.name}</h2>
+                    <p style="font-size:0.85rem; color:var(--m3-out); margin: 8px 0 20px 0;">${dev.desc || 'No description provided.'}</p>
+                    <div style="display:flex; justify-content:space-between; align-items:center; border-top: 1px solid #eee; padding-top:16px;">
+                        <div style="display:flex; flex-wrap:wrap;">
+                            ${(dev.variants || []).map((v, vIdx) => `
+                                <div class="variant-chip">
+                                    <div><strong>${v.model}</strong><br><small>${v.region}</small></div>
+                                    <div style="display:flex; gap:4px;">
+                                        <button class="btn btn-text" style="padding:4px;" onclick="openFwModal(${dIdx}, ${vIdx})"><span class="material-symbols-rounded">add_circle</span></button>
+                                        <button class="btn btn-text" style="padding:4px;" onclick="viewLocalHistory(${dIdx}, ${vIdx})"><span class="material-symbols-rounded">history</span></button>
+                                    </div>
+                                </div>
+                            `).join('')}
+                        </div>
+                        <button class="btn btn-text" onclick="openVariantModal(${dIdx})">+ Variant</button>
+                    </div>
                 </div>
             `).join('');
         }
 
-        window.openEditor = (idx) => {
-            activeIndex = idx;
-            const d = allDevices[idx];
-            document.getElementById('dashboardView').style.display = 'none';
-            document.getElementById('editorView').style.display = 'block';
-            document.getElementById('workspaceTitle').innerText = d.name;
-            renderWorkspace(d);
-        };
-
-        function renderWorkspace(d) {
-            const container = document.getElementById('workspaceContent');
-            container.innerHTML = `
-                <div style="margin-bottom:32px">
-                    <span class="label">Device Name</span>
-                    <input type="text" id="editName" class="input-m3" value="${d.name}" style="font-size:1.5rem">
-                </div>
-                
-                <div id="variantsArea">
-                    ${(d.variants || []).map((v, vi) => `
-                        <div class="variant-card">
-                            <div style="display:flex; justify-content:space-between; margin-bottom:16px">
-                                <b style="color:var(--m3-primary)">Variant #${vi+1}</b>
-                                <button class="btn-icon" onclick="this.closest('.variant-card').remove()"><span class="material-symbols-rounded">delete</span></button>
-                            </div>
-                            <div style="display:grid; grid-template-columns:1fr 1fr; gap:16px">
-                                <div><span class="label">Model ID</span><input type="text" class="v-model input-m3" value="${v.model}"></div>
-                                <div><span class="label">Region</span><input type="text" class="v-region input-m3" value="${v.region}"></div>
-                            </div>
-                            <div style="margin-top:20px">
-                                <div style="display:flex; justify-content:space-between; align-items:center">
-                                    <span class="label">Firmwares</span>
-                                    <button class="btn btn-tonal" style="padding:4px 12px; font-size:0.7rem" onclick="addFwUI(this)">+ Add Build</button>
-                                </div>
-                                <div class="fw-list">
-                                    ${(v.firmwares || []).map(f => `
-                                        <div class="fw-row">
-                                            <input type="text" class="f-ver input-m3" value="${f.ver}" placeholder="Build">
-                                            <input type="date" class="f-date input-m3" value="${f.date}">
-                                            <input type="text" class="f-android input-m3" value="${f.android || ''}" placeholder="Android Ver">
-                                            <button class="btn-icon" onclick="this.parentElement.remove()">×</button>
-                                        </div>
-                                    `).join('')}
-                                </div>
-                            </div>
-                        </div>
-                    `).join('')}
-                </div>
-                <button class="btn btn-tonal" style="width:100%; justify-content:center; margin-top:24px" onclick="addVariantUI()">+ Add Variant</button>
-                <button class="btn" style="color:var(--m3-error); margin-top:40px; width:100%; justify-content:center" onclick="deleteDevice()">Delete Device Entirely</button>
-            `;
+        window.renderMasterHistory = () => {
+            const body = document.getElementById('historyTableBody');
+            const query = document.getElementById('historySearch').value.toLowerCase();
+            let rows = [];
+            (currentData.devices || []).forEach(dev => {
+                (dev.variants || []).forEach(v => {
+                    (v.firmwares || []).forEach(f => {
+                        if(!query || `${dev.name} ${f.ver}`.toLowerCase().includes(query)) {
+                            rows.push(`<tr>
+                                <td><strong>${dev.name}</strong><br><small>${v.model}</small></td>
+                                <td><code>${f.ver}</code></td>
+                                <td><span class="type-tag tag-${f.type === 'os' ? 'os' : 'sec'}">${f.type || 'security'}</span></td>
+                                <td>Android ${f.android}</td>
+                                <td>${f.date}</td>
+                            </tr>`);
+                        }
+                    });
+                });
+            });
+            body.innerHTML = rows.join('') || "<tr><td colspan='5'>No records.</td></tr>";
         }
 
-        window.addFwUI = (btn) => {
-            const list = btn.parentElement.nextElementSibling;
-            const div = document.createElement('div');
-            div.className = 'fw-row';
-            div.innerHTML = `
-                <input type="text" class="f-ver input-m3" placeholder="Build">
-                <input type="date" class="f-date input-m3" value="${new Date().toISOString().split('T')[0]}">
-                <input type="text" class="f-android input-m3" placeholder="Android Ver">
-                <button class="btn-icon" onclick="this.parentElement.remove()">×</button>
-            `;
-            list.prepend(div);
-        };
-
-        window.addVariantUI = () => {
-            const area = document.getElementById('variantsArea');
-            const div = document.createElement('div');
-            div.className = 'variant-card';
-            div.innerHTML = `
-                <div style="display:flex; justify-content:space-between; margin-bottom:16px"><b>New Variant</b><button class="btn-icon" onclick="this.closest('.variant-card').remove()">×</button></div>
-                <div style="display:grid; grid-template-columns:1fr 1fr; gap:16px">
-                    <input type="text" class="v-model input-m3" placeholder="XQ-XXXX">
-                    <input type="text" class="v-region input-m3" placeholder="Region">
+        window.viewLocalHistory = (dIdx, vIdx) => {
+            const variant = currentData.devices[dIdx].variants[vIdx];
+            const history = variant.firmwares || [];
+            const html = history.map(f => `
+                <div class="history-item">
+                    <div style="display:flex; justify-content:space-between;">
+                        <strong>${f.ver} <span class="type-tag tag-${f.type === 'os' ? 'os' : 'sec'}">${f.type || 'sec'}</span></strong>
+                        <small>${f.date}</small>
+                    </div>
+                    <div style="margin-top:8px; font-size:0.85rem; color:#444; white-space:pre-wrap;">${f.log || 'No changelog provided.'}</div>
                 </div>
-                <div class="fw-list" style="margin-top:10px"></div>
-                <button class="btn btn-tonal" style="margin-top:10px; font-size:0.7rem" onclick="addFwUI(this)">+ Add Build</button>
-            `;
-            area.appendChild(div);
+            `).join('') || "No history.";
+            openModal(`${variant.model} Logs`, html, null, false);
         };
 
-        window.saveActiveDevice = async () => {
-            const updatedDevice = {
-                name: document.getElementById('editName').value,
-                variants: Array.from(document.querySelectorAll('.variant-card')).map(vBox => ({
-                    model: vBox.querySelector('.v-model').value,
-                    region: vBox.querySelector('.v-region').value,
-                    firmwares: Array.from(vBox.querySelectorAll('.fw-row')).map(row => ({
-                        ver: row.querySelector('.f-ver').value,
-                        date: row.querySelector('.f-date').value,
-                        android: row.querySelector('.f-android').value
-                    }))
-                }))
-            };
-
-            if(activeIndex === -1) allDevices.unshift(updatedDevice);
-            else allDevices[activeIndex] = updatedDevice;
-
-            await set(ref(db, 'devices'), allDevices);
-            exitEditor();
+        // ... Keep existing OpenVariantModal, renderModeration, censorComment, deleteComment from previous version ...
+        window.openVariantModal = (dIdx) => {
+            openModal("Add Variant", `<div class="m3-field"><label>Model</label><input type="text" id="in_vModel" placeholder="XQ-EC54"></div><div class="m3-field"><label>Region</label><input type="text" id="in_vReg" placeholder="Europe"></div>`, () => {
+                const model = document.getElementById('in_vModel').value;
+                const region = document.getElementById('in_vReg').value;
+                const variants = currentData.devices[dIdx].variants || [];
+                variants.push({ model, region, lockStatus: "Unlocked", firmwares: [] });
+                set(ref(db, `devices/${dIdx}/variants`), variants);
+            });
         };
 
-        window.initNewDevice = () => {
-            activeIndex = -1;
-            document.getElementById('dashboardView').style.display = 'none';
-            document.getElementById('editorView').style.display = 'block';
-            document.getElementById('workspaceTitle').innerText = "New Device";
-            renderWorkspace({ name: "", variants: [] });
-        };
-
-        window.deleteDevice = async () => {
-            if(confirm("Delete this device?")) {
-                allDevices.splice(activeIndex, 1);
-                await set(ref(db, 'devices'), allDevices);
-                exitEditor();
-            }
-        };
-
-        window.exitEditor = () => {
-            document.getElementById('editorView').style.display = 'none';
-            document.getElementById('dashboardView').style.display = 'block';
-        };
-
+        function renderModeration() {
+            const body = document.getElementById('feedbackTableBody');
+            body.innerHTML = "";
+            const feedback = currentData.feedback || {};
+            Object.keys(feedback).forEach(fwKey => {
+                Object.keys(feedback[fwKey]).forEach(entryId => {
+                    const item = feedback[fwKey][entryId];
+                    if(!item.comment) return;
+                    const row = document.createElement('tr');
+                    row.innerHTML = `<td><small>${fwKey}</small></td><td>${item.type}</td><td>${item.comment}</td><td><button class="btn btn-text" onclick="censorComment('${fwKey}','${entryId}')">Censor</button></td>`;
+                    body.appendChild(row);
+                });
+            });
+        }
+        window.censorComment = (fwKey, entryId) => update(ref(db, `feedback/${fwKey}/${entryId}`), { comment: "[REDACTED]" });
     </script>
 </body>
 </html>
