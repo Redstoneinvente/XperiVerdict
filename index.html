@@ -174,6 +174,33 @@
 
         .legal-footer { padding: 32px 20px 60px 20px; text-align: center; border-top: 1px solid rgba(0,0,0,0.05); margin-top: 20px; }
         .legal-text { font-size: 0.7rem; color: var(--m3-out); line-height: 1.5; }
+
+        /* Review Card Styles */
+        .review-card {
+            display: flex;
+            gap: 12px;
+            padding: 12px;
+            background: rgba(255,255,255,0.5);
+            border-radius: 16px;
+            margin-bottom: 8px;
+            align-items: flex-start;
+        }
+        .review-avatar {
+            width: 32px; height: 32px;
+            background: var(--m3-p-c);
+            color: var(--m3-p);
+            border-radius: 50%;
+            display: grid;
+            place-items: center;
+            font-size: 0.75rem;
+            font-weight: 800;
+            flex-shrink: 0;
+        }
+        .review-content { flex: 1; min-width: 0; }
+        .review-header { display: flex; justify-content: space-between; align-items: baseline; margin-bottom: 2px; }
+        .review-user { font-weight: 700; font-size: 0.8rem; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; max-width: 60%; }
+        .review-time { font-size: 0.65rem; color: var(--m3-out); }
+        .review-text { font-size: 0.85rem; line-height: 1.4; color: #1d1b20; }
     </style>
 </head>
 <body>
@@ -344,6 +371,7 @@
         const auth = getAuth(app);
 
         let state = { devices: [], currentDeviceIdx: null, currentVariantIdx: null, currentFwId: null, filter: 'all', searchQuery: '', userRating: 0 };
+        let userNameL = "";
 
         // --- AUTH LOGIC ---
         window.handleLogin = () => {
@@ -401,6 +429,8 @@
                 // 1. Data Prep: Use displayName if it exists, otherwise fallback to email
                 const initial = user.displayName ? user.displayName[0].toUpperCase() : (user.email ? user.email[0].toUpperCase() : 'U');
                 const userName = user.displayName || (user.email ? user.email.split('@')[0] : 'User');
+                
+                userNameL = userName;
                 
                 // 2. Update Top Bar (The Circle)
                 const profileBtn = document.getElementById('profileBtn');
@@ -610,15 +640,55 @@
             onValue(ref(db, `feedback/${fwId}`), snap => {
                 const data = snap.val() || {};
                 let bugs = [], imps = [], totalRating = 0, count = 0;
+                
                 Object.values(data).forEach(entry => {
                     if(entry.rating) { totalRating += entry.rating; count++; }
-                    if(entry.type === 'bug' && entry.comment) bugs.push(entry.comment);
-                    if(entry.type === 'improvement' && entry.comment) imps.push(entry.comment);
+                    if(entry.type === 'bug' && entry.comment) bugs.push(entry);
+                    if(entry.type === 'improvement' && entry.comment) imps.push(entry);
                 });
-                document.getElementById('bugContainer').innerText = bugs.length ? bugs[bugs.length-1] : "No critical bugs.";
-                document.getElementById('improvementContainer').innerText = imps.length ? imps[imps.length-1] : "Stable.";
+
                 document.getElementById('avgRatingScore').innerText = count > 0 ? (totalRating / count).toFixed(1) : "0.0";
+
+                const bugContainer = document.getElementById('bugContainer');
+                if (bugs.length > 0) {
+                    // Sorting locally since simple collection query is used
+                    bugContainer.innerHTML = bugs.sort((a,b) => b.timestamp - a.timestamp).slice(0, 3).map(b => createReviewCard(b)).join('');
+                } else {
+                    bugContainer.innerHTML = '<p style="color:var(--m3-out); font-size:0.8rem; margin:0;">No critical issues reported.</p>';
+                }
+
+                const impContainer = document.getElementById('improvementContainer');
+                if (imps.length > 0) {
+                    impContainer.innerHTML = imps.sort((a,b) => b.timestamp - a.timestamp).slice(0, 3).map(i => createReviewCard(i)).join('');
+                } else {
+                    impContainer.innerHTML = '<p style="color:var(--m3-out); font-size:0.8rem; margin:0;">Stable performance reported.</p>';
+                }
             });
+        }
+
+        function formatDate(timestamp) {
+            if(!timestamp) return "Recently";
+            const date = new Date(timestamp);
+            return date.toLocaleDateString('en-US', { month: 'short', day: 'numeric' });
+        }
+
+        function createReviewCard(entry) {
+            const userEmail = entry.userName || "Anonymous";
+            const initial = entry.userName[0].toUpperCase();
+            const time = formatDate(entry.timestamp);
+            
+            return `
+                <div class="review-card">
+                    <div class="review-avatar">${initial}</div>
+                    <div class="review-content">
+                        <div class="review-header">
+                            <span class="review-user">${userEmail.split('@')[0]}</span>
+                            <span class="review-time">${time}</span>
+                        </div>
+                        <div class="review-text">${entry.comment}</div>
+                    </div>
+                </div>
+            `;
         }
 
         window.setFilter = (type, el) => {
@@ -634,18 +704,38 @@
         });
 
         window.submitStarOnly = () => {
-            if(!state.userRating) return alert("Select stars first!");
-            push(ref(db, `feedback/${state.currentFwId}`), { rating: state.userRating, timestamp: Date.now() });
+            const user = auth.currentUser;
+            if (!user) return alert("You must be signed in.");
+            if(!state.userRating) return alert("Select stars!");
+            
+            push(ref(db, `feedback/${state.currentFwId}`), { 
+                rating: state.userRating, 
+                userId: user.uid, 
+                userName: user.displayName || user.email.split('@')[0],
+                userEmail: user.email,
+                timestamp: Date.now() 
+            });
             alert("Vote recorded!");
         };
 
         window.submitTextReport = () => {
-            const comment = document.getElementById('contributionText').value;
+            const user = auth.currentUser;
+            if (!user) return alert("You must be signed in.");
+            const comment = document.getElementById('contributionText').value.trim();
             const type = document.getElementById('contributionType').value;
-            if(!comment) return;
-            push(ref(db, `feedback/${state.currentFwId}`), { comment, type, timestamp: Date.now() });
+            if(!comment) return alert("Please enter details.");
+            
+            push(ref(db, `feedback/${state.currentFwId}`), { 
+                comment, 
+                type, 
+                userId: user.uid, 
+                userName: userNameL,
+                userEmail: user.email,
+                timestamp: Date.now() 
+            });
+            
             document.getElementById('contributionText').value = "";
-            alert("Intel submitted.");
+            alert("Intel submitted!");
         };
 
         document.querySelectorAll('#starSelector span').forEach(star => {
