@@ -314,9 +314,9 @@
 
         <div class="menu-divider"></div>
 
-        <div class="menu-item" onclick="alert('Settings')">
+        <div class="menu-item" onclick="window.location.href='settings.html'">
             <span class="material-symbols-rounded">settings</span>
-            <span>Settings</span>
+            <span>Account Settings</span>
         </div>
         
         <div class="menu-item" style="color: #ba1a1a;" onclick="handleLogout()">
@@ -398,15 +398,15 @@
 
         onAuthStateChanged(auth, user => {
             if (user) {
-                // 1. Prepare Data
-                const initial = user.email ? user.email[0].toUpperCase() : 'U';
-                const userName = user.email ? user.email.split('@')[0] : 'User';
+                // 1. Data Prep: Use displayName if it exists, otherwise fallback to email
+                const initial = user.displayName ? user.displayName[0].toUpperCase() : (user.email ? user.email[0].toUpperCase() : 'U');
+                const userName = user.displayName || (user.email ? user.email.split('@')[0] : 'User');
                 
-                // 2. Update Top App Bar (The Circle)
+                // 2. Update Top Bar (The Circle)
                 const profileBtn = document.getElementById('profileBtn');
                 if (profileBtn) profileBtn.innerText = initial;
                 
-                // 3. Update Dropdown Menu Content
+                // 3. Update Dropdown Content
                 const compAvatar = document.getElementById('compAvatar');
                 const compName = document.getElementById('compUserName');
                 const compEmail = document.getElementById('compUserEmail');
@@ -415,7 +415,6 @@
                 if (compName) compName.innerText = userName;
                 if (compEmail) compEmail.innerText = user.email;
                 
-                // 4. Navigate to main page
                 nav('pageDevices');
                 loadData();
             } else {
