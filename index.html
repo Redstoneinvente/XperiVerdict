@@ -234,7 +234,6 @@
             <h1>Xperia Cloud</h1>
             <div class="profile-circle" id="profileBtn" onclick="toggleModal(document.getElementById('profileDropdown').style.display !== 'block')">?</div>
         </div>
-        <p style="color: var(--m3-out); margin-top: -8px; margin-bottom: 24px;">Community Firmware Intelligence</p>
         <div id="deviceList"></div>
     </div>
 
@@ -375,6 +374,7 @@
         let userIDL = "";
 
         let ratingID = -1;
+        let currentVisualScore = 0;
 
         // --- AUTH LOGIC ---
         window.handleLogin = () => {
@@ -687,7 +687,10 @@
                     count++; 
                 });
 
-                document.getElementById('avgRatingScore').innerText = count > 0 ? (totalRating / count).toFixed(1) : "No Ratings";
+                let finalScore = (totalRating / count).toFixed(1);
+
+                document.getElementById('avgRatingScore').innerText = count > 0 ? finalScore : "No Ratings";
+                animateScore(finalScore);
             });
         }
 
@@ -695,6 +698,33 @@
             document.querySelectorAll('#starSelector span').forEach((s, i) => {
                 s.classList.toggle('active', i < starRating);
             });
+        }
+
+        function animateScore(targetValue) {
+            const el = document.getElementById('avgRatingScore');
+            const startValue = currentVisualScore;
+            const duration = 1600;
+            const startTime = performance.now();
+
+            function update(now) {
+                const elapsed = now - startTime;
+                const progress = Math.min(elapsed / duration, 1);
+                
+                // Ease Out Expo
+                const easeProgress = progress === 1 ? 1 : 1 - Math.pow(2, -10 * progress);
+                
+                const currentValue = startValue + (targetValue - startValue) * easeProgress;
+                el.innerText = currentValue.toFixed(1);
+                currentVisualScore = currentValue;
+
+                if (progress < 1) {
+                    requestAnimationFrame(update);
+                } else {
+                    el.innerText = targetValue.toFixed(1);
+                    currentVisualScore = targetValue;
+                }
+            }
+            requestAnimationFrame(update);
         }
 
         function formatDate(timestamp) {
@@ -768,11 +798,9 @@
                 if(existingKey) {
                     // UPDATE existing vote
                     await update(ref(db, `ratings/${currentDeviceName}/${modelCode}/${state.currentFwId}/${existingKey}`), payload);
-                    alert("Vote updated!");
                 } else {
                     // PUSH new vote
                     await push(ratingRef, payload);
-                    alert("Vote recorded!");
                 }
             } catch (err) {
                 alert("Error: " + err.message);
@@ -799,7 +827,6 @@
             });
             
             document.getElementById('contributionText').value = "";
-            alert("Intel submitted!");
         };
 
         document.querySelectorAll('#starSelector span').forEach(star => {
