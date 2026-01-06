@@ -273,6 +273,35 @@
             box-shadow: 0 4px 12px rgba(0,0,0,0.3);
         }
         #toast.show { transform: translateX(-50%) translateY(0); }
+
+        /* Review Card Styling */
+        .review-card {
+            padding: 16px;
+            border-bottom: 1px solid rgba(0,0,0,0.05);
+            display: flex;
+            gap: 12px;
+            align-items: flex-start;
+        }
+        .review-card:last-child { border-bottom: none; }
+        
+        .review-avatar { 
+            width: 36px; height: 36px; border-radius: 12px; 
+            background: var(--m3-p-c); color: var(--m3-p);
+            display: grid; place-items: center; font-weight: bold; font-size: 0.9rem;
+            flex-shrink: 0;
+        }
+
+        .review-content { flex: 1; }
+        .review-header { display: flex; justify-content: space-between; align-items: baseline; margin-bottom: 4px; }
+        .review-date { font-size: 0.7rem; color: var(--m3-out); font-weight: 500; }
+        .review-text { font-size: 0.9rem; line-height: 1.4; color: #1d1b20; }
+
+        .full-review-item {
+            padding: 16px 20px;
+            border-bottom: 1px solid rgba(0,0,0,0.05);
+        }
+        .full-review-item:last-child { border-bottom: none; }
+
     </style>
 </head>
 <body>
@@ -390,13 +419,15 @@
         </div>
 
         <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-bottom: 16px;">
-            <div class="stat-box" style="background: #fff5f5; border-color: #ffcccc;">
-                <h4 style="margin:0 0 8px 0; color: #c30000; font-size: 0.7rem; text-transform: uppercase;">Top Issue</h4>
-                <div id="bugContainer" style="font-size: 0.85rem;">-</div>
+            <div class="stat-box" onclick="openReviewCategory('bug')">
+                <h4 style="margin:0 0 8px 0; color: #ba1a1a; font-size: 0.7rem;">REPORTED BUGS</h4>
+                <div id="bugContainer"></div>
+                <div style="font-size: 0.7rem; color: var(--m3-p); font-weight: 600; margin-top: 8px;">VIEW ALL →</div>
             </div>
-            <div class="stat-box" style="background: #f5fff5; border-color: #ccffcc;">
-                <h4 style="margin:0 0 8px 0; color: #008100; font-size: 0.7rem; text-transform: uppercase;">Top Pro</h4>
-                <div id="improvementContainer" style="font-size: 0.85rem;">-</div>
+            <div class="stat-box" onclick="openReviewCategory('improvement')">
+                <h4 style="margin:0 0 8px 0; color: #006e1c; font-size: 0.7rem;">IMPROVEMENTS</h4>
+                <div id="improvementContainer"></div>
+                <div style="font-size: 0.7rem; color: var(--m3-p); font-weight: 600; margin-top: 8px;">VIEW ALL →</div>
             </div>
         </div>
 
@@ -450,6 +481,19 @@
         </div>
     </div>
 
+    <div id="pageReviews" class="page page-hidden">
+        <div class="top-app-bar">
+            <button style="background:none;border:none;cursor:pointer;" onclick="nav('pageDetail')">
+                <span class="material-symbols-rounded">arrow_back</span>
+            </button>
+            <h1 id="reviewTitle" style="font-size: 1.1rem; flex:1; text-align: center;">Feedback</h1>
+            <div style="width: 48px;"></div> <!-- Spacer for centering -->
+        </div>
+        <div id="fullReviewList" class="m3-card" style="padding: 0;">
+            <!-- Reviews injected here -->
+        </div>
+    </div>
+
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/12.7.0/firebase-app.js";
         import { getDatabase, ref, onValue, push, set, get, update, serverTimestamp  } from "https://www.gstatic.com/firebasejs/12.7.0/firebase-database.js";
@@ -468,12 +512,14 @@
         const db = getDatabase(app);
         const auth = getAuth(app);
 
-        let state = { devices: [], currentDeviceIdx: null, currentVariantIdx: null, currentFwId: null, filter: 'all', searchQuery: '', userRating: 0 };
+        let state = { devices: [], currentDeviceIdx: null, currentVariantIdx: null, currentFwId: null, filter: 'all', searchQuery: '', userRating: 0 , activeReviews: []};
         let userNameL = "";
         let userIDL = "";
 
         let ratingID = -1;
         let currentVisualScore = 0;
+        
+        let allReviews = [];
 
         window.copyShareLink = (pageId) => {
             const url = new URL(window.location.href);
@@ -814,23 +860,32 @@
                     //if(entry.rating) { totalRating += entry.rating; count++; }
                     if(entry.type === 'bug' && entry.comment) bugs.push(entry);
                     if(entry.type === 'improvement' && entry.comment) imps.push(entry);
+
+                    allReviews.push(entry);
                 });
 
                 //document.getElementById('avgRatingScore').innerText = count > 0 ? (totalRating / count).toFixed(1) : "No Ratings";
 
+                // Injecting Bugs logic
                 const bugContainer = document.getElementById('bugContainer');
                 if (bugs.length > 0) {
-                    // Sorting locally since simple collection query is used
-                    bugContainer.innerHTML = bugs.sort((a,b) => b.timestamp - a.timestamp).slice(0, 3).map(b => createReviewCard(b)).join('');
+                    bugContainer.innerHTML = bugs.sort((a,b) => (b.timestamp || 0) - (a.timestamp || 0))
+                        .slice(0, 3)
+                        .map(b => createReviewCard(b))
+                        .join('');
                 } else {
-                    bugContainer.innerHTML = '<p style="color:var(--m3-out); font-size:0.8rem; margin:0;">No critical issues reported.</p>';
+                    bugContainer.innerHTML = '<div style="padding:20px; color:var(--m3-out); font-size:0.8rem;">No critical issues reported.</div>';
                 }
 
+                // Injecting Improvements logic
                 const impContainer = document.getElementById('improvementContainer');
                 if (imps.length > 0) {
-                    impContainer.innerHTML = imps.sort((a,b) => b.timestamp - a.timestamp).slice(0, 3).map(i => createReviewCard(i)).join('');
+                    impContainer.innerHTML = imps.sort((a,b) => (b.timestamp || 0) - (a.timestamp || 0))
+                        .slice(0, 3)
+                        .map(i => createReviewCard(i))
+                        .join('');
                 } else {
-                    impContainer.innerHTML = '<p style="color:var(--m3-out); font-size:0.8rem; margin:0;">Stable performance reported.</p>';
+                    impContainer.innerHTML = '<div style="padding:20px; color:var(--m3-out); font-size:0.8rem;">Stable performance reported.</div>';
                 }
             });
 
@@ -999,6 +1054,57 @@
                 });
             };
         });
+
+        // UI Injection for specific review categories
+        window.openReviewCategory = (type) => {
+            const title = type === 'bug' ? 'Reported Issues' : 'Improvements & Pros';
+            document.getElementById('reviewTitle').innerText = title;
+            
+            const listEl = document.getElementById('fullReviewList');
+            const filtered = allReviews.filter(r => r.type === type);
+
+            listEl.innerHTML = "";
+
+            if (filtered.length === 0) {
+                listEl.innerHTML = `<div style="padding:40px; text-align:center; color:gray;">No feedback submitted yet.</div>`;
+            } else {
+                listEl.innerHTML = filtered.map(r => `
+                    <div class="full-review-item" style="display:flex; gap:10px; align-items:flex-start;">
+                    
+                    <!-- Profile Picture -->
+                    <div class="review-avatar">${r.userName[0].toUpperCase()}</div>
+
+                    <!-- Review Content -->
+                    <div style="flex:1;">
+                        <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:2px;">
+                            
+                            <!-- Username + Date -->
+                            <div>
+                                <div style="font-size:0.85rem; font-weight:600;">
+                                    ${r.userName || 'Anonymous'}
+                                </div>
+                                <span class="label-meta" style="font-size:0.65rem;">
+                                    ${new Date(r.timestamp).toLocaleDateString()}
+                                </span>
+                            </div>
+
+                            <!-- Verified Badge -->
+                            <span style="color: var(--m3-p); font-size: 0.8rem; font-weight:600;">
+                                Verified User
+                            </span>
+                        </div>
+
+                        <!-- Comment -->
+                        <div style="font-size: 0.95rem; line-height:1.4;">
+                            ${r.comment}
+                        </div>
+                    </div>
+                </div>
+                `).join('');
+            }
+
+            nav('pageReviews');
+        };
 
         // Footer Injection for all pages
         // Run this once to inject the footer into all pages
