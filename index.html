@@ -178,17 +178,26 @@
 </head>
 <body>
     <div id="pageLogin" class="page">
-        <div style="height: 80vh; display: flex; flex-direction: column; justify-content: center; align-items: center; text-align: center;">
+        <div style="height: 100%; display: flex; flex-direction: column; justify-content: center; align-items: center; padding: 20px;">
             <div style="width: 80px; height: 80px; background: var(--m3-p-c); border-radius: 24px; display: grid; place-items: center; margin-bottom: 24px;">
-                <span class="material-symbols-rounded" style="font-size: 40px; color: var(--m3-p);">lock</span>
+                <span class="material-symbols-rounded" style="font-size: 40px; color: var(--m3-p);">cloud</span>
             </div>
-            <h1 style="margin-bottom: 8px;">Xperia Cloud</h1>
-            <p style="color: var(--m3-out); margin-bottom: 32px;">Community Intelligence Portal</p>
-            
-            <div class="m3-card" style="width: 100%; box-sizing: border-box;">
-                <input type="email" id="loginEmail" placeholder="Email" style="width: 100%; padding: 14px; border-radius: 12px; border: 1px solid var(--m3-out-var); margin-bottom: 12px; box-sizing: border-box;">
-                <input type="password" id="loginPass" placeholder="Password" style="width: 100%; padding: 14px; border-radius: 12px; border: 1px solid var(--m3-out-var); margin-bottom: 20px; box-sizing: border-box;">
-                <button class="m3-btn" id="btnLogin">Sign In</button>
+            <h1 id="authTitle">Xperia Cloud</h1>
+            <div class="m3-card" style="width: 100%; max-width: 320px; box-sizing: border-box;">
+                <input type="email" id="loginEmail" placeholder="Email" style="width:100%; padding:14px; border-radius:12px; border:1px solid var(--m3-out-var); margin-bottom:12px; box-sizing:border-box;">
+                <input type="password" id="loginPass" placeholder="Password" style="width:100%; padding:14px; border-radius:12px; border:1px solid var(--m3-out-var); margin-bottom:20px; box-sizing:border-box;">
+                
+                <div style="text-align: right; margin: -8px 0 16px 0;">
+                    <button type="button" style="background:none; border:none; color:var(--m3-p); font-size:0.8rem; cursor:pointer; font-weight:500;" onclick="handleForgotPassword()">
+                        Forgot password?
+                    </button>
+                </div>
+
+                <button id="mainAuthBtn" class="m3-btn" onclick="handleLogin()">Sign In</button>
+                
+                <div style="margin-top: 16px; text-align: center;">
+                    <button id="toggleAuthBtn" style="background:none; border:none; color:var(--m3-p); font-weight:600; cursor:pointer;" onclick="toggleAuthMode()">Create an account</button>
+                </div>
             </div>
         </div>
     </div>
@@ -319,7 +328,8 @@
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/12.7.0/firebase-app.js";
         import { getDatabase, ref, onValue, push } from "https://www.gstatic.com/firebasejs/12.7.0/firebase-database.js";
-        import { getAuth, signInWithEmailAndPassword, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/12.7.0/firebase-auth.js";
+        import { getAuth, signInWithEmailAndPassword, onAuthStateChanged, signOut, createUserWithEmailAndPassword,
+        sendPasswordResetEmail} from "https://www.gstatic.com/firebasejs/12.7.0/firebase-auth.js";
 
         const firebaseConfig = {
             apiKey: "AIzaSyA0q57Bv_I4uuRn7cig64DPKa2oviyGHdw",
@@ -336,31 +346,76 @@
         let state = { devices: [], currentDeviceIdx: null, currentVariantIdx: null, currentFwId: null, filter: 'all', searchQuery: '', userRating: 0 };
 
         // --- AUTH LOGIC ---
-        const loginBtn = document.getElementById('btnLogin');
-        if(loginBtn) {
-            loginBtn.onclick = () => {
-                const email = document.getElementById('loginEmail').value;
-                const pass = document.getElementById('loginPass').value;
-                signInWithEmailAndPassword(auth, email, pass).catch(err => alert("Auth Failed: " + err.message));
-            };
-        }
+        window.handleLogin = () => {
+            const email = document.getElementById('loginEmail').value;
+            const pass = document.getElementById('loginPass').value;
+
+            if (!email || !pass) {
+                alert("Please fill in all fields");
+                return;
+            }
+
+            signInWithEmailAndPassword(auth, email, pass)
+                .catch(err => alert("Login Failed: " + err.message));
+        };
+
+        window.handleForgotPassword = () => {
+            const email = document.getElementById('loginEmail').value;
+
+            if (!email) {
+                alert("Please enter your email address first so we can send a reset link.");
+                return;
+            }
+
+            sendPasswordResetEmail(auth, email)
+                .then(() => {
+                    alert("Password reset email sent! Check your inbox (and spam folder).");
+                })
+                .catch((error) => {
+                    const errorCode = error.code;
+                    const errorMessage = error.message;
+                    
+                    if (errorCode === 'auth/user-not-found') {
+                        alert("No account found with this email.");
+                    } else {
+                        alert("Error: " + errorMessage);
+                    }
+                });
+        };
+
+        // Ensure 'window.' is present so the HTML onclick can "see" it
+        window.handleLogout = () => {
+            signOut(auth)
+                .then(() => {
+                    toggleModal(false); // Close the dropdown
+                    console.log("User signed out");
+                })
+                .catch((error) => {
+                    console.error("Sign out error:", error);
+                    alert("Error signing out: " + error.message);
+                });
+        };
 
         onAuthStateChanged(auth, user => {
             if (user) {
-                // Get the first letter of the email
+                // 1. Prepare Data
                 const initial = user.email ? user.email[0].toUpperCase() : 'U';
+                const userName = user.email ? user.email.split('@')[0] : 'User';
                 
-                // Find the button in the Top App Bar
+                // 2. Update Top App Bar (The Circle)
                 const profileBtn = document.getElementById('profileBtn');
-                if (profileBtn) {
-                    profileBtn.innerText = initial;
-                    profileBtn.style.display = 'grid'; // Force it to show
-                }
-
-                // Also update the large avatar inside the modal
+                if (profileBtn) profileBtn.innerText = initial;
+                
+                // 3. Update Dropdown Menu Content
                 const compAvatar = document.getElementById('compAvatar');
-                if (compAvatar) compAvatar.innerText = initial;
+                const compName = document.getElementById('compUserName');
+                const compEmail = document.getElementById('compUserEmail');
 
+                if (compAvatar) compAvatar.innerText = initial;
+                if (compName) compName.innerText = userName;
+                if (compEmail) compEmail.innerText = user.email;
+                
+                // 4. Navigate to main page
                 nav('pageDevices');
                 loadData();
             } else {
@@ -375,6 +430,46 @@
             if (menu) {
                 menu.style.display = show ? 'block' : 'none';
             }
+        };
+
+        let isRegisterMode = false;
+
+        window.toggleAuthMode = () => {
+            isRegisterMode = !isRegisterMode;
+            const title = document.getElementById('authTitle');
+            const mainBtn = document.getElementById('mainAuthBtn');
+            const toggleBtn = document.getElementById('toggleAuthBtn');
+
+            if (isRegisterMode) {
+                title.innerText = "Join Xperia Cloud";
+                mainBtn.innerText = "Create Account";
+                mainBtn.onclick = window.handleRegister;
+                toggleBtn.innerText = "Already have an account? Sign In";
+            } else {
+                title.innerText = "Xperia Cloud";
+                mainBtn.innerText = "Sign In";
+                mainBtn.onclick = window.handleLogin;
+                toggleBtn.innerText = "Create an account";
+            }
+        };
+
+        window.handleRegister = () => {
+            const email = document.getElementById('loginEmail').value;
+            const pass = document.getElementById('loginPass').value;
+
+            if (pass.length < 6) {
+                alert("Password should be at least 6 characters.");
+                return;
+            }
+
+            createUserWithEmailAndPassword(auth, email, pass)
+                .then((userCredential) => {
+                    console.log("Registered:", userCredential.user);
+                    // onAuthStateChanged will automatically handle the nav to pageDevices
+                })
+                .catch((error) => {
+                    alert("Registration Error: " + error.message);
+                });
         };
 
         // Close dropdown if user clicks anywhere else on the screen
