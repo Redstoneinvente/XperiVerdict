@@ -20,11 +20,95 @@
             --glass: blur(20px) saturate(180%);
         }
 
+        .profile-circle { 
+            width: 40px; 
+            height: 40px; 
+            background: var(--m3-p-c); /* Light Purple */
+            border-radius: 50%; 
+            display: grid; 
+            place-items: center; 
+            cursor: pointer; 
+            font-weight: bold; 
+            color: var(--m3-p); /* Dark Purple Text */
+            text-transform: uppercase;
+            flex-shrink: 0; /* Prevents it from being crushed if title is long */
+        }
+
         body { 
             background: var(--m3-surf); 
             font-family: 'Google Sans Text', sans-serif; 
             margin: 0; color: #1d1b20; 
             overflow-x: hidden; -webkit-font-smoothing: antialiased;
+        }
+
+        /* Dropdown Menu Container */
+        .profile-dropdown {
+            display: none;
+            position: absolute;
+            top: 70px; /* Positioned below the top bar */
+            right: 20px;
+            width: 240px;
+            background: var(--m3-surf-elevated);
+            border-radius: 20px;
+            box-shadow: 0 8px 24px rgba(0,0,0,0.15);
+            z-index: 1000;
+            overflow: hidden;
+            border: 1px solid rgba(0,0,0,0.05);
+            transform-origin: top right;
+            animation: menuIn 0.2s var(--ease-emphasized);
+        }
+
+        @keyframes menuIn {
+            from { opacity: 0; transform: scale(0.9) translateY(-10px); }
+            to { opacity: 1; transform: scale(1) translateY(0); }
+        }
+
+        /* Dropdown Items */
+        .menu-item {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 16px 20px;
+            cursor: pointer;
+            transition: background 0.2s;
+            color: #1d1b20;
+            font-size: 0.95rem;
+        }
+
+        .menu-item:hover { background: rgba(0,0,0,0.04); }
+
+        .menu-item .material-symbols-rounded { color: var(--m3-p); }
+
+        .menu-divider { height: 1px; background: var(--m3-out-var); opacity: 0.3; margin: 4px 0; }
+
+        .modal-overlay { 
+            display: none; /* Controlled by JS */
+            position: fixed; 
+            top: 0;
+            left: 0;
+            width: 100vw;
+            height: 100vh;
+            z-index: 9999; 
+            background: rgba(0,0,0,0.6); 
+            backdrop-filter: blur(10px); 
+            -webkit-backdrop-filter: blur(10px);
+            display: none; /* We override this to 'flex' in JS */
+            align-items: center; 
+            justify-content: center; 
+        }
+
+        /* Profile UI Additions */
+        .profile-comp-container { text-align: center; }
+        .avatar-wrapper { position: relative; width: 84px; height: 84px; margin: 0 auto 16px; }
+        .avatar-main { 
+            width: 100%; height: 100%; background: var(--m3-p); color: white; 
+            border-radius: 50%; display: grid; place-items: center; 
+            font-size: 2.2rem; font-weight: 500; box-shadow: 0 4px 12px rgba(103, 80, 164, 0.2); 
+        }
+        .avatar-edit-badge { 
+            position: absolute; bottom: 0; right: 0; background: white; 
+            border-radius: 50%; width: 28px; height: 28px; display: grid; 
+            place-items: center; border: 1px solid var(--m3-out-var); box-shadow: 0 2px 4px rgba(0,0,0,0.1);
         }
 
         .page { 
@@ -34,12 +118,21 @@
         }
         .page-hidden { transform: scale(0.96) translateY(20px); opacity: 0; pointer-events: none; }
 
-        .top-app-bar {
-            display: flex; align-items: center; gap: 12px;
-            padding: 20px 0; position: sticky; top: 0; 
-            background: rgba(246, 242, 247, 0.8);
-            backdrop-filter: var(--glass); -webkit-backdrop-filter: var(--glass);
-            z-index: 100; margin: 0 -20px 12px -20px; padding-left: 20px; padding-right: 20px;
+        .top-app-bar { 
+            display: flex; 
+            flex-direction: row;      /* Ensure horizontal flow */
+            align-items: center;      /* Vertically center items */
+            justify-content: space-between; /* Pushes Title to Left, Profile to Right */
+            padding: 12px 20px; 
+            position: sticky; 
+            top: 0; 
+            background: rgba(246, 242, 247, 0.8); 
+            backdrop-filter: var(--glass); 
+            -webkit-backdrop-filter: var(--glass); 
+            z-index: 100; 
+            margin: 0;                /* Remove negative margins if they exist */
+            box-sizing: border-box;   /* Ensures padding doesn't break width */
+            width: 100%;
         }
 
         .m3-card {
@@ -84,9 +177,27 @@
     </style>
 </head>
 <body>
+    <div id="pageLogin" class="page">
+        <div style="height: 80vh; display: flex; flex-direction: column; justify-content: center; align-items: center; text-align: center;">
+            <div style="width: 80px; height: 80px; background: var(--m3-p-c); border-radius: 24px; display: grid; place-items: center; margin-bottom: 24px;">
+                <span class="material-symbols-rounded" style="font-size: 40px; color: var(--m3-p);">lock</span>
+            </div>
+            <h1 style="margin-bottom: 8px;">Xperia Cloud</h1>
+            <p style="color: var(--m3-out); margin-bottom: 32px;">Community Intelligence Portal</p>
+            
+            <div class="m3-card" style="width: 100%; box-sizing: border-box;">
+                <input type="email" id="loginEmail" placeholder="Email" style="width: 100%; padding: 14px; border-radius: 12px; border: 1px solid var(--m3-out-var); margin-bottom: 12px; box-sizing: border-box;">
+                <input type="password" id="loginPass" placeholder="Password" style="width: 100%; padding: 14px; border-radius: 12px; border: 1px solid var(--m3-out-var); margin-bottom: 20px; box-sizing: border-box;">
+                <button class="m3-btn" id="btnLogin">Sign In</button>
+            </div>
+        </div>
+    </div>
 
     <div id="pageDevices" class="page">
-        <div class="top-app-bar"><h1>Xperia Cloud</h1></div>
+        <div class="top-app-bar">
+            <h1>Xperia Cloud</h1>
+            <div class="profile-circle" id="profileBtn" onclick="toggleModal(document.getElementById('profileDropdown').style.display !== 'block')">?</div>
+        </div>
         <p style="color: var(--m3-out); margin-top: -8px; margin-bottom: 24px;">Community Firmware Intelligence</p>
         <div id="deviceList"></div>
     </div>
@@ -183,9 +294,32 @@
         </div>
     </div>
 
+    <div id="profileDropdown" class="profile-dropdown">
+        <div style="padding: 20px; background: var(--m3-p-c); display: flex; align-items: center; gap: 12px;">
+            <div id="compAvatar" style="width: 40px; height: 40px; background: var(--m3-p); color: white; border-radius: 50%; display: grid; place-items: center; font-weight: bold;">U</div>
+            <div style="overflow: hidden;">
+                <div id="compUserName" style="font-weight: 700; font-size: 0.9rem; white-space: nowrap; text-overflow: ellipsis;">User</div>
+                <div id="compUserEmail" style="font-size: 0.75rem; color: var(--m3-on-p-c); opacity: 0.7; white-space: nowrap; text-overflow: ellipsis;">email@example.com</div>
+            </div>
+        </div>
+
+        <div class="menu-divider"></div>
+
+        <div class="menu-item" onclick="alert('Settings')">
+            <span class="material-symbols-rounded">settings</span>
+            <span>Settings</span>
+        </div>
+        
+        <div class="menu-item" style="color: #ba1a1a;" onclick="handleLogout()">
+            <span class="material-symbols-rounded">logout</span>
+            <span>Sign Out</span>
+        </div>
+    </div>
+
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/12.7.0/firebase-app.js";
         import { getDatabase, ref, onValue, push } from "https://www.gstatic.com/firebasejs/12.7.0/firebase-database.js";
+        import { getAuth, signInWithEmailAndPassword, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/12.7.0/firebase-auth.js";
 
         const firebaseConfig = {
             apiKey: "AIzaSyA0q57Bv_I4uuRn7cig64DPKa2oviyGHdw",
@@ -197,20 +331,78 @@
 
         const app = initializeApp(firebaseConfig);
         const db = getDatabase(app);
+        const auth = getAuth(app);
 
         let state = { devices: [], currentDeviceIdx: null, currentVariantIdx: null, currentFwId: null, filter: 'all', searchQuery: '', userRating: 0 };
 
+        // --- AUTH LOGIC ---
+        const loginBtn = document.getElementById('btnLogin');
+        if(loginBtn) {
+            loginBtn.onclick = () => {
+                const email = document.getElementById('loginEmail').value;
+                const pass = document.getElementById('loginPass').value;
+                signInWithEmailAndPassword(auth, email, pass).catch(err => alert("Auth Failed: " + err.message));
+            };
+        }
+
+        onAuthStateChanged(auth, user => {
+            if (user) {
+                // Get the first letter of the email
+                const initial = user.email ? user.email[0].toUpperCase() : 'U';
+                
+                // Find the button in the Top App Bar
+                const profileBtn = document.getElementById('profileBtn');
+                if (profileBtn) {
+                    profileBtn.innerText = initial;
+                    profileBtn.style.display = 'grid'; // Force it to show
+                }
+
+                // Also update the large avatar inside the modal
+                const compAvatar = document.getElementById('compAvatar');
+                if (compAvatar) compAvatar.innerText = initial;
+
+                nav('pageDevices');
+                loadData();
+            } else {
+                nav('pageLogin');
+            }
+        });
+
+        window.logout = () => signOut(auth);
+
+        window.toggleModal = (show) => {
+            const menu = document.getElementById('profileDropdown');
+            if (menu) {
+                menu.style.display = show ? 'block' : 'none';
+            }
+        };
+
+        // Close dropdown if user clicks anywhere else on the screen
+        document.addEventListener('click', (e) => {
+            const menu = document.getElementById('profileDropdown');
+            const btn = document.getElementById('profileBtn');
+            if (menu && menu.style.display === 'block') {
+                if (!menu.contains(e.target) && !btn.contains(e.target)) {
+                    toggleModal(false);
+                }
+            }
+        });
+
+        // --- NAVIGATION ---
         window.nav = (id) => {
             document.querySelectorAll('.page').forEach(p => p.classList.add('page-hidden'));
             document.getElementById(id).classList.remove('page-hidden');
         };
 
-        onValue(ref(db, 'devices'), snap => {
-            state.devices = snap.val() || [];
-            renderTier1();
-        });
+        // --- DATA LOADING ---
+        function loadData() {
+            onValue(ref(db, 'devices'), snap => {
+                state.devices = snap.val() || [];
+                renderTier1();
+            });
+        }
 
-        // 1. ADDED DESCRIPTION TO MAIN LIST
+        // 1. MAIN LIST (WITH DESCRIPTION)
         function renderTier1() {
             document.getElementById('deviceList').innerHTML = state.devices.map((d, i) => `
                 <div class="m3-card" onclick="selectDevice(${i})">
@@ -220,12 +412,42 @@
                         </div>
                         <div style="flex:1">
                             <h3 style="margin:0; font-size: 1.1rem;">${d.name}</h3>
-                            <div style="font-size: 0.8rem; color: var(--m3-out); margin-top: 4px;">${d.description || d.desc || 'Sony Xperia Series'}</div>
+                            <div style="font-size: 0.8rem; color: var(--m3-out); margin-top: 4px;">${d.description || d.desc || 'Xperia Device'}</div>
                         </div>
                     </div>
                 </div>
-            `).join('');
+            `).join('') + `<button onclick="logout()" style="width:100%; background:none; border:1px solid var(--m3-out-var); padding:12px; border-radius:12px; color:var(--m3-out); margin-top:20px;">Sign Out</button>`;
         }
+
+        // --- TIER 2 & 3 (Rest of your functions: selectDevice, selectVariant, renderTier3, etc.) ---
+        // Ensure renderTier3 includes the safety checks we discussed previously!
+
+        function renderTier3() {
+            const v = state.devices[state.currentDeviceIdx].variants[state.currentVariantIdx];
+            const list = v.firmwares || [];
+            
+            const filtered = list.filter(f => {
+                if (!f || !f.ver) return false;
+                const searchMatch = f.ver.toLowerCase().includes(state.searchQuery.toLowerCase());
+                let filterMatch = (state.filter === 'all') ? true : f.type === state.filter;
+                return searchMatch && filterMatch;
+            });
+
+            const fwListEl = document.getElementById('fwList');
+            fwListEl.innerHTML = filtered.length > 0 ? filtered.map(f => `
+                <div class="m3-card" onclick="showDetail('${f.ver}', '${f.date || 'Unknown'}', '${(f.changelog || 'Pending.').replace(/'/g, "\\'")}')">
+                    <div style="display:flex; justify-content:space-between; align-items:center;">
+                        <div>
+                            <div style="font-weight:700;">${f.ver}</div>
+                            <div style="font-size:0.75rem; color:var(--m3-out);">Android ${f.android || 'N/A'} • ${f.date || 'Recent'}</div>
+                        </div>
+                        <span class="material-symbols-rounded" style="color:var(--m3-p)">arrow_forward</span>
+                    </div>
+                </div>
+            `).join('') : `<p style="text-align:center; color:var(--m3-out); margin-top:40px;">No updates found.</p>`;
+        }
+
+        // (Add remaining selectDevice, selectVariant, showDetail, loadCommunityData, setFilter, submitStarOnly, submitTextReport functions here)
 
         window.selectDevice = (idx) => {
             state.currentDeviceIdx = idx;
@@ -257,53 +479,15 @@
             nav('pageFirmwares');
         };
 
-        function renderTier3() {
-            const v = state.devices[state.currentDeviceIdx].variants[state.currentVariantIdx];
-            const list = v.firmwares || [];
+        window.setFilter = (type, el) => {
+            state.filter = type; 
             
-            const filtered = list.filter(f => {
-                // 1. Search Match
-                const searchMatch = f.ver.toLowerCase().includes(state.searchQuery.toLowerCase());
-                
-                // 2. Filter Match (Using the 'type' key from your data)
-                let filterMatch = true;
-
-                if (state.filter === 'Security') {
-                    // Checks version code or changelog for "patch" or "security"
-                    filterMatch = f.type.includes('patch') || 
-                                f.type.includes('security') || 
-                                f.type.includes('security');
-                } else if (state.filter === 'Android') {
-                    // Checks if Android version is explicitly set or mentioned in version string
-                    filterMatch =  
-                                f.type.includes('os');
-                }
-
-                return searchMatch && filterMatch;
-            });
-
-            document.getElementById('fwList').innerHTML = filtered.length > 0 ? filtered.map(f => `
-                <div class="m3-card" onclick="showDetail('${f.ver}', '${f.date}', '${f.changelog || 'Changelog details pending.'}')">
-                    <div style="display:flex; justify-content:space-between; align-items:center;">
-                        <div>
-                            <div style="font-weight:700;">${f.ver}</div>
-                            <div style="font-size:0.75rem; color:var(--m3-out);">Android ${f.android || 'N/A'} • ${f.date}</div>
-                        </div>
-                        <span class="material-symbols-rounded" style="color:var(--m3-p)">arrow_forward</span>
-                    </div>
-                </div>
-            `).join('') : `<p style="text-align:center; color:var(--m3-out); margin-top:40px;">No updates found in this category.</p>`;
-        }
-
-window.setFilter = (type, el) => {
-    state.filter = type; 
-    
-    // UI Update
-    document.querySelectorAll('.chip').forEach(c => c.classList.remove('active'));
-    el.classList.add('active');
-    
-    renderTier3();
-};
+            // UI Update
+            document.querySelectorAll('.chip').forEach(c => c.classList.remove('active'));
+            el.classList.add('active');
+            
+            renderTier3();
+        };
         window.setFilter = (type, el) => {
             state.filter = type; // This must match 'Security' or 'Android' exactly as defined in the if-statements above
             
