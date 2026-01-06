@@ -224,9 +224,43 @@
         .coffee-btn-bar .material-symbols-rounded {
             font-size: 20px;
         }
+
+        .icon-btn {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            border: none;
+            background: rgba(0,0,0,0.05);
+            display: grid;
+            place-items: center;
+            cursor: pointer;
+            transition: all 0.2s;
+            flex-shrink: 0;
+        }
+        .icon-btn:hover { background: rgba(0,0,0,0.1); }
+        .icon-btn:active { transform: scale(0.9); }
+        .icon-btn .material-symbols-rounded { font-size: 20px; color: var(--m3-out); }
+
+        #toast {
+            position: fixed;
+            bottom: 30px;
+            left: 50%;
+            transform: translateX(-50%) translateY(100px);
+            background: #322f35;
+            color: #f5eff7;
+            padding: 12px 24px;
+            border-radius: 28px;
+            font-size: 0.9rem;
+            z-index: 2000;
+            transition: transform 0.3s var(--ease-emphasized);
+            box-shadow: 0 4px 12px rgba(0,0,0,0.3);
+        }
+        #toast.show { transform: translateX(-50%) translateY(0); }
     </style>
 </head>
 <body>
+    <div id="toast">Link copied to clipboard</div>
+
     <div id="pageLogin" class="page">
         <div style="height: 100%; display: flex; flex-direction: column; justify-content: center; align-items: center; padding: 20px;">
             <div style="width: 80px; height: 80px; background: var(--m3-p-c); border-radius: 24px; display: grid; place-items: center; margin-bottom: 24px;">
@@ -318,6 +352,10 @@
                 <span class="material-symbols-rounded">coffee</span>
                 <span style="white-space: nowrap;">Support</span>
             </a> 
+
+            <button class="icon-btn" onclick="copyShareLink('pageDetail')" title="Share">
+                <span class="material-symbols-rounded">share</span>
+            </button>
         </div>
         
         <div class="m3-card" style="background: var(--m3-on-p-c); color: white; border: none;">
@@ -420,6 +458,68 @@
         let ratingID = -1;
         let currentVisualScore = 0;
 
+        window.copyShareLink = (pageId) => {
+            const url = new URL(window.location.href);
+            url.searchParams.set('page', pageId);
+            
+            if (state.currentDeviceIdx !== null) url.searchParams.set('d', state.currentDeviceIdx);
+            if (state.currentVariantIdx !== null) url.searchParams.set('v', state.currentVariantIdx);
+            if (state.currentFwId !== null && pageId === 'pageDetail') {
+                const fw = state.devices[state.currentDeviceIdx].variants[state.currentVariantIdx].firmwares.find(f => f.ver.replace(/\./g, '_') === state.currentFwId);
+                if (fw) url.searchParams.set('fw', fw.ver);
+            }
+
+            const shareUrl = url.toString();
+            
+            // Clipboard API
+            const dummy = document.createElement('input');
+            document.body.appendChild(dummy);
+            dummy.value = shareUrl;
+            dummy.select();
+            document.execCommand('copy');
+            document.body.removeChild(dummy);
+
+            const toast = document.getElementById('toast');
+            toast.classList.add('show');
+            setTimeout(() => toast.classList.remove('show'), 2500);
+        };
+
+        // Deep Link Handling
+        function handleDeepLink() {
+            const params = new URLSearchParams(window.location.search);
+            const page = params.get('page');
+            const d = params.get('d');
+            const v = params.get('v');
+            const fw = params.get('fw');
+
+            if (d !== null) state.currentDeviceIdx = parseInt(d);
+            if (v !== null) state.currentVariantIdx = parseInt(v);
+
+            if (page === 'pageDetail' && fw) {
+                // We need data to be loaded first
+                const checkData = setInterval(() => {
+                    if (state.devices.length > 0) {
+                        const dev = state.devices[state.currentDeviceIdx];
+                        const variant = dev.variants[state.currentVariantIdx];
+                        const targetFw = variant.firmwares.find(f => f.ver === fw);
+                        if (targetFw) {
+                            showDetail(targetFw.ver, targetFw.date, targetFw.changelog);
+                            clearInterval(checkData);
+                        }
+                    }
+                }, 100);
+            } else if (page === 'pageFirmwares' && v !== null) {
+                const checkData = setInterval(() => {
+                    if (state.devices.length > 0) {
+                        selectVariant(parseInt(v));
+                        clearInterval(checkData);
+                    }
+                }, 100);
+            } else if (page === 'pageDevices') {
+                nav('pageDevices');
+            }
+        }
+
         // --- AUTH LOGIC ---
         window.handleLogin = () => {
             const email = document.getElementById('loginEmail').value;
@@ -495,6 +595,7 @@
                 
                 nav('pageDevices');
                 loadData();
+                handleDeepLink();
             } else {
                 nav('pageLogin');
             }
