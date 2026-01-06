@@ -226,20 +226,37 @@
         }
 
         .icon-btn {
-            width: 40px;
-            height: 40px;
-            border-radius: 50%;
-            border: none;
-            background: rgba(0,0,0,0.05);
+            width: 44px;
+            height: 44px;
+            border-radius: 14px; /* More modern squircle shape */
+            border: 1px solid rgba(0,0,0,0.04);
+            background: var(--m3-surf-elevated);
             display: grid;
             place-items: center;
             cursor: pointer;
-            transition: all 0.2s;
+            transition: all 0.25s var(--ease-emphasized);
             flex-shrink: 0;
+            color: var(--m3-p);
+            box-shadow: 0 2px 4px rgba(0,0,0,0.02);
         }
-        .icon-btn:hover { background: rgba(0,0,0,0.1); }
-        .icon-btn:active { transform: scale(0.9); }
-        .icon-btn .material-symbols-rounded { font-size: 20px; color: var(--m3-out); }
+        .icon-btn:hover { 
+            background: var(--m3-p-c); 
+            border-color: transparent;
+            transform: translateY(-1px);
+            box-shadow: 0 4px 12px rgba(103, 80, 164, 0.15);
+        }
+        .icon-btn:active { 
+            transform: scale(0.92) translateY(0); 
+            background: rgba(103, 80, 164, 0.2);
+        }
+        .icon-btn .material-symbols-rounded { 
+            font-size: 22px; 
+            transition: transform 0.2s ease;
+        }
+        .icon-btn:hover .material-symbols-rounded {
+            transform: scale(1.1);
+        }
+
 
         #toast {
             position: fixed;
