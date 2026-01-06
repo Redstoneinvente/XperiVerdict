@@ -2,189 +2,249 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Xperia Expressive | M3</title>
-    <link href="https://fonts.googleapis.com/css2?family=Google+Sans+Text:wght@400;500;700&family=Google+Sans:wght@400;700&family=Material+Symbols+Rounded:opsz,wght,FILL,GRAD@24,400,1,0&display=swap" rel="stylesheet">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+    <title>Xperia Cloud Tracker</title>
+    <link href="https://fonts.googleapis.com/css2?family=Google+Sans:wght@400;500;700&family=Google+Sans+Text:wght@400;500&family=Material+Symbols+Rounded:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200&display=swap" rel="stylesheet">
     <style>
         :root {
-            --m3-p: #005ac1;
+            /* M3 Tonal Palette - Xperia Premium */
+            --m3-p: #6750a4; 
             --m3-on-p: #ffffff;
-            --m3-p-c: #d8e2ff;
-            --m3-on-p-c: #001a41;
-            --m3-s-c: #adc6ff;
-            --m3-surf: #fdfbff;
-            --m3-surf-c: #f0f0f7;
-            --m3-surf-c-h: #e2e2e9;
-            --m3-out: #74777f;
-            --m3-ease: cubic-bezier(0.05, 0.7, 0.1, 1.0);
+            --m3-p-c: #eaddff;
+            --m3-on-p-c: #21005d;
+            --m3-surf: #f6f2f7; /* Slightly more greyish for contrast */
+            --m3-surf-container: rgba(255, 255, 255, 0.7); /* For Glassmorphism */
+            --m3-surf-elevated: #ffffff;
+            --m3-out: #79747e;
+            --m3-out-var: #c4c7c5;
             
-            /* Balanced Sizing */
-            --side-pad: clamp(16px, 5vw, 40px);
-            --card-gap: clamp(12px, 2vw, 20px);
+            /* Animation & Polish */
+            --ease-standard: cubic-bezier(0.2, 0, 0, 1);
+            --ease-emphasized: cubic-bezier(0.3, 0, 0, 1);
+            --shadow-sm: 0 1px 2px rgba(0,0,0,0.05);
+            --shadow-md: 0 4px 12px rgba(0,0,0,0.08);
+            --glass: blur(20px) saturate(180%);
         }
 
-        body {
-            background-color: var(--m3-surf);
-            color: #1a1c1e;
-            font-family: 'Google Sans Text', sans-serif;
-            margin: 0;
-            overflow-x: hidden;
+        body { 
+            background: var(--m3-surf); 
+            font-family: 'Google Sans Text', sans-serif; 
+            margin: 0; color: #1d1b20; 
+            overflow-x: hidden; -webkit-font-smoothing: antialiased;
         }
 
-        /* --- AUTH: REVERTED TO RADIAL --- */
-        #authScreen {
-            display: none; height: 100vh; align-items: center; justify-content: center;
-            background: radial-gradient(circle at top left, var(--m3-p-c), var(--m3-surf));
-        }
-
-        .auth-card {
-            background: rgba(255, 255, 255, 0.7);
-            backdrop-filter: blur(20px);
-            padding: 40px; border-radius: 32px; width: 90%; max-width: 380px;
-            box-shadow: 0 10px 30px rgba(0,0,0,0.05);
-            animation: m3-float 0.8s var(--m3-ease);
+        /* Legal Footer - The "Prefab" Style */
+        .legal-footer {
+            padding: 32px 20px 60px 20px;
+            margin-top: auto; /* Pushes to bottom of flex containers */
             text-align: center;
+            border-top: 1px solid rgba(0,0,0,0.05);
+            background: var(--m3-surf); /* Matches page background */
+        }
+        .legal-text {
+            font-size: 0.7rem;
+            line-height: 1.6;
+            color: var(--m3-out);
+            max-width: 320px;
+            margin: 0 auto;
+        }
+        .legal-link {
+            color: var(--m3-p);
+            text-decoration: none;
+            font-weight: 700;
+        }
+        
+        /* Smooth Page Transitions */
+        .page { 
+            position: fixed; inset: 0; padding: 0 20px 40px 20px; 
+            transition: transform 0.5s var(--ease-emphasized), opacity 0.4s ease, filter 0.4s ease;
+            overflow-y: auto; background: var(--m3-surf); z-index: 10;
+        }
+        .page-hidden { transform: scale(0.96) translateY(20px); opacity: 0; pointer-events: none; filter: blur(4px); }
+
+        /* Top Bar - Glassmorphism */
+        .top-app-bar {
+            display: flex; align-items: center; gap: 12px;
+            padding: 20px 0; position: sticky; top: 0; 
+            background: rgba(246, 242, 247, 0.8);
+            backdrop-filter: var(--glass); -webkit-backdrop-filter: var(--glass);
+            z-index: 100; margin: 0 -20px 12px -20px; padding-left: 20px; padding-right: 20px;
         }
 
-        @keyframes m3-float {
-            from { opacity: 0; transform: translateY(30px) scale(0.98); }
-            to { opacity: 1; transform: translateY(0) scale(1); }
-        }
-
-        /* --- HEADER: ADJUSTED SIZES --- */
-        .m3-header {
-            padding: clamp(40px, 8vh, 60px) var(--side-pad) 24px;
-            background: var(--m3-surf);
-            transition: all 0.4s var(--m3-ease);
-        }
-
-        .m3-header.scrolled {
-            padding: 12px var(--side-pad);
-            background: rgba(253, 251, 255, 0.9);
-            backdrop-filter: blur(15px);
-            position: sticky; top: 0; z-index: 100;
-            box-shadow: 0 2px 10px rgba(0,0,0,0.03);
-        }
-
-        .title-text {
-            font-family: 'Google Sans', sans-serif;
-            font-size: clamp(2rem, 6vw, 2.8rem); font-weight: 700; margin: 0;
-            color: var(--m3-on-p-c);
-            transition: 0.3s var(--m3-ease);
-        }
-
-        .scrolled .title-text { font-size: 1.3rem; }
-
-        /* --- GRID: DYNAMIC COLUMNS --- */
-        .m3-grid {
-            display: grid; 
-            grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
-            gap: var(--card-gap); padding: 0 var(--side-pad) 40px;
-        }
-
+        /* Advanced Card Styling */
         .m3-card {
-            background: var(--m3-surf-c);
-            border-radius: 24px; padding: 20px; cursor: pointer;
-            border: 2px solid transparent;
-            transition: all 0.3s var(--m3-ease);
-            display: flex; flex-direction: column;
-            min-height: 140px;
+            background: var(--m3-surf-elevated);
+            border-radius: 28px; padding: 20px; margin-bottom: 16px;
+            border: 1px solid rgba(0,0,0,0.03);
+            box-shadow: var(--shadow-sm);
+            transition: all 0.3s var(--ease-standard);
+            position: relative; overflow: hidden;
+        }
+        .m3-card:hover { box-shadow: var(--shadow-md); transform: translateY(-2px); }
+        .m3-card:active { transform: scale(0.97); opacity: 0.8; }
+
+        /* Rating Badge - High Gloss */
+        .rating-badge {
+            background: var(--m3-p-c); color: var(--m3-on-p-c);
+            padding: 12px 20px; border-radius: 20px; text-align: center;
         }
 
-        .m3-card:hover {
-            background: var(--m3-s-c);
-            transform: translateY(-6px);
-            border-color: var(--m3-p);
-        }
-
-        /* --- SHEET: ADJUSTED PROPORTIONS --- */
-        .m3-sheet-overlay {
-            position: fixed; inset: 0; background: rgba(0,0,0,0.3);
-            display: none; z-index: 1000; backdrop-filter: blur(4px);
-        }
-
-        .m3-sheet {
-            position: fixed; bottom: 0; left: 0; right: 0;
-            background: var(--m3-surf);
-            border-radius: 28px 28px 0 0;
-            transform: translateY(100%);
-            transition: transform 0.5s var(--m3-ease);
-            z-index: 1001; max-height: 80vh; overflow-y: auto;
-            padding: 32px var(--side-pad);
-        }
-
-        .m3-sheet.active { transform: translateY(0); }
-
-        /* --- ELEMENTS --- */
-        .m3-input {
-            width: 100%; border: none; background: var(--m3-surf-c-h);
-            padding: 14px 20px; border-radius: 16px; font-size: 1rem;
-            margin-bottom: 12px; box-sizing: border-box; font-family: inherit;
-        }
-
-        .fw-item {
-            background: var(--m3-surf-c-h); border-radius: 16px;
-            padding: 16px; margin-bottom: 8px;
-            display: flex; justify-content: space-between; align-items: center;
-        }
-
+        /* Modern Filter Chips */
+        .chip-row { display: flex; gap: 8px; overflow-x: auto; padding: 4px 0 20px; scrollbar-width: none; }
+        .chip-row::-webkit-scrollbar { display: none; }
         .chip {
-            background: var(--m3-p-c); color: var(--m3-on-p-c);
-            padding: 4px 12px; border-radius: 8px; font-weight: 700; font-size: 0.75rem;
+            padding: 10px 20px; border-radius: 12px; background: white;
+            font-size: 0.85rem; font-weight: 500; color: var(--m3-out);
+            border: 1px solid var(--m3-out-var); transition: 0.2s;
+            cursor: pointer; flex-shrink: 0;
+        }
+        .chip.active { background: var(--m3-on-p-c); color: white; border-color: var(--m3-on-p-c); }
+
+        /* Sony-style Search Bar */
+        .search-container {
+            background: white; border-radius: 16px; padding: 4px 16px;
+            display: flex; align-items: center; gap: 12px; margin-bottom: 16px;
+            box-shadow: var(--shadow-sm); border: 1px solid rgba(0,0,0,0.05);
+        }
+        .search-container input { 
+            border: none; background: transparent; outline: none; height: 48px;
+            width: 100%; font-family: inherit; font-size: 1rem;
         }
 
-        .btn-fab {
-            background: var(--m3-p-c); color: var(--m3-on-p-c);
-            border: none; border-radius: 16px; padding: 12px 24px;
-            font-weight: 600; cursor: pointer; display: flex; align-items: center; gap: 8px;
+        /* Buttons */
+        .m3-btn {
+            background: var(--m3-p); color: white; border: none;
+            padding: 14px 28px; border-radius: 16px; font-weight: 600;
+            display: inline-flex; align-items: center; gap: 8px;
+            cursor: pointer; transition: 0.2s; width: 100%; justify-content: center;
         }
+        .m3-btn:active { transform: scale(0.98); }
 
-        @media (max-width: 480px) {
-            .m3-grid { grid-template-columns: 1fr 1fr; }
+        /* Typography Refinement */
+        h1 { font-family: 'Google Sans'; font-weight: 700; font-size: 1.8rem; letter-spacing: -0.5px; }
+        .label-meta { color: var(--m3-out); font-size: 0.8rem; text-transform: uppercase; letter-spacing: 1px; font-weight: 700; }
+
+        .star-input span { 
+            font-size: 38px; color: var(--m3-out-var); 
+            transition: 0.2s var(--ease-standard);
+        }
+        .star-input span.active { color: #FFB300; font-variation-settings: 'FILL' 1; }
+
+        /* Custom Box for Pros/Bugs */
+        .stat-box {
+            padding: 16px; border-radius: 20px; border: 1px solid rgba(0,0,0,0.05);
         }
     </style>
 </head>
 <body>
 
-    <div id="loadingScreen" style="position:fixed; inset:0; background:white; z-index:9999; display:flex; align-items:center; justify-content:center;">
-        <span class="material-symbols-rounded" style="font-size: 48px; color: var(--m3-p); animation: pulse 1s infinite alternate;">vibration</span>
+    <div id="pageDevices" class="page">
+        <div class="top-app-bar">
+            <h1>Xperia Cloud</h1>
+        </div>
+        <p style="color: var(--m3-out); margin-top: -8px; margin-bottom: 24px;">Precision tracking for Sony firmware.</p>
+        <div id="deviceList"></div>
     </div>
 
-    <section id="authScreen">
-        <div class="auth-card">
-            <h1 style="font-family:'Google Sans'; font-size: 1.8rem; margin:0 0 8px 0;">Xperia Cloud</h1>
-            <p style="color:var(--m3-out); font-size: 0.9rem; margin-bottom:32px;">Firmware Tracking Workspace</p>
-            <input type="email" id="email" class="m3-input" placeholder="Email">
-            <input type="password" id="password" class="m3-input" placeholder="Password">
-            <button class="btn-fab" id="authBtn" style="width:100%; justify-content:center; border-radius: 100px; height: 52px;">Sign In</button>
-            <button onclick="toggleAuth()" style="background:none; border:none; color:var(--m3-p); cursor:pointer; font-weight:600; margin-top:20px;">Create Account</button>
+    <div id="pageVariants" class="page page-hidden">
+        <div class="top-app-bar">
+            <button class="icon-btn" style="background:none;border:none;padding:0;" onclick="nav('pageDevices')">
+                <span class="material-symbols-rounded">arrow_back_ios_new</span>
+            </button>
+            <h1 id="variantTitle">Models</h1>
         </div>
-    </section>
+        <div id="variantList"></div>
+    </div>
 
-    <section id="mainUI" style="display:none;">
-        <header class="m3-header" id="mainHeader">
-            <div style="display:flex; justify-content:space-between; align-items:center;">
-                <h1 class="title-text">Fleet</h1>
-                <button onclick="signOutUser()" style="background:none; border:none; color:var(--m3-p); cursor:pointer;"><span class="material-symbols-rounded">logout</span></button>
+    <div id="pageFirmwares" class="page page-hidden">
+        <div class="top-app-bar">
+            <button class="icon-btn" style="background:none;border:none;padding:0;" onclick="nav('pageVariants')">
+                <span class="material-symbols-rounded">arrow_back_ios_new</span>
+            </button>
+            <div style="flex:1">
+                <h1 id="modelCodeHeader" style="font-size: 1.2rem;">Model</h1>
+                <div id="modelDetails" class="label-meta" style="font-size: 0.65rem;">Loading...</div>
             </div>
-            <div style="margin-top:20px; position:relative;">
-                <input type="text" id="searchInput" class="m3-input" placeholder="Search devices..." oninput="render()" style="margin-bottom:0; padding-left:50px; border-radius: 100px;">
-                <span class="material-symbols-rounded" style="position:absolute; left:18px; top:13px; color:var(--m3-p);">search</span>
-            </div>
-        </header>
-        <div id="deviceGrid" class="m3-grid"></div>
-    </section>
+        </div>
 
-    <div class="m3-sheet-overlay" id="sheetOverlay" onclick="closeSheet()"></div>
-    <div class="m3-sheet" id="detailSheet">
-        <div style="width:32px; height:4px; background:var(--m3-surf-c-h); border-radius:2px; margin:0 auto 24px;"></div>
-        <div id="sheetContent"></div>
+        <div class="search-container">
+            <span class="material-symbols-rounded" style="color: var(--m3-out);">search</span>
+            <input type="text" placeholder="Search version codes..." id="fwSearchInput">
+        </div>
+
+        <div class="chip-row">
+            <div class="chip active" onclick="setFilter('all', this)">All Feeds</div>
+            <div class="chip" onclick="setFilter('Security', this)">Security Patches</div>
+            <div class="chip" onclick="setFilter('Android', this)">OS Upgrades</div>
+        </div>
+
+        <div id="fwList"></div>
+    </div>
+
+    <div id="pageDetail" class="page page-hidden">
+        <div class="top-app-bar">
+            <button class="icon-btn" style="background:none;border:none;padding:0;" onclick="nav('pageFirmwares')">
+                <span class="material-symbols-rounded">expand_more</span>
+            </button>
+            <h1 style="font-size: 1.1rem; flex:1; text-align: center;">Firmware Intelligence</h1>
+            <div style="width: 40px;"></div> </div>
+        
+        <div class="m3-card" style="background: var(--m3-on-p-c); color: white; border: none;">
+            <div style="display: flex; justify-content: space-between; align-items: center;">
+                <div>
+                    <div class="label-meta" style="color: rgba(255,255,255,0.6);">Current Version</div>
+                    <h2 id="detVer" style="margin:4px 0 0 0; font-size: 1.8rem; font-family: 'Google Sans';">0.00.0</h2>
+                </div>
+                <div class="rating-badge">
+                    <div id="avgRatingScore" style="font-size: 2rem; font-weight: 700; line-height: 1;">0.0</div>
+                    <div style="font-size: 0.6rem; font-weight: 800;">INDEX</div>
+                </div>
+            </div>
+            <p id="detMeta" style="margin: 16px 0 0 0; font-size: 0.85rem; opacity: 0.7;"></p>
+        </div>
+
+        <div class="m3-card" style="text-align: center;">
+            <div class="label-meta" style="margin-bottom: 12px;">Community Stability Vote</div>
+            <div class="star-input" id="starSelector" style="display: flex; justify-content: center; gap: 4px; margin-bottom: 20px;">
+                <span class="material-symbols-rounded" data-v="1">star</span>
+                <span class="material-symbols-rounded" data-v="2">star</span>
+                <span class="material-symbols-rounded" data-v="3">star</span>
+                <span class="material-symbols-rounded" data-v="4">star</span>
+                <span class="material-symbols-rounded" data-v="5">star</span>
+            </div>
+            <button class="m3-btn" onclick="submitStarOnly()">Cast Stability Vote</button>
+        </div>
+
+        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-bottom: 24px;">
+            <div class="stat-box" style="background: #fff5f5; border-color: #ffcccc;">
+                <h4 style="margin:0 0 8px 0; color: #c30000; font-size: 0.8rem; text-transform: uppercase;">Issues</h4>
+                <div id="bugContainer" style="font-size: 0.85rem;">-</div>
+            </div>
+            <div class="stat-box" style="background: #f5fff5; border-color: #ccffcc;">
+                <h4 style="margin:0 0 8px 0; color: #008100; font-size: 0.8rem; text-transform: uppercase;">Improvements</h4>
+                <div id="improvementContainer" style="font-size: 0.85rem;">-</div>
+            </div>
+        </div>
+
+        <div class="m3-card">
+            <h3 style="margin: 0 0 12px 0; font-size: 1rem;">Official Changelog</h3>
+            <p id="detChangelog" style="margin:0; font-size: 0.9rem; line-height: 1.6; color: var(--m3-out);"></p>
+        </div>
+
+        <div class="m3-card">
+            <div class="label-meta" style="margin-bottom: 12px;">Submit Intel</div>
+            <select id="contributionType" style="width: 100%; padding: 12px; border-radius: 12px; border: 1px solid var(--m3-out-var); margin-bottom: 12px; font-family: inherit;">
+                <option value="improvement">Stable Performance</option>
+                <option value="bug">Bug Encountered</option>
+            </select>
+            <textarea id="contributionText" style="width: 100%; height: 80px; padding: 12px; border-radius: 12px; border: 1px solid var(--m3-out-var); font-family: inherit; box-sizing: border-box; resize: none; margin-bottom: 12px;" placeholder="Add details..."></textarea>
+            <button class="m3-btn" style="background: #1d1b20;" onclick="submitTextReport()">Submit Report</button>
+        </div>
     </div>
 
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/12.7.0/firebase-app.js";
-        import { getDatabase, ref, onValue } from "https://www.gstatic.com/firebasejs/12.7.0/firebase-database.js";
-        import { getAuth, onAuthStateChanged, signInWithEmailAndPassword, createUserWithEmailAndPassword, signOut } from "https://www.gstatic.com/firebasejs/12.7.0/firebase-auth.js";
+        import { getDatabase, ref, onValue, push, set } from "https://www.gstatic.com/firebasejs/12.7.0/firebase-database.js";
 
         const firebaseConfig = {
             apiKey: "AIzaSyA0q57Bv_I4uuRn7cig64DPKa2oviyGHdw",
@@ -196,92 +256,160 @@
 
         const app = initializeApp(firebaseConfig);
         const db = getDatabase(app);
-        const auth = getAuth(app);
-        let devices = [];
-        let isLogin = true;
 
-        onAuthStateChanged(auth, user => {
-            document.getElementById('loadingScreen').style.display = 'none';
-            if(user) {
-                document.getElementById('authScreen').style.display = 'none';
-                document.getElementById('mainUI').style.display = 'block';
-                fetchData();
-            } else {
-                document.getElementById('authScreen').style.display = 'flex';
-                document.getElementById('mainUI').style.display = 'none';
-            }
+        let state = { devices: [], currentDeviceIdx: null, currentVariantIdx: null, currentFwId: null, filter: 'all', searchQuery: '', userRating: 0 };
+
+        window.nav = (id) => {
+            document.querySelectorAll('.page').forEach(p => p.classList.add('page-hidden'));
+            document.getElementById(id).classList.remove('page-hidden');
+        };
+
+        document.querySelectorAll('#starSelector span').forEach(star => {
+            star.onclick = () => {
+                state.userRating = parseInt(star.dataset.v);
+                document.querySelectorAll('#starSelector span').forEach((s, i) => {
+                    s.classList.toggle('active', i < state.userRating);
+                });
+            };
         });
 
-        window.toggleAuth = () => {
-            isLogin = !isLogin;
-            document.querySelector('.auth-card h1').innerText = isLogin ? "Xperia Cloud" : "Join Us";
-            document.getElementById('authBtn').innerText = isLogin ? "Sign In" : "Create Account";
+        onValue(ref(db, 'devices'), snap => {
+            state.devices = snap.val() || [];
+            renderTier1();
+        });
+
+        function renderTier1() {
+            document.getElementById('deviceList').innerHTML = state.devices.map((d, i) => `
+                <div class="m3-card" onclick="selectDevice(${i})">
+                    <div style="display:flex; align-items:center; gap:16px;">
+                        <div style="width:48px; height:48px; background:var(--m3-p-c); border-radius:12px; display:grid; place-items:center;">
+                            <span class="material-symbols-rounded" style="color:var(--m3-p)">smartphone</span>
+                        </div>
+                        <div>
+                            <h3 style="margin:0; font-size: 1.1rem;">${d.name}</h3>
+                            <div class="label-meta" style="font-size: 0.6rem; margin-top:2px;">${d.variants?.length || 0} Models Available</div>
+                        </div>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        window.selectDevice = (idx) => {
+            state.currentDeviceIdx = idx;
+            const d = state.devices[idx];
+            document.getElementById('variantTitle').innerText = d.name;
+            document.getElementById('variantList').innerHTML = (d.variants || []).map((v, i) => `
+                <div class="m3-card" onclick="selectVariant(${i})">
+                    <div style="display:flex; justify-content:space-between; align-items:center;">
+                        <div>
+                            <div style="font-weight:700;">${v.model}</div>
+                            <div style="font-size:0.8rem; color:var(--m3-out);">${v.region}</div>
+                        </div>
+                        <span class="material-symbols-rounded" style="color:var(--m3-out-var)">chevron_right</span>
+                    </div>
+                </div>
+            `).join('');
+            nav('pageVariants');
         };
 
-        document.getElementById('authBtn').onclick = async () => {
-            const e = document.getElementById('email').value, p = document.getElementById('password').value;
-            try { isLogin ? await signInWithEmailAndPassword(auth, e, p) : await createUserWithEmailAndPassword(auth, e, p); } catch(err) { alert(err.message); }
+        window.selectVariant = (vIdx) => {
+            state.currentVariantIdx = vIdx;
+            const v = state.devices[state.currentDeviceIdx].variants[vIdx];
+            document.getElementById('modelCodeHeader').innerText = v.model;
+            document.getElementById('modelDetails').innerText = `${v.region} • ${v.lockStatus}`;
+            renderTier3();
+            nav('pageFirmwares');
         };
 
-        window.signOutUser = () => signOut(auth);
+        function renderTier3() {
+            const v = state.devices[state.currentDeviceIdx].variants[state.currentVariantIdx];
+            const list = v.firmwares || [];
+            const filtered = list.filter(f => {
+                const matchesSearch = f.ver.toLowerCase().includes(state.searchQuery.toLowerCase());
+                const matchesFilter = state.filter === 'all' || f.ver.includes(state.filter);
+                return matchesSearch && matchesFilter;
+            });
 
-        function fetchData() {
-            onValue(ref(db, 'devices'), snap => {
-                devices = snap.val() || [];
-                render();
+            document.getElementById('fwList').innerHTML = filtered.map(f => `
+                <div class="m3-card" onclick="showDetail('${f.ver}', '${f.date}', '${f.changelog || 'No official notes provided.'}')">
+                    <div style="display:flex; justify-content:space-between; align-items:center;">
+                        <div>
+                            <div style="font-weight:700; font-size:1rem; letter-spacing:0.5px;">${f.ver}</div>
+                            <div style="font-size:0.75rem; color:var(--m3-out); margin-top:2px;">Android ${f.android} • ${f.date}</div>
+                        </div>
+                        <div style="width:32px; height:32px; border-radius:50%; background:var(--m3-surf); display:grid; place-items:center;">
+                            <span class="material-symbols-rounded" style="font-size:18px;">arrow_forward</span>
+                        </div>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        window.showDetail = (ver, date, log) => {
+            state.currentFwId = ver.replace(/\./g, '_');
+            document.getElementById('detVer').innerText = ver;
+            document.getElementById('detMeta').innerText = `Official Deployment: ${date}`;
+            document.getElementById('detChangelog').innerText = log;
+            loadCommunityData(state.currentFwId);
+            nav('pageDetail');
+        };
+
+        function loadCommunityData(fwId) {
+            onValue(ref(db, `feedback/${fwId}`), snap => {
+                const data = snap.val() || {};
+                let bugs = [], imps = [], totalRating = 0, count = 0;
+                Object.values(data).forEach(entry => {
+                    if(entry.rating) { totalRating += entry.rating; count++; }
+                    if(entry.type === 'bug' && entry.comment) bugs.push(entry.comment);
+                    if(entry.type === 'improvement' && entry.comment) imps.push(entry.comment);
+                });
+                document.getElementById('bugContainer').innerText = bugs.length ? bugs[bugs.length-1] : "No critical bugs.";
+                document.getElementById('improvementContainer').innerText = imps.length ? imps[imps.length-1] : "Stable.";
+                document.getElementById('avgRatingScore').innerText = count > 0 ? (totalRating / count).toFixed(1) : "0.0";
             });
         }
 
-        window.render = () => {
-            const grid = document.getElementById('deviceGrid');
-            const search = document.getElementById('searchInput').value.toLowerCase();
-            grid.innerHTML = devices.map((d, i) => {
-                if(search && !d.name.toLowerCase().includes(search)) return '';
-                return `
-                <div class="m3-card" onclick="openSheet(${i})">
-                    <span class="material-symbols-rounded" style="color:var(--m3-p); margin-bottom:12px; font-size: 28px;">smartphone</span>
-                    <h3 style="margin:0; font-family:'Google Sans'; font-size: 1.1rem;">${d.name}</h3>
-                    <p style="margin:4px 0 0 0; font-size:0.8rem; opacity:0.6;">${d.variants?.length || 0} variants</p>
-                </div>`;
-            }).join('');
+        window.submitStarOnly = () => {
+            if(!state.userRating) return;
+            push(ref(db, `feedback/${state.currentFwId}`), { rating: state.userRating, timestamp: Date.now() });
+            alert("Vote registered!");
         };
 
-        window.openSheet = (idx) => {
-            const d = devices[idx];
-            const content = document.getElementById('sheetContent');
-            content.innerHTML = `
-                <h2 style="font-family:'Google Sans'; font-size:1.8rem; margin-bottom:24px;">${d.name}</h2>
-                ${(d.variants || []).map(v => `
-                    <div style="margin-bottom:32px;">
-                        <h4 style="margin:0 0 12px 0; color:var(--m3-p); font-size:0.85rem; text-transform:uppercase;">${v.region} • ${v.model}</h4>
-                        ${(v.firmwares || []).map(f => `
-                            <div class="fw-item">
-                                <div>
-                                    <div style="font-family:'Roboto Mono'; font-weight:700;">${f.ver}</div>
-                                    <div style="font-size:0.75rem; opacity:0.6;">${f.date}</div>
-                                </div>
-                                <div class="chip">A${f.android}</div>
-                            </div>
-                        `).join('')}
-                    </div>
-                `).join('')}
+        window.submitTextReport = () => {
+            const comment = document.getElementById('contributionText').value;
+            const type = document.getElementById('contributionType').value;
+            if(!comment) return;
+            push(ref(db, `feedback/${state.currentFwId}`), { comment, type, timestamp: Date.now() });
+            document.getElementById('contributionText').value = "";
+            alert("Intel added.");
+        };
+
+        document.getElementById('fwSearchInput').addEventListener('input', (e) => {
+            state.searchQuery = e.target.value;
+            renderTier3();
+        });
+
+        window.setFilter = (type, el) => {
+            state.filter = type;
+            document.querySelectorAll('.chip').forEach(c => c.classList.remove('active'));
+            el.classList.add('active');
+            renderTier3();
+        };
+
+        // Run this once to inject the footer into all pages
+        document.querySelectorAll('.page').forEach(page => {
+            const footer = document.createElement('footer');
+            footer.className = 'legal-footer';
+            footer.innerHTML = `
+                <div class="legal-text">
+                    <p><strong>XperiVerdict</strong> is an independent community resource.</p>
+                    <p>This platform is <strong>not affiliated with, authorized, or endorsed by Sony Group Corporation</strong> or its subsidiaries.</p>
+                    <p>SONY and Xperia are registered trademarks of Sony Group Corporation. All other product names, logos, and brands are property of their respective owners.</p>
+                    <p>© 2026 XperiVerdict • <a href="terms-and-service.html" class="legal-link">Terms of Service</a></p>
+                </div>
             `;
-            document.getElementById('sheetOverlay').style.display = 'block';
-            document.getElementById('detailSheet').classList.add('active');
-            document.body.style.overflow = 'hidden';
-        };
-
-        window.closeSheet = () => {
-            document.getElementById('sheetOverlay').style.display = 'none';
-            document.getElementById('detailSheet').classList.remove('active');
-            document.body.style.overflow = 'auto';
-        };
-
-        window.onscroll = () => {
-            const header = document.getElementById('mainHeader');
-            window.scrollY > 20 ? header.classList.add('scrolled') : header.classList.remove('scrolled');
-        };
+            page.appendChild(footer);
+        });
     </script>
-    <style>@keyframes pulse { from { opacity: 1; } to { opacity: 0.4; } }</style>
 </body>
 </html>
