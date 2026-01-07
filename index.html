@@ -785,7 +785,7 @@
 
             const fwListEl = document.getElementById('fwList');
             fwListEl.innerHTML = filtered.length > 0 ? filtered.map(f => `
-                <div class="m3-card" onclick="showDetail('${f.ver}', '${f.date || 'Unknown'}', '${(f.changelog || 'Pending.').replace(/'/g, "\\'")}')">
+                <div class="m3-card" onclick="showDetail('${f.ver}', '${f.date || 'Unknown'}', '${(f.changelog || f.log || 'Pending.').replace(/'/g, "\\'")}')">
                     <div style="display:flex; justify-content:space-between; align-items:center;">
                         <div>
                             <div style="font-weight:700;">${f.ver}</div>
