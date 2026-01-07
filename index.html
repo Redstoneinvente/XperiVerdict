@@ -765,7 +765,21 @@
             const filtered = list.filter(f => {
                 if (!f || !f.ver) return false;
                 const searchMatch = f.ver.toLowerCase().includes(state.searchQuery.toLowerCase());
-                let filterMatch = (state.filter === 'all') ? true : f.type === state.filter;
+
+                if (state.filter === 'all') {
+                    return searchMatch;
+                }
+
+                let filterMatch = false;
+
+                if (state.filter === 'Android' && f.type === 'os') {
+                    filterMatch = true;
+                }
+
+                if (state.filter === 'Security' && f.type === 'security') {
+                    filterMatch = true;
+                }
+
                 return searchMatch && filterMatch;
             });
 
@@ -822,16 +836,6 @@
             document.querySelectorAll('.chip').forEach(c => c.classList.remove('active'));
             el.classList.add('active');
             
-            renderTier3();
-        };
-        window.setFilter = (type, el) => {
-            state.filter = type; // This must match 'Security' or 'Android' exactly as defined in the if-statements above
-            
-            // Update UI chips
-            document.querySelectorAll('.chip').forEach(c => c.classList.remove('active'));
-            el.classList.add('active');
-            
-            // Re-run the list rendering
             renderTier3();
         };
 
