@@ -12,6 +12,7 @@
 <circle cx="45.8135" cy="108.942" r="10.0423" stroke="white"/>
 <circle cx="45.8135" cy="108.814" r="14.8135" stroke="white" stroke-width="2"/>
 <circle cx="46.5" cy="195.127" r="11" stroke="white"/>
+<rect x="40.5" y="186.5" width="12" height="17" rx="2.5" stroke="white"/>
 <circle cx="46.5" cy="195.127" r="16.5" stroke="white" stroke-width="2"/>
 <rect x="32.5" y="129.5" width="17" height="6" stroke="white"/>
 <rect x="50.5" y="129.5" width="11" height="6" stroke="#860404"/>

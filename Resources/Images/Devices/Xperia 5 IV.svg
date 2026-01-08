@@ -1,0 +1,15 @@
+<svg width="256" height="595" viewBox="0 0 256 595" fill="none" xmlns="http://www.w3.org/2000/svg">
+<rect x="2" y="2" width="252" height="591" rx="18" stroke="white" stroke-width="4"/>
+<rect x="35.5" y="46.3783" width="42" height="129" rx="20.5" stroke="white" stroke-width="3"/>
+<circle cx="57" cy="68" r="9.5" stroke="white"/>
+<circle cx="47.1282" cy="31.698" r="4.19795" stroke="white"/>
+<circle cx="66.698" cy="31.698" r="4.19795" stroke="white"/>
+<rect x="122.5" y="103.5" width="11.1905" height="11.2389" stroke="white"/>
+<circle cx="57" cy="67.8783" r="14" stroke="white" stroke-width="2"/>
+<circle cx="56" cy="107" r="9.5" stroke="white"/>
+<path d="M56 93.8783C63.7642 93.8783 70 99.9541 70 107.378C70 114.802 63.7642 120.878 56 120.878C48.2358 120.878 42 114.802 42 107.378C42 99.9541 48.2358 93.8783 56 93.8783Z" stroke="white" stroke-width="2"/>
+<rect x="39.5" y="127.5" width="20.68" height="6.45136" stroke="white"/>
+<rect x="61.18" y="127.5" width="13.4533" height="6.45136" stroke="#860404"/>
+<circle cx="56" cy="153" r="9.5" stroke="white"/>
+<path d="M56 139.878C63.7642 139.878 70 145.954 70 153.378C70 160.802 63.7642 166.878 56 166.878C48.2358 166.878 42 160.802 42 153.378C42 145.954 48.2358 139.878 56 139.878Z" stroke="white" stroke-width="2"/>
+</svg>
