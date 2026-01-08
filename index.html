@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-    <title>Xperia Cloud Tracker</title>
+    <title>XperiVerdict Tracker</title>
     <link href="https://fonts.googleapis.com/css2?family=Google+Sans:wght@400;500;700&family=Google+Sans+Text:wght@400;500&family=Material+Symbols+Rounded:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200&display=swap" rel="stylesheet">
     <style>
         :root {
@@ -312,7 +312,7 @@
             <div style="width: 80px; height: 80px; background: var(--m3-p-c); border-radius: 24px; display: grid; place-items: center; margin-bottom: 24px;">
                 <span class="material-symbols-rounded" style="font-size: 40px; color: var(--m3-p);">cloud</span>
             </div>
-            <h1 id="authTitle">Xperia Cloud</h1>
+            <h1 id="authTitle">XperiVerdict</h1>
             <div class="m3-card" style="width: 100%; max-width: 320px; box-sizing: border-box;">
                 <input type="email" id="loginEmail" placeholder="Email" style="width:100%; padding:14px; border-radius:12px; border:1px solid var(--m3-out-var); margin-bottom:12px; box-sizing:border-box;">
                 <input type="password" id="loginPass" placeholder="Password" style="width:100%; padding:14px; border-radius:12px; border:1px solid var(--m3-out-var); margin-bottom:20px; box-sizing:border-box;">
@@ -334,7 +334,7 @@
 
     <div id="pageDevices" class="page">
         <div class="top-app-bar">
-            <h1>Xperia Cloud</h1>
+            <h1>XperiVerdict</h1>
 
             <a href="https://www.buymeacoffee.com/redstoneinvente" target="_blank" class="coffee-btn-bar">
                 <span class="material-symbols-rounded">coffee</span>
@@ -356,6 +356,25 @@
                 <span style="white-space: nowrap;">Support</span>
             </a> 
         </div>
+
+        <div class="m3-card" style="
+            background: var(--m3-p-c); 
+            border: none; 
+            margin-bottom: 24px; 
+            display: flex; 
+            align-items: center; 
+            padding: 16px; 
+            gap: 16px;">
+            
+            <div id="deviceIconVisual1"></div>
+
+            <div style="display: flex; flex-direction: column; gap: 10px;">
+                <div class="label-meta" style="color: var(--m3-on-p-c); opacity: 0.7; font-size: 0.85rem;">Selected Device</div>
+                <h2 id="currentDeviceName2" style="margin: 0; color: var(--m3-on-p-c); line-height: 1.2;">Device</h2>
+                <p id="currentDeviceDesc2" style="margin: 0; font-size: 0.9rem; color: var(--m3-on-p-c); opacity: 0.8;"></p>
+            </div>
+        </div>
+
         <div id="variantList"></div>
     </div>
 
@@ -367,13 +386,25 @@
             <a href="https://www.buymeacoffee.com/redstoneinvente" target="_blank" class="coffee-btn-bar">
                 <span class="material-symbols-rounded">coffee</span>
                 <span style="white-space: nowrap;">Support</span>
-            </a> 
+            </a>
         </div>
         
-        <div class="m3-card" style="background: var(--m3-p-c); border: none; margin-bottom: 24px;">
-            <div class="label-meta" style="color: var(--m3-on-p-c); opacity: 0.7;">Selected Device</div>
-            <h2 id="currentDeviceName" style="margin: 4px 0; color: var(--m3-on-p-c);">Device</h2>
-            <p id="currentDeviceDesc" style="margin: 0; font-size: 0.9rem; color: var(--m3-on-p-c); opacity: 0.8;"></p>
+        <div class="m3-card" style="
+            background: var(--m3-p-c); 
+            border: none; 
+            margin-bottom: 24px; 
+            display: flex; 
+            align-items: center; 
+            padding: 16px; 
+            gap: 16px;">
+            
+            <div id="deviceIconVisual2"></div>
+
+            <div style="display: flex; flex-direction: column; gap: 10px;">
+                <div class="label-meta" style="color: var(--m3-on-p-c); opacity: 0.7;">Selected Device</div>
+                <h2 id="currentDeviceName" style="margin: 4px 0; color: var(--m3-on-p-c);">Device</h2>
+                <p id="currentDeviceDesc" style="margin: 0; font-size: 0.9rem; color: var(--m3-on-p-c); opacity: 0.8;"></p>
+            </div>
         </div>
 
         <div class="search-container">
@@ -397,7 +428,7 @@
             <a href="https://www.buymeacoffee.com/redstoneinvente" target="_blank" class="coffee-btn-bar">
                 <span class="material-symbols-rounded">coffee</span>
                 <span style="white-space: nowrap;">Support</span>
-            </a> 
+            </a>
 
             <button class="icon-btn" onclick="copyShareLink('pageDetail')" title="Share">
                 <span class="material-symbols-rounded">share</span>
@@ -682,12 +713,12 @@
             const toggleBtn = document.getElementById('toggleAuthBtn');
 
             if (isRegisterMode) {
-                title.innerText = "Join Xperia Cloud";
+                title.innerText = "Join XperiVerdict";
                 mainBtn.innerText = "Create Account";
                 mainBtn.onclick = window.handleRegister;
                 toggleBtn.innerText = "Already have an account? Sign In";
             } else {
-                title.innerText = "Xperia Cloud";
+                title.innerText = "XperiVerdict";
                 mainBtn.innerText = "Sign In";
                 mainBtn.onclick = window.handleLogin;
                 toggleBtn.innerText = "Create an account";
@@ -743,8 +774,15 @@
             document.getElementById('deviceList').innerHTML = state.devices.map((d, i) => `
                 <div class="m3-card" onclick="selectDevice(${i})">
                     <div style="display:flex; align-items:center; gap:16px;">
-                        <div style="width:48px; height:48px; background:var(--m3-p-c); border-radius:12px; display:grid; place-items:center;">
-                            <span class="material-symbols-rounded" style="color:var(--m3-p)">smartphone</span>
+                        <div style="width:72px; height:72px; background:var(--m3-p-c); border-radius:12px; display:grid; place-items:center;">
+                            <div style="
+                                width: 90%;
+                                height: 90%;
+                                background-color: var(--m3-on-p-c);
+                                mask: url('./Resources/Images/Devices/${encodeURIComponent(d.name)}.svg') no-repeat center;
+                                -webkit-mask: url('./Resources/Images/Devices/${encodeURIComponent(d.name)}.svg') no-repeat center;
+                                mask-size: 95% 95%;">
+                            </div>
                         </div>
                         <div style="flex:1">
                             <h3 style="margin:0; font-size: 1.1rem;">${d.name}</h3>
@@ -802,6 +840,33 @@
         window.selectDevice = (idx) => {
             state.currentDeviceIdx = idx;
             const d = state.devices[idx];
+
+            document.getElementById('currentDeviceName2').innerText = d.name;
+            document.getElementById('currentDeviceDesc2').innerText = d.description || d.desc || "Performance tracking enabled.";
+
+            const newSrc = `./Resources/Images/Devices/${encodeURIComponent(d.name)}.svg`;
+            const el = document.getElementById("deviceIconVisual1");
+
+            el.innerHTML = `
+            <div id="deviceIconVisual1"
+                style="
+                    width: 8rem;
+                    height: 8rem;
+                    background-color: var(--m3-on-p-c);
+
+                    mask-image: url('./Resources/Images/Devices/${encodeURIComponent(d.name)}.svg');
+                    mask-repeat: no-repeat;
+                    mask-position: center;
+                    mask-size: 95% 95%;
+
+                    -webkit-mask-image: url('./Resources/Images/Devices/${encodeURIComponent(d.name)}.svg');
+                    -webkit-mask-repeat: no-repeat;
+                    -webkit-mask-position: center;
+                    -webkit-mask-size: 96% 96%;
+                ">
+            </div>
+            `;
+
             document.getElementById('variantTitle').innerText = d.name;
             document.getElementById('variantList').innerHTML = (d.variants || []).map((v, i) => `
                 <div class="m3-card" onclick="selectVariant(${i})">
@@ -825,6 +890,30 @@
             document.getElementById('modelCodeHeader').innerText = v.model;
             document.getElementById('currentDeviceName').innerText = d.name;
             document.getElementById('currentDeviceDesc').innerText = d.description || d.desc || "Performance tracking enabled.";
+
+            const newSrc = `./Resources/Images/Devices/${encodeURIComponent(d.name)}.svg`;
+            const el = document.getElementById("deviceIconVisual2");
+
+            el.innerHTML = `
+            <div id="deviceIconVisual2"
+                style="
+                    width: 8rem;
+                    height: 8rem;
+                    background-color: var(--m3-on-p-c);
+
+                    mask-image: url('./Resources/Images/Devices/${encodeURIComponent(d.name)}.svg');
+                    mask-repeat: no-repeat;
+                    mask-position: center;
+                    mask-size: 95% 95%;
+
+                    -webkit-mask-image: url('./Resources/Images/Devices/${encodeURIComponent(d.name)}.svg');
+                    -webkit-mask-repeat: no-repeat;
+                    -webkit-mask-position: center;
+                    -webkit-mask-size: 96% 96%;
+                ">
+            </div>
+            `;
+
             renderTier3();
             nav('pageFirmwares');
         };
