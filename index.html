@@ -531,6 +531,8 @@
         import { getAuth, signInWithEmailAndPassword, onAuthStateChanged, signOut, createUserWithEmailAndPassword,
         sendPasswordResetEmail} from "https://www.gstatic.com/firebasejs/12.7.0/firebase-auth.js";
 
+        const notFound = `./Resources/Images/Devices/not%20found.svg`;
+
         const firebaseConfig = {
             apiKey: "AIzaSyA0q57Bv_I4uuRn7cig64DPKa2oviyGHdw",
             authDomain: "xperia-tracker.firebaseapp.com",
@@ -769,18 +771,23 @@
             });
         }
 
+        /*
+        mask: url('./Resources/Images/Devices/${encodeURIComponent(d.name)}.svg') no-repeat center;
+                                -webkit-mask: url('./Resources/Images/Devices/${encodeURIComponent(d.name)}.svg') no-repeat center;
+        */
+
         // 1. MAIN LIST (WITH DESCRIPTION)
         function renderTier1() {
             document.getElementById('deviceList').innerHTML = state.devices.map((d, i) => `
                 <div class="m3-card" onclick="selectDevice(${i})">
                     <div style="display:flex; align-items:center; gap:16px;">
                         <div style="width:72px; height:72px; background:var(--m3-p-c); border-radius:12px; display:grid; place-items:center;">
-                            <div style="
+                            <div class="device-mask" style="
                                 width: 90%;
                                 height: 90%;
                                 background-color: var(--m3-on-p-c);
-                                mask: url('./Resources/Images/Devices/${encodeURIComponent(d.name)}.svg') no-repeat center;
-                                -webkit-mask: url('./Resources/Images/Devices/${encodeURIComponent(d.name)}.svg') no-repeat center;
+                                mask: url('./Resources/Images/Devices/not%20found.svg') no-repeat center;
+                                -webkit-mask: url('./Resources/Images/Devices/not%20found.svg') no-repeat center;
                                 mask-size: 95% 95%;">
                             </div>
                         </div>
@@ -791,6 +798,36 @@
                     </div>
                 </div>
             `).join('') + `<button onclick="logout()" style="width:100%; background:none; border:1px solid var(--m3-out-var); padding:12px; border-radius:12px; color:var(--m3-out); margin-top:20px;">Sign Out</button>`;
+        
+            updateMasks();
+        }
+
+        function checkFileExists(url) {
+            return new Promise(resolve => {
+                const img = new Image();
+                img.src = url;
+                img.onload = () => resolve(true);
+                img.onerror = () => resolve(false);
+            });
+        }
+
+        async function updateMasks() {
+            const masks = document.querySelectorAll('#deviceList .device-mask');
+
+            for (let i = 0; i < state.devices.length; i++) {
+                const d = state.devices[i];
+                const maskDiv = masks[i];
+
+                const fileName = encodeURIComponent(d.name);
+                const url = `./Resources/Images/Devices/${fileName}.svg`;
+                const fallback = notFound; // optional
+
+                const exists = checkFileExists(url).then(exists => {
+                    const maskFile = exists ? url : fallback;
+                    maskDiv.style.maskImage = `url('${maskFile}')`;
+                    maskDiv.style.webkitMaskImage = `url('${maskFile}')`;
+                });
+            }
         }
 
         // --- TIER 2 & 3 (Rest of your functions: selectDevice, selectVariant, renderTier3, etc.) ---
@@ -847,6 +884,31 @@
             const newSrc = `./Resources/Images/Devices/${encodeURIComponent(d.name)}.svg`;
             const el = document.getElementById("deviceIconVisual1");
 
+            const img = new Image();
+            img.src = newSrc;
+
+            img.onerror = () => {
+                el.innerHTML = `
+                <div id="deviceIconVisual1"
+                style="
+                    width: 8rem;
+                    height: 8rem;
+                    background-color: var(--m3-on-p-c);
+
+                    mask-image: url('${notFound}');
+                    mask-repeat: no-repeat;
+                    mask-position: center;
+                    mask-size: 95% 95%;
+
+                    -webkit-mask-image: url('${notFound}');
+                    -webkit-mask-repeat: no-repeat;
+                    -webkit-mask-position: center;
+                    -webkit-mask-size: 96% 96%;
+                ">
+            </div>
+                `;
+            };
+
             el.innerHTML = `
             <div id="deviceIconVisual1"
                 style="
@@ -891,8 +953,33 @@
             document.getElementById('currentDeviceName').innerText = d.name;
             document.getElementById('currentDeviceDesc').innerText = d.description || d.desc || "Performance tracking enabled.";
 
-            const newSrc = `./Resources/Images/Devices/${encodeURIComponent(d.name)}.svg`;
+            let newSrc = `./Resources/Images/Devices/${encodeURIComponent(d.name)}.svg`;
             const el = document.getElementById("deviceIconVisual2");
+
+            const img = new Image();
+            img.src = newSrc;
+
+            img.onerror = () => {
+                el.innerHTML = `
+                <div id="deviceIconVisual2"
+                    style="
+                        width: 8rem;
+                        height: 8rem;
+                        background-color: var(--m3-on-p-c);
+
+                        mask-image: url('${notFound}');
+                        mask-repeat: no-repeat;
+                        mask-position: center;
+                        mask-size: 95% 95%;
+
+                        -webkit-mask-image: url('${notFound}');
+                        -webkit-mask-repeat: no-repeat;
+                        -webkit-mask-position: center;
+                        -webkit-mask-size: 96% 96%;
+                    ">
+                </div>
+                `;
+            };
 
             el.innerHTML = `
             <div id="deviceIconVisual2"
