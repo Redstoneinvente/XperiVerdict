@@ -343,6 +343,21 @@
 
             <div class="profile-circle" id="profileBtn" onclick="toggleModal(document.getElementById('profileDropdown').style.display !== 'block')">?</div>
         </div>
+
+        <div class="search-container">
+            <span class="material-symbols-rounded">search</span>
+            <input type="text" placeholder="Filter version..." id="deviceSearchInput">
+        </div>
+
+        <div class="chip-row">
+            <div class="chip active" onclick="setDeviceFilter('all', this)">All</div>
+            <div class="chip" onclick="setDeviceFilter('1 ', this)">1 Series</div>
+            <div class="chip" onclick="setDeviceFilter('5', this)">5 Series</div>
+            <div class="chip" onclick="setDeviceFilter('10', this)">10 Series</div>
+            <div class="chip" onclick="setDeviceFilter('pro', this)">Pro Series</div>
+            <div class="chip" onclick="setDeviceFilter('ace', this)">Ace Series</div>
+        </div>
+
         <div id="deviceList"></div>
     </div>
 
@@ -545,7 +560,7 @@
         const db = getDatabase(app);
         const auth = getAuth(app);
 
-        let state = { devices: [], currentDeviceIdx: null, currentVariantIdx: null, currentFwId: null, filter: 'all', searchQuery: '', userRating: 0 , activeReviews: []};
+        let state = { devices: [], filteredDevicesTemp: [], currentDeviceIdx: null, currentVariantIdx: null, currentFwId: null, filter: 'all', searchQuery: '', searchQueryDevice: '', userRating: 0 , activeReviews: [], deviceFilter: 'all', deviceYearFilter: 'all'};
         let userNameL = "";
         let userIDL = "";
 
@@ -778,8 +793,32 @@
 
         // 1. MAIN LIST (WITH DESCRIPTION)
         function renderTier1() {
-            document.getElementById('deviceList').innerHTML = state.devices.map((d, i) => `
-                <div class="m3-card" onclick="selectDevice(${i})">
+
+            const list = state.devices || [];
+
+            const filtered = list.filter(f => {
+                if (!f) return false;
+                const searchMatch = f.name.toLowerCase().includes(state.searchQueryDevice.toLowerCase());
+
+                if (state.deviceFilter === 'all') {
+                    return searchMatch;
+                }
+
+                let filterMatch = false;
+
+                let deviceNameMatch = f.name.toLowerCase().includes(state.deviceFilter.toLowerCase());
+
+                if (deviceNameMatch) {
+                    filterMatch = true;
+                }
+
+                return searchMatch && filterMatch;
+            });
+
+            state.filteredDevicesTemp = filtered;
+
+            document.getElementById('deviceList').innerHTML = filtered.map((d, i) => `
+                <div class="m3-card" onclick="selectDevice(${list.indexOf(d)})">
                     <div style="display:flex; align-items:center; gap:16px;">
                         <div style="width:72px; height:72px; background:var(--m3-p-c); border-radius:12px; display:grid; place-items:center;">
                             <div class="device-mask" style="
@@ -802,6 +841,11 @@
             updateMasks();
         }
 
+        function toggleDeviceChips(show) {
+            const el = document.getElementById('deviceYearChip');
+            el.style.display = show ? 'flex' : 'none';
+        }
+
         function checkFileExists(url) {
             return new Promise(resolve => {
                 const img = new Image();
@@ -814,8 +858,10 @@
         async function updateMasks() {
             const masks = document.querySelectorAll('#deviceList .device-mask');
 
-            for (let i = 0; i < state.devices.length; i++) {
-                const d = state.devices[i];
+            for (let i = 0; i < state.filteredDevicesTemp.length; i++) {
+                let index = state.devices.indexOf(state.filteredDevicesTemp[i]);
+
+                const d = state.devices[index];
                 const maskDiv = masks[i];
 
                 const fileName = encodeURIComponent(d.name);
@@ -1015,6 +1061,26 @@
             renderTier3();
         };
 
+        window.setDeviceFilter = (type, el) => {
+            state.deviceFilter = type; 
+            
+            // UI Update
+            document.querySelectorAll('.chip').forEach(c => c.classList.remove('active'));
+            el.classList.add('active');
+
+            renderTier1();
+        };
+
+        window.setDeviceYearFilter = (type, el) => {
+            state.deviceYearFilter = type;
+            
+            // UI Update
+            document.querySelectorAll('.chip').forEach(c => c.classList.remove('active'));
+            el.classList.add('active');
+
+            renderTier1();
+        };
+
         window.showDetail = (ver, date, log) => {
             state.currentFwId = ver.replace(/\./g, '_');
             document.getElementById('detVer').innerText = ver;
@@ -1159,6 +1225,11 @@
         document.getElementById('fwSearchInput').addEventListener('input', (e) => {
             state.searchQuery = e.target.value;
             renderTier3();
+        });
+
+        document.getElementById('deviceSearchInput').addEventListener('input', (e) => {
+            state.searchQueryDevice = e.target.value;
+            renderTier1();
         });
 
         window.submitStarOnly = async () => {
