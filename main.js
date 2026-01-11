@@ -673,6 +673,8 @@ function loadCommunityData(fwId) {
         const data = snap.val() || {};
         let totalRating = 0, count = 0;
 
+        let shouldShow = false;
+
         Object.values(data).forEach(entry => {
             totalRating += entry.rating;
 
@@ -682,12 +684,15 @@ function loadCommunityData(fwId) {
             }
 
             count++;
+            shouldShow = true;
         });
 
         let finalScore = (totalRating / count).toFixed(1);
+        document.getElementById('avgRatingScore').innerText = (shouldShow ? finalScore : "No Ratings");
 
-        document.getElementById('avgRatingScore').innerText = count > 0 ? finalScore : "No Ratings";
-        animateScore(finalScore);
+        if (shouldShow) {
+            animateScore(finalScore);
+        }
     });
 }
 
