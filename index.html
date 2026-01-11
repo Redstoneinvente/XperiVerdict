@@ -5,6 +5,8 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
     <title>XperiVerdict Tracker</title>
     <link href="https://fonts.googleapis.com/css2?family=Google+Sans:wght@400;500;700&family=Google+Sans+Text:wght@400;500&family=Material+Symbols+Rounded:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200&display=swap" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@3.3.3/dist/tailwind.min.css" rel="stylesheet">
+
     <style>
         :root {
             --m3-p: #6750a4; 
@@ -302,6 +304,125 @@
         }
         .full-review-item:last-child { border-bottom: none; }
 
+        /* Custom Scrollbar */
+        ::-webkit-scrollbar { width: 4px; }
+        ::-webkit-scrollbar-thumb { background: var(--m3-out-var); border-radius: 10px; }
+
+        /* Overlay */
+        #modalOverlaySuggestion {
+            display: none;               /* hidden by default */
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100vw;
+            height: 100vh;
+            background: rgba(0, 0, 0, 0.3); /* softer overlay for M3 */
+            backdrop-filter: blur(8px);     /* subtle blur */
+            z-index: 9999;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 16px;
+            transition: opacity 0.2s ease-in-out;
+        }
+
+        /* Modal content */
+        #modalOverlaySuggestion .modal-content {
+            background: #ffffff;
+            border-radius: 28px;
+            padding: 32px 24px;
+            width: 100%;
+            max-width: 480px;
+            box-shadow: 0px 10px 40px rgba(0,0,0,0.15);
+            display: flex;
+            flex-direction: column;
+            gap: 16px;
+            position: relative;
+            font-family: 'Roboto', sans-serif;
+            overflow: hidden;   /* prevents inner content from spilling out */
+        }
+
+
+        /* Header */
+        #modalOverlaySuggestion .modal-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 12px;
+        }
+
+        #modalOverlaySuggestion .modal-header h2 {
+            font-size: 1.25rem;
+            font-weight: 600;
+            color: #1d1b20;
+            margin: 0;
+        }
+
+        /* Close button */
+        #modalOverlaySuggestion .close-btn {
+            background: none;
+            border: none;
+            font-size: 24px;
+            color: #79747e;
+            cursor: pointer;
+        }
+
+        /* Inputs */
+        #modalOverlaySuggestion input,
+        #modalOverlaySuggestion textarea {
+            width: 100%;
+            padding: 14px;
+            border: 1px solid #c4c7c5;
+            border-radius: 16px;
+            outline: none;
+            font-size: 0.95rem;
+            font-family: 'Roboto', sans-serif;
+            transition: border 0.2s, box-shadow 0.2s;
+
+            box-sizing: border-box;  /* include padding and border in width */
+        }
+
+
+        #modalOverlaySuggestion input:focus,
+        #modalOverlaySuggestion textarea:focus {
+            border-color: #6750a4;            /* M3 primary color accent */
+            box-shadow: 0 0 0 2px rgba(103,80,164,0.2);
+        }
+
+        /* Send button */
+        #modalOverlaySuggestion .send-btn {
+            width: 100%;
+            padding: 14px;
+            border: none;
+            border-radius: 16px;
+            background-color: #6750a4;         /* M3 primary color */
+            color: #fff;
+            font-weight: 600;
+            font-size: 1rem;
+            cursor: pointer;
+            transition: background-color 0.2s;
+        }
+
+        #modalOverlaySuggestion .send-btn:hover {
+            background-color: #523b91;
+        }
+
+        /* Animation */
+        @keyframes zoomIn {
+            0% {
+                transform: scale(0.95);
+                opacity: 0;
+            }
+            100% {
+                transform: scale(1);
+                opacity: 1;
+            }
+        }
+
+        #modalOverlaySuggestion.show .modal-content {
+            animation: zoomIn 0.2s ease-out forwards;
+        }
+
     </style>
 </head>
 <body>
@@ -341,7 +462,7 @@
                 <span style="white-space: nowrap;">Support</span>
             </a>
 
-            <div class="profile-circle" id="profileBtn" onclick="toggleModal(document.getElementById('profileDropdown').style.display !== 'block')">?</div>
+            <div class="profile-circle profileBtn" onclick="toggleModal(document.getElementById('profileDropdown').style.display !== 'block')">?</div>
         </div>
 
         <div class="search-container">
@@ -370,6 +491,8 @@
                 <span class="material-symbols-rounded">coffee</span>
                 <span style="white-space: nowrap;">Support</span>
             </a> 
+
+            <div class="profile-circle profileBtn" onclick="toggleModal(document.getElementById('profileDropdown').style.display !== 'block')">?</div>
         </div>
 
         <div class="m3-card" style="
@@ -402,6 +525,8 @@
                 <span class="material-symbols-rounded">coffee</span>
                 <span style="white-space: nowrap;">Support</span>
             </a>
+
+            <div class="profile-circle profileBtn" onclick="toggleModal(document.getElementById('profileDropdown').style.display !== 'block')">?</div>
         </div>
         
         <div class="m3-card" style="
@@ -445,9 +570,11 @@
                 <span style="white-space: nowrap;">Support</span>
             </a>
 
-            <button class="icon-btn" onclick="copyShareLink('pageDetail')" title="Share">
+            <button class="icon-btn" style="margin: 0 12px 0 0px;" onclick="copyShareLink('pageDetail')" title="Share">
                 <span class="material-symbols-rounded">share</span>
             </button>
+
+            <div class="profile-circle profileBtn" onclick="toggleModal(document.getElementById('profileDropdown').style.display !== 'block')">?</div>
         </div>
         
         <div class="m3-card" style="background: var(--m3-on-p-c); color: white; border: none;">
@@ -514,7 +641,21 @@
             </div>
         </div>
 
-        <div class="menu-divider"></div>
+        <div class="menu-item" onclick="window.open('https://discord.com/invite/S935qhUwqS', '_blank')">
+            <img src="https://cdn.jsdelivr.net/npm/simple-icons@v11/icons/discord.svg"
+            alt="Discord"
+            width="20"
+            height="20">
+
+            <span>Join Our Discord</span>
+        </div>
+
+        <div class="menu-item" onclick="toggleModalSuggestion(true)">
+            <span class="material-symbols-rounded">lightbulb</span>
+            <span>Suggest Change</span>
+        </div>
+
+         <div class="menu-divider"></div>
 
         <div class="menu-item" onclick="window.location.href='settings.html'">
             <span class="material-symbols-rounded">settings</span>
@@ -539,6 +680,31 @@
             <!-- Reviews injected here -->
         </div>
     </div>
+
+    <!-- SUGGESTION MODAL -->
+    <!-- MODAL OVERLAY -->
+    <div id="modalOverlaySuggestion">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2>Suggest Change</h2>
+                <button class="close-btn" onclick="toggleModalSuggestion(false)">✕</button>
+            </div>
+
+            <label>Phone Model</label>
+            <input type="text" id="suggestModel" placeholder="e.g. Xperia 5 VI">
+
+            <label>Contact Email</label>
+            <input type="email" id="suggestEmail" placeholder="Your email">
+
+            <label>Suggested Change</label>
+            <textarea id="suggestChange" placeholder="Describe missing data..." rows="4"></textarea>
+
+            <button class="send-btn" onclick="submitSuggestion()">Send Suggestion</button>
+        </div>
+    </div>
+
+
+    <!-- <script data-name="BMC-Widget" data-cfasync="false" src="https://cdnjs.buymeacoffee.com/1.0.0/widget.prod.min.js" data-id="redstoneinvente" data-description="Support me on Buy me a coffee!" data-message="" data-color="#FF813F" data-position="Right" data-x_margin="18" data-y_margin="18"></script> -->
 
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/12.7.0/firebase-app.js";
@@ -692,8 +858,13 @@
                 userIDL = user.uid;
 
                 // 2. Update Top Bar (The Circle)
-                const profileBtn = document.getElementById('profileBtn');
-                if (profileBtn) profileBtn.innerText = initial;
+                const profileButtons = document.querySelectorAll('.profileBtn');
+
+                profileButtons.forEach(profileBtn => {
+                    if (profileBtn) profileBtn.innerText = initial;
+                });
+
+                //const profileBtn = document.getElementById('profileBtn');
                 
                 // 3. Update Dropdown Content
                 const compAvatar = document.getElementById('compAvatar');
@@ -763,14 +934,19 @@
 
         // Close dropdown if user clicks anywhere else on the screen
         document.addEventListener('click', (e) => {
-            const menu = document.getElementById('profileDropdown');
-            const btn = document.getElementById('profileBtn');
-            if (menu && menu.style.display === 'block') {
-                if (!menu.contains(e.target) && !btn.contains(e.target)) {
-                    toggleModal(false);
-                }
-            }
+        const menu = document.getElementById('profileDropdown');
+        const buttons = document.querySelectorAll('.profileBtn');
+
+        if (!menu || menu.style.display !== 'block') return;
+
+        // Check if click was on ANY profile button
+        const clickedOnButton = [...buttons].some(btn => btn.contains(e.target));
+
+        if (!menu.contains(e.target) && !clickedOnButton) {
+            toggleModal(false);
+        }
         });
+
 
         // --- NAVIGATION ---
         window.nav = (id) => {
@@ -783,6 +959,58 @@
             onValue(ref(db, 'devices'), snap => {
                 state.devices = snap.val() || [];
                 renderTier1();
+            });
+        }
+
+        window.toggleModalSuggestion = function (show) {
+            const modal = document.getElementById('modalOverlaySuggestion');
+            if (!modal) return;
+            if (show) {
+                modal.style.display = 'flex';
+                modal.classList.add('show');   // triggers animation
+            } else {
+                modal.style.display = 'none';
+                modal.classList.remove('show');
+            }
+        }
+
+        toggleModalSuggestion(false);
+
+        document.getElementById('modalOverlaySuggestion').addEventListener('click', (e) => {
+            const modalContent = e.currentTarget.querySelector('.modal-content');
+            if (!modalContent.contains(e.target)) {
+                toggleModalSuggestion(false);
+            }
+        });
+
+        window.submitSuggestion = function() {
+            const model = document.getElementById('suggestModel').value;
+            const email = document.getElementById('suggestEmail').value;
+            const change = document.getElementById('suggestChange').value;
+
+            const url = "https://script.google.com/macros/s/AKfycbxi7aqusm7_rQhv2hvcfIRLXyHuMzfQqBa-hHZF4Ea7YOKyzojdPS5OcWul-wg7z808/exec"; // use the deployed Web App URL
+
+            fetch(url, {
+                method: "POST",
+                body: JSON.stringify({ model, email, change }),
+                headers: { "Content-Type": "application/json" }
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.success) {
+                alert("Suggestion sent!");
+                toggleModalSuggestion(false);
+                document.getElementById('suggestModel').value = "";
+                document.getElementById('suggestEmail').value = "";
+                document.getElementById('suggestChange').value = "";
+                } else {
+                console.error(data.error);
+                alert("Failed to send: " + data.error);
+                }
+            })
+            .catch(error => {
+                console.error("Error:", error);
+                alert("Failed to send: " + error.message);
             });
         }
 
