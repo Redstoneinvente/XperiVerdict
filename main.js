@@ -370,8 +370,10 @@ function renderTier1() {
                         </div>
                     </div>
                 </div>
-            `).join('') + `<button onclick="logout()" style="width:100%; background:none; border:1px solid var(--m3-out-var); padding:12px; border-radius:12px; color:var(--m3-out); margin-top:20px;">Sign Out</button>`;
+            `).join('') ;
 
+
+            //+ `<button onclick="logout()" style="width:100%; background:none; border:1px solid var(--m3-out-var); padding:12px; border-radius:12px; color:var(--m3-out); margin-top:20px;">Sign Out</button>`
     updateMasks();
 }
 
@@ -901,13 +903,72 @@ window.openReviewCategory = (type) => {
 document.querySelectorAll('.page').forEach(page => {
     const footer = document.createElement('footer');
     footer.className = 'legal-footer';
-    footer.innerHTML = `
-                <div class="legal-text">
-                    <p><strong>XperiVerdict</strong> is an independent community resource.</p>
-                    <p>This platform is <strong>not affiliated with, authorized, or endorsed by Sony Group Corporation</strong> or its subsidiaries.</p>
-                    <p>SONY and Xperia are registered trademarks of Sony Group Corporation. All other product names, logos, and brands are property of their respective owners.</p>
-                    <p>© 2026 XperiVerdict • <a href="terms-and-service.html" class="legal-link">Terms of Service</a></p>
-                </div>
-            `;
+footer.innerHTML = `
+<div class="footer-container" style="display: flex; flex-direction: column; align-items: center; gap: 10px;">
+    <!-- Logo -->
+    <img src="./Resources/Images/Logos/logo_horizontal.svg" alt="XperiVerdict Logo" style="height: 50px;">
+
+    <!-- Legal Text -->
+    <div class="legal-text" style="text-align: center; max-width: 600px;">
+        <p><strong>XperiVerdict</strong> is an independent community resource.</p>
+        <p>This platform is <strong>not affiliated with, authorized, or endorsed by Sony Group Corporation</strong> or its subsidiaries.</p>
+        <p>SONY and Xperia are registered trademarks of Sony Group Corporation. All other product names, logos, and brands are property of their respective owners.</p>
+        <p>© 2026 XperiVerdict • <a href="terms-and-service.html" class="legal-link">Terms of Service</a></p>
+    </div>
+
+    <!-- Branding / Connect with Icons -->
+    <div class="branding" style="text-align: center; font-size: 0.9em; color: #aaa;">
+        <p>Independent insights for Xperia enthusiasts.</p>
+        <p>Developed by <strong>Redstoneinvente</strong></p>
+        <div style="display: flex; justify-content: center; gap: 15px; margin-top: 5px;">
+            <!-- GitHub -->
+            <a href="https://github.com/Redstoneinvente" target="_blank" style="color: #aaa;">
+                <svg height="20" width="20" viewBox="0 0 16 16" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
+                    <path d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38
+                    0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52
+                    -.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95
+                    0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82a7.56 7.56 0 012-.27c.68 0 1.36.09 2 .27
+                    1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54
+                    1.48 0 1.07-.01 1.93-.01 2.19 0 .21.15.46.55.38A8.013 8.013 0 0016 8c0-4.42-3.58-8-8-8z"/>
+                </svg>
+            </a>
+
+            <!-- Twitter/X -->
+            <a href="https://x.com/Redstoneinvente" target="_blank" style="color: #aaa;">
+                <svg height="20" width="20" viewBox="0 0 24 24" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
+                    <path d="M23.954 4.569c-.885.392-1.83.656-2.825.775
+                    1.014-.611 1.794-1.574 2.163-2.723-.951.555-2.005.959-3.127
+                    1.184-.897-.959-2.178-1.555-3.594-1.555-2.717
+                    0-4.92 2.203-4.92 4.917 0 .39.045.765.127
+                    1.124-4.087-.205-7.713-2.164-10.141-5.144-.423.724-.666
+                    1.562-.666 2.475 0 1.708.87 3.213 2.188 4.096-.807-.026-1.566-.247-2.228-.616v.062c0
+                    2.385 1.693 4.374 3.946 4.827-.413.111-.849.171-1.296.171-.317
+                    0-.626-.03-.928-.086.627 1.956 2.444 3.376 4.6 3.417-1.68
+                    1.318-3.809 2.105-6.102 2.105-.396 0-.788-.023-1.175-.068
+                    2.179 1.397 4.768 2.212 7.557 2.212 9.054
+                    0 14-7.496 14-13.986 0-.21 0-.423-.015-.634.962-.689
+                    1.8-1.56 2.46-2.548l-.047-.02z"/>
+                </svg>
+            </a>
+
+            <!-- LinkedIn -->
+            <a href="https://www.linkedin.com/in/doshagyasing-gowardun-31bb79201/" target="_blank" style="color: #aaa;">
+                <svg height="20" width="20" viewBox="0 0 24 24" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
+                    <path d="M22.23 0H1.77C.792 0 0 .774 0 1.729v20.542C0
+                    23.226.792 24 1.77 24h20.46C23.208 24 24 23.226 24 22.271V1.729C24
+                    .774 23.208 0 22.23 0zM7.09 20.452H3.545V9h3.545v11.452zM5.318
+                    7.482c-1.138 0-2.06-.926-2.06-2.064 0-1.137.922-2.063 2.06-2.063
+                    1.14 0 2.063.926 2.063 2.063 0 1.138-.923 2.064-2.063
+                    2.064zM20.452 20.452h-3.545v-5.569c0-1.328-.027-3.037-1.85-3.037-1.852
+                    0-2.135 1.445-2.135 2.938v5.668h-3.545V9h3.405v1.561h.047c.474-.897
+                    1.637-1.848 3.37-1.848 3.6 0 4.267 2.368 4.267 5.451v6.288z"/>
+                </svg>
+            </a>
+        </div>
+    </div>
+</div>
+`;
+
+
     page.appendChild(footer);
 });
