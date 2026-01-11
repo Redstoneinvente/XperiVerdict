@@ -20,14 +20,10 @@ jobs:
       - name: Generate config from env secrets
         run: |
           echo "window.__ENV__ = {" > config.js
-          echo "  API_KEY: '${API_KEY}'," >> config.js
-          echo "  PROJECT_URL: '${PROJECT_URL}'" >> config.js
-          echo "  APP_ID: '${APP_ID}'" >> config.js
+          echo "  API_KEY: '${{ secrets.API_KEY }}'," >> config.js
+          echo "  PROJECT_URL: '${{ secrets.PROJECT_URL }}'" >> config.js
+          echo "  APP_ID: '${{ secrets.APP_ID }}'" >> config.js
           echo "};" >> config.js
-        env:
-          API_KEY: ${{ secrets.API_KEY }}
-          PROJECT_URL: ${{ secrets.PROJECT_URL }}
-          APP_ID: ${{ secrets.APP_ID }}
 
       - name: Upload Pages artifact
         uses: actions/upload-pages-artifact@v3
