@@ -603,7 +603,7 @@ textarea:focus {
     background-color: #523b91;
 }
 
-/* Error toast */
+
 .toast-error {
     display: none;
     background: #b00020;
