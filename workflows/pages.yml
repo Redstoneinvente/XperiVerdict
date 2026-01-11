@@ -1,0 +1,41 @@
+name: Deploy to GitHub Pages
+
+on:
+  push:
+    branches: [main]
+
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Generate config from env secrets
+        run: |
+          echo "window.__ENV__ = {" > config.js
+          echo "  API_URL: '${API_URL}'," >> config.js
+          echo "  ANALYTICS_ID: '${ANALYTICS_ID}'" >> config.js
+          echo "};" >> config.js
+        env:
+          API_URL: ${{ secrets.API_URL }}
+          ANALYTICS_ID: ${{ secrets.ANALYTICS_ID }}
+
+      - name: Upload Pages artifact
+        uses: actions/upload-pages-artifact@v3
+        with:
+          path: .
+
+  deploy:
+    needs: build
+    runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+    steps:
+      - uses: actions/deploy-pages@v4
