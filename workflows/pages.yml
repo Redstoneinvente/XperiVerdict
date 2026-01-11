@@ -4,36 +4,19 @@ on:
   push:
     branches: [main]
 
-permissions:
-  contents: read
-  pages: write
-  id-token: write
-
 jobs:
-  build:
+  deploy:
     runs-on: ubuntu-latest
-    environment:
-      name: github-pages
     steps:
       - uses: actions/checkout@v4
 
-      - name: Generate config from env secrets
+      - name: Generate config.js
         run: |
-          echo "window.__ENV__ = {" > config.js
-          echo "  API_KEY: '${{ secrets.API_KEY }}'," >> config.js
-          echo "  PROJECT_URL: '${{ secrets.PROJECT_URL }}'" >> config.js
-          echo "  APP_ID: '${{ secrets.APP_ID }}'" >> config.js
-          echo "};" >> config.js
+          echo "window.__ENV__ = {" > ./config.js
+          echo "  API_KEY: '${{ secrets.API_KEY }}'," >> ./config.js
+          echo "  PROJECT_URL: '${{ secrets.PROJECT_URL }}'," >> ./config.js
+          echo "  APP_ID: '${{ secrets.APP_ID }}'" >> ./config.js
+          echo "};" >> ./config.js
 
-      - name: Upload Pages artifact
-        uses: actions/upload-pages-artifact@v3
-        with:
-          path: ./public
-
-  deploy:
-    needs: build
-    runs-on: ubuntu-latest
-    environment:
-      name: github-pages
-    steps:
-      - uses: actions/deploy-pages@v4
+      - name: Deploy to Pages
+        uses: actions/deploy-pages@v4
