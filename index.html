@@ -308,120 +308,121 @@
         ::-webkit-scrollbar { width: 4px; }
         ::-webkit-scrollbar-thumb { background: var(--m3-out-var); border-radius: 10px; }
 
-        /* Overlay */
         #modalOverlaySuggestion {
-            display: none;               /* hidden by default */
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100vw;
-            height: 100vh;
-            background: rgba(0, 0, 0, 0.3); /* softer overlay for M3 */
-            backdrop-filter: blur(8px);     /* subtle blur */
-            z-index: 9999;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            padding: 16px;
-            transition: opacity 0.2s ease-in-out;
+        display: none;
+        position: fixed;
+        inset: 0;
+        background: rgba(0,0,0,0.3);
+        backdrop-filter: blur(8px);
+        z-index: 9999;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        padding: 16px;
         }
 
-        /* Modal content */
-        #modalOverlaySuggestion .modal-content {
-            background: #ffffff;
-            border-radius: 28px;
-            padding: 32px 24px;
-            width: 100%;
-            max-width: 480px;
-            box-shadow: 0px 10px 40px rgba(0,0,0,0.15);
-            display: flex;
-            flex-direction: column;
-            gap: 16px;
-            position: relative;
-            font-family: 'Roboto', sans-serif;
-            overflow: hidden;   /* prevents inner content from spilling out */
+        .modal-content {
+        background: #fff;
+        border-radius: 28px;
+        padding: 32px 24px;
+        width: 100%;
+        max-width: 480px;
+        box-shadow: 0 10px 40px rgba(0,0,0,0.15);
+        display: flex;
+        flex-direction: column;
+        gap: 20px;
+        position: relative;
         }
 
-
-        /* Header */
-        #modalOverlaySuggestion .modal-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 12px;
+        .modal-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
         }
 
-        #modalOverlaySuggestion .modal-header h2 {
-            font-size: 1.25rem;
-            font-weight: 600;
-            color: #1d1b20;
-            margin: 0;
+        .modal-header h2 {
+        font-size: 1.25rem;
+        font-weight: 600;
+        margin: 0;
         }
 
-        /* Close button */
-        #modalOverlaySuggestion .close-btn {
-            background: none;
-            border: none;
-            font-size: 24px;
-            color: #79747e;
-            cursor: pointer;
+        .close-btn {
+        background: none;
+        border: none;
+        font-size: 24px;
+        color: #79747e;
+        cursor: pointer;
         }
 
-        /* Inputs */
-        #modalOverlaySuggestion input,
-        #modalOverlaySuggestion textarea {
-            width: 100%;
-            padding: 14px;
-            border: 1px solid #c4c7c5;
-            border-radius: 16px;
-            outline: none;
-            font-size: 0.95rem;
-            font-family: 'Roboto', sans-serif;
-            transition: border 0.2s, box-shadow 0.2s;
-
-            box-sizing: border-box;  /* include padding and border in width */
+        .form-field {
+        display: flex;
+        flex-direction: column;
+        gap: 6px;
         }
 
-
-        #modalOverlaySuggestion input:focus,
-        #modalOverlaySuggestion textarea:focus {
-            border-color: #6750a4;            /* M3 primary color accent */
-            box-shadow: 0 0 0 2px rgba(103,80,164,0.2);
+        input, textarea {
+        padding: 14px;
+        border: 1px solid #c4c7c5;
+        border-radius: 16px;
+        outline: none;
+        font-size: 0.95rem;
         }
 
-        /* Send button */
-        #modalOverlaySuggestion .send-btn {
-            width: 100%;
-            padding: 14px;
-            border: none;
-            border-radius: 16px;
-            background-color: #6750a4;         /* M3 primary color */
-            color: #fff;
-            font-weight: 600;
-            font-size: 1rem;
-            cursor: pointer;
-            transition: background-color 0.2s;
+        input:focus, textarea:focus {
+        border-color: #6750a4;
+        box-shadow: 0 0 0 2px rgba(103,80,164,0.2);
         }
 
-        #modalOverlaySuggestion .send-btn:hover {
-            background-color: #523b91;
+        .send-btn {
+        width: 100%;
+        padding: 14px;
+        border: none;
+        border-radius: 16px;
+        background-color: #6750a4;
+        color: #fff;
+        font-weight: 600;
+        font-size: 1rem;
+        cursor: pointer;
         }
 
-        /* Animation */
+        .send-btn:hover {
+        background-color: #523b91;
+        }
+
+        /* Error toast */
+        .toast-error {
+        display: none;
+        background: #b00020;
+        color: #fff;
+        padding: 12px 16px;
+        border-radius: 16px;
+        font-weight: 600;
+        text-align: center;
+        margin-top: 12px;
+        animation: fadeIn 0.3s ease-out;
+        }
+
+        @keyframes fadeIn {
+        from {opacity:0; transform: translateY(-5px);}
+        to {opacity:1; transform: translateY(0);}
+        }
+
+        /* Success card */
+        .success-card {
+        text-align: center;
+        background: #fff;
+        border-radius: 28px;
+        padding: 40px 24px;
+        max-width: 400px;
+        box-shadow: 0 10px 40px rgba(0,0,0,0.15);
+        animation: zoomIn 0.25s ease-out;
+        }
+
         @keyframes zoomIn {
-            0% {
-                transform: scale(0.95);
-                opacity: 0;
-            }
-            100% {
-                transform: scale(1);
-                opacity: 1;
-            }
+        from {transform: scale(0.95); opacity:0;}
+        to {transform: scale(1); opacity:1;}
         }
 
-        #modalOverlaySuggestion.show .modal-content {
-            animation: zoomIn 0.2s ease-out forwards;
-        }
 
     </style>
 </head>
@@ -690,18 +691,28 @@
                 <button class="close-btn" onclick="toggleModalSuggestion(false)">✕</button>
             </div>
 
-            <label>Phone Model</label>
-            <input type="text" id="suggestModel" placeholder="e.g. Xperia 5 VI">
+            <div class="form-field">
+                <label for="suggestModel">Phone Model</label>
+                <input type="text" id="suggestModel" placeholder="e.g. Xperia 5 VI">
+            </div>
 
-            <label>Contact Email</label>
-            <input type="email" id="suggestEmail" placeholder="Your email">
+            <div class="form-field">
+                <label for="suggestEmail">Contact Email</label>
+                <input type="email" id="suggestEmail" placeholder="Your email">
+            </div>
 
-            <label>Suggested Change</label>
-            <textarea id="suggestChange" placeholder="Describe missing data..." rows="4"></textarea>
+            <div class="form-field">
+                <label for="suggestChange">Suggested Change</label>
+                <textarea id="suggestChange" placeholder="Describe missing data..." rows="4"></textarea>
+            </div>
 
-            <button class="send-btn" onclick="submitSuggestion()">Send Suggestion</button>
+            <button class="send-btn" onclick="submitSuggestion(event)">Send Suggestion</button>
+
+            <!-- M3 toast for errors -->
+            <div id="suggestionError" class="toast-error">Failed to send suggestion!</div>
         </div>
     </div>
+
 
 
     <!-- <script data-name="BMC-Widget" data-cfasync="false" src="https://cdnjs.buymeacoffee.com/1.0.0/widget.prod.min.js" data-id="redstoneinvente" data-description="Support me on Buy me a coffee!" data-message="" data-color="#FF813F" data-position="Right" data-x_margin="18" data-y_margin="18"></script> -->
@@ -983,36 +994,44 @@
             }
         });
 
-        window.submitSuggestion = function() {
-            const model = document.getElementById('suggestModel').value;
-            const email = document.getElementById('suggestEmail').value;
-            const change = document.getElementById('suggestChange').value;
+        window.submitSuggestion = async function(e) {
+            e.preventDefault();
 
-            const url = "https://script.google.com/macros/s/AKfycbxi7aqusm7_rQhv2hvcfIRLXyHuMzfQqBa-hHZF4Ea7YOKyzojdPS5OcWul-wg7z808/exec"; // use the deployed Web App URL
+            const model1 = document.getElementById('suggestModel').value;
+            const email1 = document.getElementById('suggestEmail').value;
+            const change1 = document.getElementById('suggestChange').value;
+            const errorDiv = document.getElementById('suggestionError');
 
-            fetch(url, {
-                method: "POST",
-                body: JSON.stringify({ model, email, change }),
-                headers: { "Content-Type": "application/json" }
-            })
-            .then(response => response.json())
-            .then(data => {
-                if (data.success) {
-                alert("Suggestion sent!");
-                toggleModalSuggestion(false);
-                document.getElementById('suggestModel').value = "";
-                document.getElementById('suggestEmail').value = "";
-                document.getElementById('suggestChange').value = "";
-                } else {
-                console.error(data.error);
-                alert("Failed to send: " + data.error);
-                }
-            })
-            .catch(error => {
-                console.error("Error:", error);
-                alert("Failed to send: " + error.message);
-            });
+            const scriptURL = "https://script.google.com/macros/s/AKfycbxKuPju90YVtchM3uKhJT0XOhlDtGfFpniuFqM0OGvou84pTn8mF6_pbVpfirweU_mv/exec";
+
+            try {
+                await fetch(scriptURL, { 
+                    method: 'POST', 
+                    body: JSON.stringify({ model: model1, email: email1, change: change1 }),
+                    mode: 'no-cors'
+                });
+
+                // On success: hide modal & show success card
+                const overlay = document.getElementById('modalOverlaySuggestion');
+                overlay.style.display = 'none';
+
+                const successCard = document.createElement('div');
+                successCard.className = 'success-card';
+                successCard.innerHTML = `
+                    <h2>Request Received!</h2>
+                    <p>A verification email has been sent to <strong>${email1}</strong>.<br>We will review your suggestion shortly.</p>
+                    <button onclick="location.reload()" class="send-btn" style="margin-top:20px;">Back to Home</button>
+                `;
+                document.body.appendChild(successCard);
+
+            } catch (error) {
+                // Show error toast
+                errorDiv.textContent = "Failed to send suggestion!";
+                errorDiv.style.display = 'block';
+                setTimeout(() => { errorDiv.style.display = 'none'; }, 4000);
+            }
         }
+
 
         /*
         mask: url('./Resources/Images/Devices/${encodeURIComponent(d.name)}.svg') no-repeat center;
