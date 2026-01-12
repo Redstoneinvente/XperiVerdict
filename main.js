@@ -173,10 +173,13 @@ onAuthStateChanged(auth, user => {
         if (compName) compName.innerText = userName;
         if (compEmail) compEmail.innerText = user.email;
 
+        document.getElementById('pageLogin').style.display = 'none';
+
         nav('pageDevices');
         loadData();
         handleDeepLink();
     } else {
+        document.getElementById('pageLogin').style.display = 'block';
         nav('pageLogin');
     }
 });
