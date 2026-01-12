@@ -499,6 +499,7 @@ function renderTier3() {
         return searchMatch && filterMatch;
     });
 
+    
     const fwListEl = document.getElementById('fwList');
     fwListEl.innerHTML = filtered.length > 0 ? filtered.map(f => `
                 <div class="m3-card" onclick="showDetail('${f.ver}', '${f.date || 'Unknown'}', '${(f.changelog || f.log || 'Pending.').replace(/'/g, "\\'")}')">
