@@ -438,7 +438,6 @@ function getDateSpanSmart(fromDate, toDate = new Date()) {
     const diffMs = end - start;
     const diffHours = Math.floor(diffMs / (1000 * 60 * 60));
 
-    // If less than 1 day → return hours
     if (diffHours < 24) {
         return {
             type: 'hours',
