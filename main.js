@@ -427,6 +427,7 @@ function formatSmartSpan(span) {
     ].filter(Boolean).join(', ');
 }
 
+
 function getDateSpanSmart(fromDate, toDate = new Date()) {
     let start = new Date(fromDate);
     let end = new Date(toDate);
