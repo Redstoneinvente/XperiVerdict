@@ -415,6 +415,62 @@ async function updateMasks() {
     }
 }
 
+function formatSmartSpan(span) {
+    if (span.type === 'hours') {
+        return `${span.hours} hour${span.hours !== 1 ? 's ago' : ''}`;
+    }
+
+    return [
+        span.years && `${span.years} year${span.years !== 1 ? 's' : ''}`,
+        span.months && `${span.months} month${span.months !== 1 ? 's' : ''}`,
+        span.days && `${span.days} day${span.days !== 1 ? 's ago' : ' ago'}`
+    ].filter(Boolean).join(', ');
+}
+
+function getDateSpanSmart(fromDate, toDate = new Date()) {
+    let start = new Date(fromDate);
+    let end = new Date(toDate);
+
+    if (start > end) {
+        [start, end] = [end, start];
+    }
+
+    const diffMs = end - start;
+    const diffHours = Math.floor(diffMs / (1000 * 60 * 60));
+
+    // If less than 1 day → return hours
+    if (diffHours < 24) {
+        return {
+            type: 'hours',
+            hours: diffHours
+        };
+    }
+
+    let years = end.getFullYear() - start.getFullYear();
+    let months = end.getMonth() - start.getMonth();
+    let days = end.getDate() - start.getDate();
+
+    // Fix days
+    if (days < 0) {
+        months--;
+        const prevMonthDays = new Date(end.getFullYear(), end.getMonth(), 0).getDate();
+        days += prevMonthDays;
+    }
+
+    // Fix months
+    if (months < 0) {
+        years--;
+        months += 12;
+    }
+
+    return {
+        type: 'calendar',
+        years,
+        months,
+        days
+    };
+}
+
 // --- TIER 2 & 3 (Rest of your functions: selectDevice, selectVariant, renderTier3, etc.) ---
 // Ensure renderTier3 includes the safety checks we discussed previously!
 
@@ -449,7 +505,7 @@ function renderTier3() {
                     <div style="display:flex; justify-content:space-between; align-items:center;">
                         <div>
                             <div style="font-weight:700;">${f.ver}</div>
-                            <div style="font-size:0.75rem; color:var(--m3-out);">Android ${f.android || 'N/A'} • ${f.date || 'Recent'}</div>
+                            <div style="font-size:0.75rem; color:var(--m3-out);">Android ${f.android || 'N/A'} • ${formatSmartSpan(getDateSpanSmart(f.date)) || 'Recent'}</div>
                         </div>
                         <span class="material-symbols-rounded" style="color:var(--m3-p)">arrow_forward</span>
                     </div>
@@ -623,7 +679,8 @@ window.setDeviceYearFilter = (type, el) => {
 window.showDetail = (ver, date, log) => {
     state.currentFwId = ver.replace(/\./g, '_');
     document.getElementById('detVer').innerText = ver;
-    document.getElementById('detMeta').innerText = `Official Deployment: ${date}`;
+    document.getElementById('detMeta').innerText = `Official Deployment: ${formatSmartSpan(getDateSpanSmart(date)) }`;
+    document.getElementById('detMeta').title = `Official Deployment: ${date}`;
     document.getElementById('detChangelog').innerText = log;
 
     state.userRating = 0;
@@ -740,17 +797,29 @@ function formatDate(timestamp) {
     return date.toLocaleDateString('en-US', { month: 'short', day: 'numeric' });
 }
 
+const OWNER_ID = "oHg4iCmhzKPizabSq95P1Ikk5K43";
+
 function createReviewCard(entry) {
     const userEmail = entry.userName || "Anonymous";
     const initial = entry.userName[0].toUpperCase();
     const time = formatDate(entry.timestamp);
+
+    const isOwner = entry.userId === OWNER_ID;
+
+    const ownerBadge = isOwner
+        ? '<span class="material-symbols-outlined">crown</span>'
+        : "";
 
     return `
                 <div class="review-card">
                     <div class="review-avatar">${initial}</div>
                     <div class="review-content">
                         <div class="review-header">
-                            <span class="review-user">${userEmail.split('@')[0]}</span>
+                            <span class="owner-badgew" title="Owner">
+                                ${ownerBadge}
+                                <span class="review-user">${userEmail.split('@')[0]}                         
+                                </span>
+                            </span>
                             <span class="review-time">${time}</span>
                         </div>
                         <div class="review-text">${entry.comment}</div>
@@ -863,39 +932,7 @@ window.openReviewCategory = (type) => {
     if (filtered.length === 0) {
         listEl.innerHTML = `<div style="padding:40px; text-align:center; color:gray;">No feedback submitted yet.</div>`;
     } else {
-        listEl.innerHTML = filtered.map(r => `
-                    <div class="full-review-item" style="display:flex; gap:10px; align-items:flex-start;">
-                    
-                    <!-- Profile Picture -->
-                    <div class="review-avatar">${r.userName[0].toUpperCase()}</div>
-
-                    <!-- Review Content -->
-                    <div style="flex:1;">
-                        <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:2px;">
-                            
-                            <!-- Username + Date -->
-                            <div>
-                                <div style="font-size:0.85rem; font-weight:600;">
-                                    ${r.userName || 'Anonymous'}
-                                </div>
-                                <span class="label-meta" style="font-size:0.65rem;">
-                                    ${new Date(r.timestamp).toLocaleDateString()}
-                                </span>
-                            </div>
-
-                            <!-- Verified Badge -->
-                            <span style="color: var(--m3-p); font-size: 0.8rem; font-weight:600;">
-                                Verified User
-                            </span>
-                        </div>
-
-                        <!-- Comment -->
-                        <div style="font-size: 0.95rem; line-height:1.4;">
-                            ${r.comment}
-                        </div>
-                    </div>
-                </div>
-                `).join('');
+        listEl.innerHTML = filtered.map(r => createReviewCard()).join('');
     }
 
     nav('pageReviews');
