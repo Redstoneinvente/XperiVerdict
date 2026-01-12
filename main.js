@@ -513,7 +513,6 @@ function renderTier3() {
             `).join('') : `<p style="text-align:center; color:var(--m3-out); margin-top:40px;">No updates found.</p>`;
 }
 
-// (Add remaining selectDevice, selectVariant, showDetail, loadCommunityData, setFilter, submitStarOnly, submitTextReport functions here)
 
 window.selectDevice = (idx) => {
     state.currentDeviceIdx = idx;
