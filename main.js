@@ -139,6 +139,8 @@ window.handleLogout = () => {
         .then(() => {
             toggleModal(false); // Close the dropdown
             console.log("User signed out");
+
+            window.location.reload(true);
         })
         .catch((error) => {
             console.error("Sign out error:", error);
@@ -147,8 +149,61 @@ window.handleLogout = () => {
 };
 
 onAuthStateChanged(auth, user => {
-    if (user) {
-        // 1. Data Prep: Use displayName if it exists, otherwise fallback to email
+    // if (user) {
+    //     // 1. Data Prep: Use displayName if it exists, otherwise fallback to email
+    //     const initial = user.displayName ? user.displayName[0].toUpperCase() : (user.email ? user.email[0].toUpperCase() : 'U');
+    //     const userName = user.displayName || (user.email ? user.email.split('@')[0] : 'User');
+
+    //     userNameL = userName;
+    //     userIDL = user.uid;
+
+    //     // 2. Update Top Bar (The Circle)
+    //     const profileButtons = document.querySelectorAll('.profileBtn');
+
+    //     profileButtons.forEach(profileBtn => {
+    //         if (profileBtn) profileBtn.innerText = initial;
+    //     });
+
+    //     //const profileBtn = document.getElementById('profileBtn');
+
+    //     // 3. Update Dropdown Content
+    //     const compAvatar = document.getElementById('compAvatar');
+    //     const compName = document.getElementById('compUserName');
+    //     const compEmail = document.getElementById('compUserEmail');
+
+    //     if (compAvatar) compAvatar.innerText = initial;
+    //     if (compName) compName.innerText = userName;
+    //     if (compEmail) compEmail.innerText = user.email;
+
+    //     document.getElementById('pageLogin').style.display = 'none';
+
+    //     nav('pageDevices');
+    //     loadData();
+    //     handleDeepLink();
+    // } else {
+    //     //document.getElementById('pageLogin').style.display = 'block';
+    //     //nav('pageLogin');
+        
+    // }
+
+    if (user){
+        document.getElementById('sin').style.display = 'none';
+        document.getElementById('sout').style.display = 'block';
+    }
+    else{
+        document.getElementById('sout').style.display = 'none';
+        document.getElementById('sin').style.display = 'block';
+    }
+
+    refresh(user);} 
+);
+
+window.refresh = (user) => {
+    // 1. Data Prep: Use displayName if it exists, otherwise fallback to email
+    if (!user){
+        user = {};
+    }
+
         const initial = user.displayName ? user.displayName[0].toUpperCase() : (user.email ? user.email[0].toUpperCase() : 'U');
         const userName = user.displayName || (user.email ? user.email.split('@')[0] : 'User');
 
@@ -173,16 +228,12 @@ onAuthStateChanged(auth, user => {
         if (compName) compName.innerText = userName;
         if (compEmail) compEmail.innerText = user.email;
 
-        document.getElementById('pageLogin').style.display = 'none';
+        document.querySelector(".pageLogin")?.classList.remove("page-hidden");
 
         nav('pageDevices');
         loadData();
         handleDeepLink();
-    } else {
-        document.getElementById('pageLogin').style.display = 'block';
-        nav('pageLogin');
-    }
-});
+}
 
 window.logout = () => signOut(auth);
 
@@ -938,6 +989,12 @@ window.openReviewCategory = (type) => {
     nav('pageReviews');
 };
 
+window.handleLoginRedirect = () => {
+    document.querySelector(".pageLogin")?.classList.add("page-hidden");
+    nav('pageLogin');
+}
+
+
 // Footer Injection for all pages
 // Run this once to inject the footer into all pages
 document.querySelectorAll('.page').forEach(page => {
@@ -1012,3 +1069,5 @@ footer.innerHTML = `
 
     page.appendChild(footer);
 });
+
+refresh(null);

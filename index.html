@@ -18,31 +18,6 @@
 <body>
     <div id="toast">Link copied to clipboard</div>
 
-    <div id="pageLogin" class="page">
-        <div style="height: 100%; display: flex; flex-direction: column; justify-content: center; align-items: center; padding: 20px;">
-            <div style="width: 80px; height: 80px; background: var(--m3-p-c); border-radius: 24px; display: grid; place-items: center; margin-bottom: 24px;">
-                <span class="material-symbols-rounded" style="font-size: 40px; color: var(--m3-p);">cloud</span>
-            </div>
-            <h1 id="authTitle">XperiVerdict</h1>
-            <div class="m3-card" style="width: 100%; max-width: 320px; box-sizing: border-box;">
-                <input type="email" id="loginEmail" placeholder="Email" style="width:100%; padding:14px; border-radius:12px; border:1px solid var(--m3-out-var); margin-bottom:12px; box-sizing:border-box;">
-                <input type="password" id="loginPass" placeholder="Password" style="width:100%; padding:14px; border-radius:12px; border:1px solid var(--m3-out-var); margin-bottom:20px; box-sizing:border-box;">
-                
-                <div style="text-align: right; margin: -8px 0 16px 0;">
-                    <button type="button" style="background:none; border:none; color:var(--m3-p); font-size:0.8rem; cursor:pointer; font-weight:500;" onclick="handleForgotPassword()">
-                        Forgot password?
-                    </button>
-                </div>
-
-                <button id="mainAuthBtn" class="m3-btn" onclick="handleLogin()">Sign In</button>
-                
-                <div style="margin-top: 16px; text-align: center;">
-                    <button id="toggleAuthBtn" style="background:none; border:none; color:var(--m3-p); font-weight:600; cursor:pointer;" onclick="toggleAuthMode()">Create an account</button>
-                </div>
-            </div>
-        </div>
-    </div>
-
     <div id="pageDevices" class="page">
         <div class="top-app-bar">
             <h1>XperiVerdict</h1>
@@ -252,8 +227,14 @@
             <span class="material-symbols-rounded">settings</span>
             <span>Account Settings</span>
         </div>
+
+        <div id="sin" class="menu-item" onclick="handleLoginRedirect()">
+    <span class="material-symbols-rounded">login</span>
+    <span>Sign In</span>
+</div>
+
         
-        <div class="menu-item" style="color: #ba1a1a;" onclick="handleLogout()">
+        <div id="sout" class="menu-item" style="color: #ba1a1a;" onclick="handleLogout()">
             <span class="material-symbols-rounded">logout</span>
             <span>Sign Out</span>
         </div>
@@ -269,6 +250,31 @@
         </div>
         <div id="fullReviewList" class="m3-card" style="padding: 0;">
             <!-- Reviews injected here -->
+        </div>
+    </div>
+
+    <div id="pageLogin" class="page page-hidden">
+        <div style="height: 100%; display: flex; flex-direction: column; justify-content: center; align-items: center; padding: 20px;">
+            <div style="width: 80px; height: 80px; background: var(--m3-p-c); border-radius: 24px; display: grid; place-items: center; margin-bottom: 24px;">
+                <span class="material-symbols-rounded" style="font-size: 40px; color: var(--m3-p);">cloud</span>
+            </div>
+            <h1 id="authTitle">XperiVerdict</h1>
+            <div class="m3-card" style="width: 100%; max-width: 320px; box-sizing: border-box;">
+                <input type="email" id="loginEmail" placeholder="Email" style="width:100%; padding:14px; border-radius:12px; border:1px solid var(--m3-out-var); margin-bottom:12px; box-sizing:border-box;">
+                <input type="password" id="loginPass" placeholder="Password" style="width:100%; padding:14px; border-radius:12px; border:1px solid var(--m3-out-var); margin-bottom:20px; box-sizing:border-box;">
+                
+                <div style="text-align: right; margin: -8px 0 16px 0;">
+                    <button type="button" style="background:none; border:none; color:var(--m3-p); font-size:0.8rem; cursor:pointer; font-weight:500;" onclick="handleForgotPassword()">
+                        Forgot password?
+                    </button>
+                </div>
+
+                <button id="mainAuthBtn" class="m3-btn" onclick="handleLogin()">Sign In</button>
+                
+                <div style="margin-top: 16px; text-align: center;">
+                    <button id="toggleAuthBtn" style="background:none; border:none; color:var(--m3-p); font-weight:600; cursor:pointer;" onclick="toggleAuthMode()">Create an account</button>
+                </div>
+            </div>
         </div>
     </div>
 
