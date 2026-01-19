@@ -3,7 +3,7 @@ if (!window.__ENV__) {
 }
 
 import { initializeApp } from "https://www.gstatic.com/firebasejs/12.7.0/firebase-app.js";
-import { getDatabase, ref, onValue, push, set, get, update, serverTimestamp } from "https://www.gstatic.com/firebasejs/12.7.0/firebase-database.js";
+import { getDatabase, ref, onValue, push, set, get, update, serverTimestamp, runTransaction } from "https://www.gstatic.com/firebasejs/12.7.0/firebase-database.js";
 import { getAuth, signInWithEmailAndPassword, onAuthStateChanged, signOut, createUserWithEmailAndPassword, sendPasswordResetEmail } from "https://www.gstatic.com/firebasejs/12.7.0/firebase-auth.js";
 
 const notFound = `./Resources/Images/Devices/not%20found.svg`;
@@ -202,6 +202,7 @@ window.refresh = (user) => {
     // 1. Data Prep: Use displayName if it exists, otherwise fallback to email
     if (!user){
         user = {};
+        localStorage.removeItem("userIDL");
     }
 
         const initial = user.displayName ? user.displayName[0].toUpperCase() : (user.email ? user.email[0].toUpperCase() : 'U');
@@ -209,6 +210,12 @@ window.refresh = (user) => {
 
         userNameL = userName;
         userIDL = user.uid;
+
+        localStorage.setItem("userIDL", user.uid);
+
+        if(!userIDL || userIDL === "undefined"){
+            localStorage.removeItem("userIDL");
+        }
 
         // 2. Update Top Bar (The Circle)
         const profileButtons = document.querySelectorAll('.profileBtn');
@@ -1070,4 +1077,40 @@ footer.innerHTML = `
     page.appendChild(footer);
 });
 
+window.getOrCreateVisitorId = () => {
+    // 1. Prefer permanent user ID
+    const userIDLT = localStorage.getItem("userIDL");
+    if (userIDLT) {
+        return userIDLT;
+    }
+
+    // 2. Fallback to temporary ID
+    let tempID = localStorage.getItem("tempID");
+    if (tempID) {
+        return tempID;
+    }
+
+    // 3. Generate new temporary ID
+    tempID = crypto?.randomUUID?.()
+        || `tmp_${Date.now()}_${Math.random().toString(36).slice(2, 10)}`;
+
+    localStorage.setItem("tempID", tempID);
+    return tempID;
+}
+
+
+window.trackDailyViewsFirebase = async (uid = "anon") => {
+    const today = new Date().toISOString().split("T")[0];
+
+    const userRef = ref(db, `views/${today}/${uid}`);
+
+    const result = await runTransaction(userRef, v => v ?? true);
+
+    if (result.committed) {
+        const countRef = ref(db, `viewCounts/${today}`);
+        await runTransaction(countRef, c => (c || 0) + 1);
+    }
+}
+
+trackDailyViewsFirebase(getOrCreateVisitorId());
 refresh(null);
