@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>XperiVerdict | Nexus Admin</title>
+    <title>XperiVerdict | Community Admin</title>
     <link href="https://fonts.googleapis.com/css2?family=Google+Sans:wght@500;700&family=Google+Sans+Text:wght@400;500&family=Material+Symbols+Rounded:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200&display=swap" rel="stylesheet">
     
     <style>
@@ -16,6 +16,16 @@
             --m3-out: #79747e;
             --m3-err: #b3261e;
             --ease: cubic-bezier(0.2, 0, 0, 1);
+            --md-sys-color-primary: #6750A4;
+            --md-sys-color-primary-container: #EADDFF;
+            --md-sys-color-on-primary-container: #21005D;
+
+            --md-sys-color-surface-container: #F3EDF7;
+            --md-sys-color-surface-container-high: #ECE6F0;
+            --md-sys-color-surface-container-highest: #E6E0E9;
+
+            --md-sys-color-on-surface: #1C1B1F;
+            --md-sys-color-on-surface-variant: #49454F;
         }
 
         body { font-family: 'Google Sans Text', sans-serif; background: var(--m3-surf); margin: 0; display: flex; height: 100vh; overflow: hidden; color: #1d1b20; }
@@ -55,6 +65,95 @@
         .tag-sec { background: #f1f8e9; color: #388e3c; }
 
         .history-item { padding: 12px; border-bottom: 1px solid rgba(0,0,0,0.05); }
+
+        /* ---- Card Surface ---- */
+.admin-card.srch{
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    padding: 20px 24px;
+    border-radius: 28px;
+
+    box-shadow:
+        0 1px 2px rgba(0,0,0,.08),
+        0 2px 6px rgba(0,0,0,.06);
+
+    max-width: 100%;
+}
+
+/* ---- Search Container ---- */
+.search-container {
+    flex: 1;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+
+    height: 56px;
+    padding: 0 16px;
+    border-radius: 28px;
+
+    background: var(--md-sys-color-surface-container-high);
+    color: var(--md-sys-color-on-surface-variant);
+
+    transition: background .2s ease, box-shadow .2s ease;
+}
+
+.search-container span {
+    font-size: 22px;
+    opacity: .75;
+}
+
+.search-container input {
+    flex: 1;
+    border: none;
+    outline: none;
+    background: transparent;
+
+    font-size: 16px;
+    color: var(--md-sys-color-on-surface);
+}
+
+.search-container:focus-within {
+    background: var(--md-sys-color-surface-container-highest);
+    box-shadow: 0 0 0 2px var(--md-sys-color-primary);
+}
+
+/* ---- Primary Tonal Button ---- */
+.btn.btn-p {
+    height: 56px;
+    padding: 0 24px;
+    border-radius: 28px;
+
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+
+    background: var(--md-sys-color-primary-container);
+    color: var(--md-sys-color-on-primary-container);
+
+    font-weight: 500;
+    border: none;
+    cursor: pointer;
+
+    transition: transform .15s ease, box-shadow .15s ease;
+}
+
+.btn.btn-p span {
+    font-size: 20px;
+}
+
+.btn.btn-p:hover {
+    box-shadow:
+        0 2px 6px rgba(0,0,0,.12),
+        0 4px 12px rgba(0,0,0,.08);
+    transform: translateY(-1px);
+}
+
+.btn.btn-p:active {
+    transform: translateY(0);
+    box-shadow: none;
+}
+
     </style>
 </head>
 <body>
@@ -73,17 +172,20 @@
     <nav>
         <div style="padding: 16px; margin-bottom: 20px;">
             <h2 style="margin: 0; color: var(--m3-p);">XperiVerdict</h2>
-            <div style="font-size: 0.7rem; font-weight: 800; opacity: 0.5;">ADMIN CONSOLE</div>
+            <div style="font-size: 0.7rem; font-weight: 800; opacity: 0.5;">COMMUNITY ADMIN CONSOLE</div>
         </div>
         <button class="nav-btn active" onclick="switchTab('tabStructure')"><span class="material-symbols-rounded">database</span> Hierarchy</button>
         <button class="nav-btn" onclick="switchTab('tabHistory')"><span class="material-symbols-rounded">history</span> Firmware Vault</button>
-        <button class="nav-btn" onclick="switchTab('tabFeedback')"><span class="material-symbols-rounded">gavel</span> Moderation</button>
     </nav>
 
     <main>
         <section id="tabStructure" class="section active">
             <h1>Hardware</h1>
-            <div class="admin-card">
+            <div class="admin-card srch">
+                <div class="search-container">
+                    <span class="material-symbols-rounded">search</span>
+                    <input type="text" placeholder="Filter version..." id="deviceSearchInput">
+                </div>
                 <button class="btn btn-p" onclick="openDeviceModal()"><span class="material-symbols-rounded">add</span> New Series</button>
             </div>
             <div id="hierarchyControls"></div>
@@ -98,16 +200,6 @@
                         <tr><th>Device</th><th>Build</th><th>Type</th><th>Android</th><th>Date</th></tr>
                     </thead>
                     <tbody id="historyTableBody"></tbody>
-                </table>
-            </div>
-        </section>
-
-        <section id="tabFeedback" class="section">
-            <h1>User Intel</h1>
-            <div class="admin-card">
-                <table id="moderationTable">
-                    <thead><tr><th>FW</th><th>Type</th><th>Comment</th><th>Actions</th></tr></thead>
-                    <tbody id="feedbackTableBody"></tbody>
                 </table>
             </div>
         </section>
@@ -149,8 +241,7 @@
         onValue(ref(db, '/'), snap => {
             currentData = snap.val() || {};
             renderHierarchy();
-            renderModeration();
-            renderMasterHistory();
+            initialrenderMasterHistory();
         });
 
         // --- DEVICE MODAL (MODIFIED) ---
@@ -210,7 +301,7 @@
             const container = document.getElementById('hierarchyControls');
             if(!currentData.devices) return;
             container.innerHTML = currentData.devices.map((dev, dIdx) => `
-                <div class="admin-card">
+                <div class="admin-card device">
                     <button class="btn btn-text" style="position:absolute; right:12px; top:12px;" onclick="openDeviceModal(${dIdx})"><span class="material-symbols-rounded">edit</span></button>
                     <h2 style="margin:0">${dev.name}</h2>
                     <p style="font-size:0.85rem; color:var(--m3-out); margin: 8px 0 20px 0;">${dev.desc || 'No description provided.'}</p>
@@ -236,6 +327,7 @@
             const body = document.getElementById('historyTableBody');
             const query = document.getElementById('historySearch').value.toLowerCase();
             let rows = [];
+
             (currentData.devices || []).forEach(dev => {
                 (dev.variants || []).forEach(v => {
                     (v.firmwares || []).forEach(f => {
@@ -248,6 +340,26 @@
                                 <td>${f.date}</td>
                             </tr>`);
                         }
+                    });
+                });
+            });
+            body.innerHTML = rows.join('') || "<tr><td colspan='5'>No records.</td></tr>";
+        }
+
+        window.initialrenderMasterHistory = () => {
+            const body = document.getElementById('historyTableBody');
+            let rows = [];
+            
+            (currentData.devices || []).forEach(dev => {
+                (dev.variants || []).forEach(v => {
+                    (v.firmwares || []).forEach(f => {
+                        rows.push(`<tr>
+                                <td><strong>${dev.name}</strong><br><small>${v.model}</small></td>
+                                <td><code>${f.ver}</code></td>
+                                <td><span class="type-tag tag-${f.type === 'os' ? 'os' : 'sec'}">${f.type || 'security'}</span></td>
+                                <td>Android ${f.android}</td>
+                                <td>${f.date}</td>
+                            </tr>`);
                     });
                 });
             });
@@ -294,6 +406,18 @@
                 });
             });
         }
+
+        const input = document.getElementById("deviceSearchInput");
+        
+        input.addEventListener("input", () => {
+                const query = input.value.trim().toLowerCase();
+
+                document.querySelectorAll(".admin-card.device").forEach(card => {
+                    const text = card.textContent.toLowerCase();
+                    card.style.display = text.includes(query) ? "" : "none";
+                });
+        });
+
         window.censorComment = (fwKey, entryId) => update(ref(db, `feedback/${fwKey}/${entryId}`), { comment: "[REDACTED]" });
     </script>
 </body>

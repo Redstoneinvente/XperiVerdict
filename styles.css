@@ -1,16 +1,80 @@
 :root {
+    /* =========================
+       Primary
+    ========================= */
     --m3-p: #6750a4;
     --m3-on-p: #ffffff;
     --m3-p-c: #eaddff;
     --m3-on-p-c: #21005d;
+
+    /* =========================
+       Secondary
+    ========================= */
+    --m3-s: #625b71;
+    --m3-on-s: #ffffff;
+    --m3-s-c: #e8def8;
+    --m3-on-s-c: #1d192b;
+
+    /* =========================
+       Tertiary
+    ========================= */
+    --m3-t: #7d5260;
+    --m3-on-t: #ffffff;
+    --m3-t-c: #ffd8e4;
+    --m3-on-t-c: #31111d;
+
+    /* =========================
+       Error
+    ========================= */
+    --m3-err: #b3261e;
+    --m3-on-err: #ffffff;
+    --m3-err-c: #f9dedc;
+    --m3-on-err-c: #410e0b;
+
+    /* =========================
+       Background & Surface
+    ========================= */
+    --m3-bg: #fef7ff;
+    --m3-on-bg: #1d1b20;
+
     --m3-surf: #f6f2f7;
+    --m3-surf-dim: #ded8e1;
+    --m3-surf-bright: #fef7ff;
     --m3-surf-elevated: #ffffff;
+
+    --m3-on-surf: #1d1b20;
+    --m3-on-surf-var: #49454f;
+
+    /* =========================
+       Surface Containers (M3 specific)
+    ========================= */
+    --m3-surf-c-lowest: #ffffff;
+    --m3-surf-c-low: #f7f2fa;
+    --m3-surf-c: #f3edf7;
+    --m3-surf-c-high: #ece6f0;
+    --m3-surf-c-highest: #e6e0e9;
+
+    /* =========================
+       Outline
+    ========================= */
     --m3-out: #79747e;
     --m3-out-var: #c4c7c5;
+
+    /* =========================
+       Inverse
+    ========================= */
+    --m3-inv-surf: #322f35;
+    --m3-inv-on-surf: #f5eff7;
+    --m3-inv-p: #d0bcff;
+
+    /* =========================
+       Utility
+    ========================= */
     --ease-emphasized: cubic-bezier(0.3, 0, 0, 1);
     --shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.05);
     --glass: blur(20px) saturate(180%);
 }
+
 
 .profile-circle {
     width: 40px;
@@ -696,4 +760,127 @@ textarea:focus {
     vertical-align: middle;  
     color: #FFC107;          
     display: inline-flex;   
+}
+
+.info-btn-bar {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+
+    padding: 10px 14px;
+    height: 14px;
+    border-radius: 25px;
+
+    background: var(--m3-t); /* authoritative blue, not some weak grey */
+    color: var(--m3-on-t);
+
+    font-weight: 600;
+    text-decoration: none;
+
+    margin: 10px 10px 10px 0;
+
+    transition: background 0.2s ease, transform 0.1s ease;
+}
+
+.info-btn-bar:hover {
+    background: var(--m3-t-c);
+    color: var(--m3-on-t-c);
+
+    transform: translateY(-1px);
+}
+
+.info-btn-bar .material-symbols-rounded {
+    font-size: 20px;
+}
+
+
+/*MODAL*/
+/* --- Add Info Modal enhancements (M3-ish) --- */
+.m3-dialog h2 {
+    margin: 0 0 14px 0;
+    font-family: "Google Sans";
+    letter-spacing: -0.2px;
+}
+
+.m3-subtitle {
+    margin: 0 0 18px 0;
+    color: #49454f;
+    font-size: 0.9rem;
+    line-height: 1.4;
+}
+
+.m3-grid-2 {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 12px;
+}
+
+@media (max-width: 520px) {
+    .m3-grid-2 { grid-template-columns: 1fr; }
+}
+
+.m3-field input,
+.m3-field textarea,
+.m3-field select {
+    outline: none;
+    transition: border-color 0.18s var(--ease), box-shadow 0.18s var(--ease), background 0.18s var(--ease);
+}
+
+.m3-field input:focus,
+.m3-field textarea:focus,
+.m3-field select:focus {
+    border-color: var(--m3-p);
+    box-shadow: 0 0 0 4px rgba(103, 80, 164, 0.18);
+    background: rgba(103, 80, 164, 0.04);
+}
+
+.m3-hint {
+    margin: 8px 6px 0 6px;
+    font-size: 0.78rem;
+    color: var(--m3-out);
+}
+
+.m3-error {
+    margin: 10px 6px 0 6px;
+    font-size: 0.82rem;
+    color: var(--m3-err);
+    font-weight: 600;
+    display: none;
+}
+
+.m3-divider {
+    height: 1px;
+    background: rgba(0,0,0,0.06);
+    margin: 18px 0;
+}
+
+/*Info Button*/
+
+.info-btn-bar {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+
+    padding: 10px 14px;
+    margin: 10px 10px 10px 0;
+
+    border-radius: 25px;
+
+    background: var(--m3-t); /* authoritative blue, not some weak grey */
+    color:var(--m3-on-t);
+
+    font-weight: 600;
+    text-decoration: none;
+
+    transition: background 0.2s ease, transform 0.1s ease;
+}
+
+.info-btn-bar:hover {
+    background: var(--m3-t-c);
+    color:var(--m3-on-t-c);
+    transform: translateY(-1px);
+}
+
+.info-btn-bar .material-symbols-rounded {
+    font-size: 20px;
 }
