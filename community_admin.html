@@ -5,7 +5,8 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>XperiVerdict | Community Admin</title>
     <link href="https://fonts.googleapis.com/css2?family=Google+Sans:wght@500;700&family=Google+Sans+Text:wght@400;500&family=Material+Symbols+Rounded:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200&display=swap" rel="stylesheet">
-    
+    <link href="./styles.css" rel="stylesheet">
+
     <style>
         :root {
             --m3-p: #6750a4;
@@ -154,6 +155,21 @@
     box-shadow: none;
 }
 
+.page {
+    position: fixed;
+    inset: 0;
+    padding: 0 20px 40px 20px;
+    transition: transform 0.5s var(--ease-emphasized), opacity 0.4s ease;
+    overflow-y: auto;
+    background: var(--m3-surf);
+    z-index: 10;
+}
+
+.page-hidden {
+    transform: scale(0.96) translateY(20px);
+    opacity: 0;
+    pointer-events: none;
+}
     </style>
 </head>
 <body>
@@ -203,11 +219,37 @@
                 </table>
             </div>
         </section>
+
+        <div id="pageLogin" class="page page-hidden">
+            <div style="height: 100%; display: flex; flex-direction: column; justify-content: center; align-items: center; padding: 20px;">
+                <div style="width: 80px; height: 80px; background: var(--m3-p-c); border-radius: 24px; display: grid; place-items: center; margin-bottom: 24px;">
+                    <span class="material-symbols-rounded" style="font-size: 40px; color: var(--m3-p);">cloud</span>
+                </div>
+                <h1 id="authTitle">XperiVerdict</h1>
+                <div class="m3-card" style="width: 100%; max-width: 320px; box-sizing: border-box;">
+                    <input type="email" id="loginEmail" placeholder="Email" style="width:100%; padding:14px; border-radius:12px; border:1px solid var(--m3-out-var); margin-bottom:12px; box-sizing:border-box;">
+                    <input type="password" id="loginPass" placeholder="Password" style="width:100%; padding:14px; border-radius:12px; border:1px solid var(--m3-out-var); margin-bottom:20px; box-sizing:border-box;">
+                    
+                    <div style="text-align: right; margin: -8px 0 16px 0;">
+                        <button type="button" style="background:none; border:none; color:var(--m3-p); font-size:0.8rem; cursor:pointer; font-weight:500;" onclick="handleForgotPassword()">
+                            Forgot password?
+                        </button>
+                    </div>
+
+                    <button id="mainAuthBtn" class="m3-btn" onclick="handleLogin()">Sign In</button>
+                    
+                    <div style="margin-top: 16px; text-align: center;">
+                        <button id="toggleAuthBtn" style="background:none; border:none; color:var(--m3-p); font-weight:600; cursor:pointer;" onclick="toggleAuthMode()">Create an account</button>
+                    </div>
+                </div>
+            </div>
+        </div>
     </main>
 
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/12.7.0/firebase-app.js";
         import { getDatabase, ref, onValue, set, remove, update } from "https://www.gstatic.com/firebasejs/12.7.0/firebase-database.js";
+        import { getAuth, signInWithEmailAndPassword, onAuthStateChanged, signOut, createUserWithEmailAndPassword, sendPasswordResetEmail } from "https://www.gstatic.com/firebasejs/12.7.0/firebase-auth.js";
 
         const firebaseConfig = {
             apiKey: "AIzaSyA0q57Bv_I4uuRn7cig64DPKa2oviyGHdw",
@@ -219,6 +261,8 @@
 
         const app = initializeApp(firebaseConfig);
         const db = getDatabase(app);
+        const auth = getAuth(app);
+
         let currentData = {};
 
         window.switchTab = (id) => {
@@ -246,6 +290,11 @@
 
         // --- DEVICE MODAL (MODIFIED) ---
         window.openDeviceModal = (dIdx = null) => {
+            if (!auth.currentUser){
+               handleLoginRedirect();
+               return;
+            }
+
             const isEdit = dIdx !== null;
             const dev = isEdit ? currentData.devices[dIdx] : { name: '', desc: '' };
             
@@ -264,13 +313,29 @@
                 } else {
                     const list = currentData.devices || [];
                     list.push({ name, desc, variants: [] });
+                    const user = auth.currentUser;
                     set(ref(db, 'devices'), list);
                 }
             });
         };
 
+        window.handleLoginRedirect = () => {
+            document.querySelector(".pageLogin")?.classList.add("page-hidden");
+            nav('pageLogin');
+        }
+
+        window.nav = (id) => {
+            document.querySelectorAll('.page').forEach(p => p.classList.add('page-hidden'));
+            document.getElementById(id).classList.remove('page-hidden');
+        };
+
         // --- FIRMWARE MODAL (MODIFIED) ---
         window.openFwModal = (dIdx, vIdx) => {
+            if (!auth.currentUser){
+               handleLoginRedirect();
+               return;
+            }
+
             const html = `
                 <div class="m3-field"><label>Build Number</label><input type="text" id="in_fVer"></div>
                 <div style="display:grid; grid-template-columns: 1fr 1fr; gap:12px;">
@@ -293,6 +358,7 @@
                 
                 const fws = currentData.devices[dIdx].variants[vIdx].firmwares || [];
                 fws.unshift({ ver, android, type, log, date: new Date().toISOString().split('T')[0] });
+                const user = auth.currentUser;
                 set(ref(db, `devices/${dIdx}/variants/${vIdx}/firmwares`), fws);
             });
         };
@@ -383,6 +449,11 @@
 
         // ... Keep existing OpenVariantModal, renderModeration, censorComment, deleteComment from previous version ...
         window.openVariantModal = (dIdx) => {
+            if (!auth.currentUser){
+               handleLoginRedirect();
+               return;
+            }
+
             openModal("Add Variant", `<div class="m3-field"><label>Model</label><input type="text" id="in_vModel" placeholder="XQ-EC54"></div><div class="m3-field"><label>Region</label><input type="text" id="in_vReg" placeholder="Europe"></div>`, () => {
                 const model = document.getElementById('in_vModel').value;
                 const region = document.getElementById('in_vReg').value;
@@ -391,22 +462,6 @@
                 set(ref(db, `devices/${dIdx}/variants`), variants);
             });
         };
-
-        function renderModeration() {
-            const body = document.getElementById('feedbackTableBody');
-            body.innerHTML = "";
-            const feedback = currentData.feedback || {};
-            Object.keys(feedback).forEach(fwKey => {
-                Object.keys(feedback[fwKey]).forEach(entryId => {
-                    const item = feedback[fwKey][entryId];
-                    if(!item.comment) return;
-                    const row = document.createElement('tr');
-                    row.innerHTML = `<td><small>${fwKey}</small></td><td>${item.type}</td><td>${item.comment}</td><td><button class="btn btn-text" onclick="censorComment('${fwKey}','${entryId}')">Censor</button></td>`;
-                    body.appendChild(row);
-                });
-            });
-        }
-
         const input = document.getElementById("deviceSearchInput");
         
         input.addEventListener("input", () => {
@@ -419,6 +474,87 @@
         });
 
         window.censorComment = (fwKey, entryId) => update(ref(db, `feedback/${fwKey}/${entryId}`), { comment: "[REDACTED]" });
+
+        window.handleLogin = () => {
+            const email = document.getElementById('loginEmail').value;
+            const pass = document.getElementById('loginPass').value;
+
+            if (!email || !pass) {
+                alert("Please fill in all fields");
+                return;
+            }
+
+            signInWithEmailAndPassword(auth, email, pass)
+                .then(() => {
+                    location.reload();
+                })
+                .catch(err => alert("Login Failed: " + err.message));
+        };
+
+        window.handleForgotPassword = () => {
+            const email = document.getElementById('loginEmail').value;
+
+            if (!email) {
+                alert("Please enter your email address first so we can send a reset link.");
+                return;
+            }
+
+            sendPasswordResetEmail(auth, email)
+                .then(() => {
+                    alert("Password reset email sent! Check your inbox (and spam folder).");
+                })
+                .catch((error) => {
+                    const errorCode = error.code;
+                    const errorMessage = error.message;
+
+                    if (errorCode === 'auth/user-not-found') {
+                        alert("No account found with this email.");
+                    } else {
+                        alert("Error: " + errorMessage);
+                    }
+                });
+        };
+
+        window.handleRegister = () => {
+    const email = document.getElementById('loginEmail').value;
+    const pass = document.getElementById('loginPass').value;
+
+    if (pass.length < 6) {
+        alert("Password should be at least 6 characters.");
+        return;
+    }
+
+    createUserWithEmailAndPassword(auth, email, pass)
+        .then((userCredential) => {
+            console.log("Registered:", userCredential.user);
+            // onAuthStateChanged will automatically handle the nav to pageDevices
+            location.reload();
+        })
+        .catch((error) => {
+            alert("Registration Error: " + error.message);
+        });
+};
+
+        let isRegisterMode = false;
+
+window.toggleAuthMode = () => {
+    isRegisterMode = !isRegisterMode;
+    const title = document.getElementById('authTitle');
+    const mainBtn = document.getElementById('mainAuthBtn');
+    const toggleBtn = document.getElementById('toggleAuthBtn');
+
+    if (isRegisterMode) {
+        title.innerText = "Join XperiVerdict";
+        mainBtn.innerText = "Create Account";
+        mainBtn.onclick = window.handleRegister;
+        toggleBtn.innerText = "Already have an account? Sign In";
+    } else {
+        title.innerText = "XperiVerdict";
+        mainBtn.innerText = "Sign In";
+        mainBtn.onclick = window.handleLogin;
+        toggleBtn.innerText = "Create an account";
+    }
+};
     </script>
 </body>
 </html>
