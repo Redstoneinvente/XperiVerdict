@@ -969,3 +969,71 @@ textarea:focus {
 .info-btn-bar .material-symbols-rounded {
     font-size: 20px;
 }
+
+/* ===== Mobile friendly stacked top app bar ===== */
+
+.top-app-bar--stack {
+  flex-direction: column;
+  align-items: stretch;
+  gap: 10px;
+}
+
+/* First row: title/back + profile */
+.topbar-row {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  width: 100%;
+}
+
+.topbar-title {
+  margin: 0;
+  flex: 1;
+  min-width: 0;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+/* Back button styling to match */
+.topbar-back {
+  background: none;
+  border: none;
+  padding: 8px;
+  border-radius: 14px;
+  cursor: pointer;
+  color: var(--m3-p);
+}
+
+.topbar-back:active {
+  transform: scale(0.96);
+}
+
+/* Second row: action buttons scroll horizontally on small screens */
+.topbar-actions {
+  display: flex;
+  gap: 10px;
+  overflow-x: auto;
+  padding-bottom: 4px;
+  scrollbar-width: none;
+  -webkit-overflow-scrolling: touch;
+}
+
+.topbar-actions::-webkit-scrollbar { display: none; }
+
+/* Make action buttons consistent and not oversized */
+.topbar-actions .coffee-btn-bar,
+.topbar-actions .info-btn-bar,
+.topbar-actions .m3-btn-bar {
+  flex: 0 0 auto;
+  margin: 0;         /* override existing margins */
+  height: auto;      /* avoid cramped fixed heights */
+  padding: 10px 14px;
+  border-radius: 999px;
+  white-space: nowrap;
+}
+
+/* If coffee is too visually loud, tone it down slightly on mobile */
+@media (max-width: 420px) {
+  .topbar-actions .coffee-btn-bar { padding: 10px 12px; }
+}

@@ -33,6 +33,8 @@ let currentVisualScore = 0;
 
 let allReviews = [];
 
+let bugs = [], imps = [];
+
 window.copyShareLink = (pageId) => {
     const url = new URL(window.location.href);
     url.searchParams.set('page', pageId);
@@ -754,12 +756,17 @@ function loadCommunityData(fwId) {
 
     onValue(ref(db, `feedback/${currentDeviceName}/${modelCode}/${fwId}`), snap => {
         const data = snap.val() || {};
-        let bugs = [], imps = [], totalRating = 0, count = 0;
+        let totalRating = 0, count = 0;
+
+        imps = [];
+        bugs = [];
 
         Object.values(data).forEach(entry => {
             //if(entry.rating) { totalRating += entry.rating; count++; }
             if (entry.type === 'bug' && entry.comment) bugs.push(entry);
-            if (entry.type === 'improvement' && entry.comment) imps.push(entry);
+            if (entry.type === 'improvement' && entry.comment) {
+                imps.push(entry);
+            }
 
             allReviews.push(entry);
         });
@@ -990,7 +997,7 @@ window.openReviewCategory = (type) => {
     if (filtered.length === 0) {
         listEl.innerHTML = `<div style="padding:40px; text-align:center; color:gray;">No feedback submitted yet.</div>`;
     } else {
-        listEl.innerHTML = filtered.map(r => createReviewCard()).join('');
+        listEl.innerHTML = filtered.map(r => createReviewCard(r)).join('');
     }
 
     nav('pageReviews');
