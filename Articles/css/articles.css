@@ -1,0 +1,288 @@
+/* ===== Articles page UI ===== */
+
+.articles-controls {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 12px;
+  margin-top: 12px;
+}
+
+@media (max-width: 520px) {
+  .articles-controls { grid-template-columns: 1fr; }
+}
+
+.articles-select {
+  width: 100%;
+  padding: 12px 14px;
+  border-radius: 16px;
+  border: 1px solid var(--m3-out-var);
+  background: var(--m3-surf-elevated);
+  color: var(--m3-on-surf);
+  font-weight: 700;
+  outline: none;
+}
+
+.articles-select:focus {
+  border-color: var(--m3-p);
+  box-shadow: 0 0 0 4px rgba(103, 80, 164, 0.18);
+  /* If you want zero rgba, replace with just border-color */
+}
+
+.articles-meta {
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  gap: 12px;
+  margin: 14px 4px 12px 4px;
+}
+
+.articles-clear {
+  display:inline-flex;
+  align-items:center;
+  gap: 8px;
+  border-radius: 999px;
+  padding: 10px 14px;
+  border: 1px solid var(--m3-out-var);
+  background: var(--m3-surf-elevated);
+  color: var(--m3-on-surf);
+  cursor: pointer;
+  font-weight: 800;
+}
+
+.articles-clear:active {
+  transform: scale(0.98);
+}
+
+.article-card {
+  text-decoration: none;
+  color: inherit;
+}
+
+.article-row {
+  display:flex;
+  gap: 14px;
+  align-items:flex-start;
+}
+
+.article-icon {
+  width: 44px;
+  height: 44px;
+  border-radius: 14px;
+  background: var(--m3-p-c);
+  display: grid;
+  place-items: center;
+  flex-shrink: 0;
+}
+
+.article-icon .material-symbols-rounded {
+  color: var(--m3-on-p-c);
+  font-variation-settings: 'FILL' 1, 'wght' 650, 'GRAD' 0, 'opsz' 24;
+}
+
+.article-title {
+  font-weight: 900;
+  line-height: 1.25;
+}
+
+.article-desc {
+  margin-top: 4px;
+  font-size: 0.88rem;
+  color: var(--m3-on-surf-var);
+  line-height: 1.55;
+}
+
+.article-submeta {
+  display:flex;
+  gap: 10px;
+  flex-wrap: wrap;
+  margin-top: 10px;
+}
+
+.article-pill {
+  font-size: 0.72rem;
+  font-weight: 800;
+  padding: 6px 10px;
+  border-radius: 999px;
+  background: var(--m3-surf-c-high);
+  color: var(--m3-on-surf-var);
+  border: 1px solid var(--m3-out-var);
+}
+
+/* ===== More colourful, M3-ish filter UI ===== */
+
+.filters-surface {
+  margin-top: 14px;
+  padding: 14px;
+  border-radius: 28px;
+
+  background: var(--m3-surf-c-high);
+  border: 1px solid var(--m3-out-var);
+  box-shadow: var(--shadow-sm);
+}
+
+.search-m3 {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+
+  padding: 10px 12px;
+  border-radius: 18px;
+
+  background: var(--m3-surf-elevated);
+  border: 1px solid var(--m3-out-var);
+}
+
+.search-m3 input {
+  border: none;
+  outline: none;
+  width: 100%;
+  background: transparent;
+  font-family: inherit;
+  font-size: 1rem;
+  color: var(--m3-on-surf);
+}
+
+.search-ic {
+  color: var(--m3-p);
+  font-variation-settings: 'FILL' 1, 'wght' 650, 'GRAD' 0, 'opsz' 24;
+}
+
+.search-clear {
+  border: none;
+  background: var(--m3-surf-c-high);
+  color: var(--m3-on-surf-var);
+  border-radius: 999px;
+  width: 36px;
+  height: 36px;
+  display: grid;
+  place-items: center;
+  cursor: pointer;
+  border: 1px solid var(--m3-out-var);
+  flex-shrink: 0;
+}
+
+.search-clear:active { transform: scale(0.96); }
+
+.filters-row {
+  margin-top: 12px;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 12px;
+}
+
+@media (max-width: 520px) {
+  .filters-row { grid-template-columns: 1fr; }
+}
+
+.filters-col .label-meta {
+  opacity: 0.85;
+}
+
+.articles-select {
+  width: 100%;
+  padding: 12px 14px;
+  border-radius: 16px;
+  border: 1px solid var(--m3-out-var);
+  background: var(--m3-surf-elevated);
+  color: var(--m3-on-surf);
+  font-weight: 800;
+  outline: none;
+}
+
+/* Tonal selects feel “coloured” without weird custom UI */
+.articles-select-tonal {
+  background: var(--m3-p-c);
+  color: var(--m3-on-p-c);
+  border-color: var(--m3-p-c);
+}
+
+/* When focused, use primary */
+.articles-select:focus {
+  border-color: var(--m3-p);
+  box-shadow: 0 0 0 0; /* keep it crisp; avoid rgba */
+}
+
+/* ===== Colourful category chips ===== */
+
+.chips-colorful .chip {
+  border-radius: 999px;
+  font-weight: 900;
+  border: 1px solid var(--m3-out-var);
+  background: var(--m3-surf-elevated);
+  color: var(--m3-on-surf);
+}
+
+/* Default active style */
+.chips-colorful .chip.active {
+  background: var(--m3-p);
+  color: var(--m3-on-p);
+  border-color: var(--m3-p);
+}
+
+/* Category-specific colouring (set via data-cat in JS) */
+.chips-colorful .chip[data-cat="Updates"].active {
+  background: var(--m3-p);
+  border-color: var(--m3-p);
+  color: var(--m3-on-p);
+}
+
+.chips-colorful .chip[data-cat="Troubleshooting"].active {
+  background: var(--m3-err);
+  border-color: var(--m3-err);
+  color: var(--m3-on-err);
+}
+
+.chips-colorful .chip[data-cat="Security"].active {
+  background: var(--m3-s);
+  border-color: var(--m3-s);
+  color: var(--m3-on-s);
+}
+
+.chips-colorful .chip[data-cat="Performance"].active {
+  background: var(--m3-t);
+  border-color: var(--m3-t);
+  color: var(--m3-on-t);
+}
+
+/* Subtle hover */
+.chips-colorful .chip:hover {
+  background: var(--m3-surf-c-high);
+}
+
+/* Articles select: align with your M3 system */
+.articles-select {
+  width: 100%;
+  padding: 12px 14px;
+  border-radius: 16px;
+  border: 1px solid var(--m3-out-var);
+  background: var(--m3-surf-elevated);
+  color: var(--m3-on-surf);
+  font-weight: 800;
+  outline: none;
+}
+
+/* Category chips: keep colour, but restrained */
+.chips-colorful .chip.active {
+  background: var(--m3-p);
+  color: var(--m3-on-p);
+  border-color: var(--m3-p);
+}
+
+/* Optional category accents (only on active, not always) */
+.chips-colorful .chip[data-cat="Troubleshooting"].active {
+  background: var(--m3-err);
+  border-color: var(--m3-err);
+  color: var(--m3-on-err);
+}
+
+.chips-colorful .chip[data-cat="Security"].active {
+  background: var(--m3-s);
+  border-color: var(--m3-s);
+  color: var(--m3-on-s);
+}
+
+.chips-colorful .chip[data-cat="Performance"].active {
+  background: var(--m3-t);
+  border-color: var(--m3-t);
+  color: var(--m3-on-t);
+}

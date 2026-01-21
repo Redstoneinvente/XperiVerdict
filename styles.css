@@ -844,6 +844,37 @@ textarea:focus {
     font-size: 20px;
 }
 
+.m3-btn-bar {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+
+    padding: 10px 14px;
+    height: 14px;
+    border-radius: 25px;
+
+    background: var(--m3-s);
+    /* authoritative blue, not some weak grey */
+    color: var(--m3-on-s);
+
+    font-weight: 600;
+    text-decoration: none;
+
+    margin: 10px 10px 10px 0;
+
+    transition: background 0.2s ease, transform 0.1s ease;
+}
+
+.m3-btn-bar:hover {
+    background: var(--m3-s-c);
+    color: var(--m3-on-s-c);
+
+    transform: translateY(-1px);
+}
+
+.m3-btn-bar .material-symbols-rounded {
+    font-size: 20px;
+}
 
 /*MODAL*/
 /* --- Add Info Modal enhancements (M3-ish) --- */

@@ -1,0 +1,15 @@
+{
+  "articles": [
+    {
+      "id": "update-xperia",
+      "title": "How to Update Sony Xperia Software",
+      "description": "OTA steps, Xperia Companion on PC/Mac, and fixes when updates don’t appear.",
+      "url": "./guide-update-xperia.html",
+      "icon": "system_update",
+      "category": "Updates",
+      "tags": ["OTA", "Xperia Companion", "Troubleshooting"],
+      "date": "2026-01-20",
+      "featured": true
+    }
+  ]
+}

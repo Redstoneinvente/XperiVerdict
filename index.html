@@ -1,11 +1,15 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-    
+    <meta name="viewport"
+        content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+
     <!-- <title>XperiVerdict</title> -->
-    <link href="https://fonts.googleapis.com/css2?family=Google+Sans:wght@400;500;700&family=Google+Sans+Text:wght@400;500&family=Material+Symbols+Rounded:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200&display=swap" rel="stylesheet">
+    <link
+        href="https://fonts.googleapis.com/css2?family=Google+Sans:wght@400;500;700&family=Google+Sans+Text:wght@400;500&family=Material+Symbols+Rounded:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200&display=swap"
+        rel="stylesheet">
 
     <link href="https://cdn.jsdelivr.net/npm/tailwindcss@3.3.3/dist/tailwind.min.css" rel="stylesheet">
     <link href="./styles.css" rel="stylesheet">
@@ -13,11 +17,13 @@
     <link rel="icon" href="./Resources/Images/Logos/logo_only.svg" type="image/svg+xml">
     <link rel="apple-touch-icon" href="./Resources/Images/Logos/logo_only.svg" type="image/svg+xml">
 
-    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200&icon_names=crown" />
+    <link rel="stylesheet"
+        href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200&icon_names=crown" />
 
     <!-- Primary SEO -->
     <title>XperiVerdict – Sony Xperia firmware tracker, changelogs, and community intel</title>
-    <meta name="description" content="XperiVerdict tracks Sony Xperia firmware releases with security patches, OS upgrades, official changelogs, and community-reported stability intel.">
+    <meta name="description"
+        content="XperiVerdict tracks Sony Xperia firmware releases with security patches, OS upgrades, official changelogs, and community-reported stability intel.">
     <link rel="canonical" href="https://redstoneinvente.github.io/XperiVerdict/">
 
     <!-- Mobile -->
@@ -26,7 +32,8 @@
     <!-- Open Graph (link previews) -->
     <meta property="og:type" content="website">
     <meta property="og:title" content="XperiVerdict – Xperia firmware tracker">
-    <meta property="og:description" content="Track Xperia firmware releases, changelogs, patches, and community stability intel.">
+    <meta property="og:description"
+        content="Track Xperia firmware releases, changelogs, patches, and community stability intel.">
     <meta property="og:url" content="https://redstoneinvente.github.io/XperiVerdict/">
     <!-- Optional but recommended: -->
     <!-- <meta property="og:image" content="https://redstoneinvente.github.io/XperiVerdict/og-image.png"> -->
@@ -34,7 +41,8 @@
     <!-- Twitter/X -->
     <meta name="twitter:card" content="summary_large_image">
     <meta name="twitter:title" content="XperiVerdict – Xperia firmware tracker">
-    <meta name="twitter:description" content="Track Xperia firmware releases, changelogs, patches, and community stability intel.">
+    <meta name="twitter:description"
+        content="Track Xperia firmware releases, changelogs, patches, and community stability intel.">
     <!-- <meta name="twitter:image" content="https://redstoneinvente.github.io/XperiVerdict/og-image.png"> -->
 
     <script type="application/ld+json">
@@ -49,7 +57,9 @@
 
 </head>
 
-<!-- Google tag (gtag.js) --> <script async src="https://www.googletagmanager.com/gtag/js?id=G-BXSNYC0V1C"></script> <script> window.dataLayer = window.dataLayer || []; function gtag(){dataLayer.push(arguments);} gtag('js', new Date()); gtag('config', 'G-BXSNYC0V1C'); </script>
+<!-- Google tag (gtag.js) -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-BXSNYC0V1C"></script>
+<script> window.dataLayer = window.dataLayer || []; function gtag() { dataLayer.push(arguments); } gtag('js', new Date()); gtag('config', 'G-BXSNYC0V1C'); </script>
 
 <body>
     <div id="toast">Link copied to clipboard</div>
@@ -64,9 +74,16 @@
             </a>
 
             <a href="./community_admin.html" class="info-btn-bar">
-                 <span class="material-symbols-rounded">edit_note</span> <span style="white-space: nowrap;">Add Info</span> </a>
+                <span class="material-symbols-rounded">edit_note</span> <span style="white-space: nowrap;">Add
+                    Info</span> </a>
 
-            <div class="profile-circle profileBtn" onclick="toggleModal(document.getElementById('profileDropdown').style.display !== 'block')">?</div>
+            <a href="./Articles/articles.html" class="m3-btn-bar">
+                <span class="material-symbols-rounded">menu_book</span>
+                <span style="white-space: nowrap;">Articles</span>
+            </a>
+
+            <div class="profile-circle profileBtn"
+                onclick="toggleModal(document.getElementById('profileDropdown').style.display !== 'block')">?</div>
         </div>
 
         <div class="search-container">
@@ -88,7 +105,8 @@
 
     <div id="pageVariants" class="page page-hidden">
         <div class="top-app-bar">
-            <button style="background:none;border:none;" onclick="nav('pageDevices')"><span class="material-symbols-rounded">arrow_back_ios_new</span></button>
+            <button style="background:none;border:none;" onclick="nav('pageDevices')"><span
+                    class="material-symbols-rounded">arrow_back_ios_new</span></button>
             <h1 id="variantTitle">Models</h1>
 
             <a href="https://www.buymeacoffee.com/redstoneinvente" target="_blank" class="coffee-btn-bar">
@@ -97,9 +115,16 @@
             </a>
 
             <a href="./community_admin.html" class="info-btn-bar">
-                 <span class="material-symbols-rounded">edit_note</span> <span style="white-space: nowrap;">Add Info</span> </a>
+                <span class="material-symbols-rounded">edit_note</span> <span style="white-space: nowrap;">Add
+                    Info</span> </a>
 
-            <div class="profile-circle profileBtn" onclick="toggleModal(document.getElementById('profileDropdown').style.display !== 'block')">?</div>
+            <a href="./Articles/articles.html" class="m3-btn-bar">
+                <span class="material-symbols-rounded">menu_book</span>
+                <span style="white-space: nowrap;">Articles</span>
+            </a>
+
+            <div class="profile-circle profileBtn"
+                onclick="toggleModal(document.getElementById('profileDropdown').style.display !== 'block')">?</div>
         </div>
 
         <div class="m3-card" style="
@@ -110,13 +135,15 @@
             align-items: center; 
             padding: 16px; 
             gap: 16px;">
-            
+
             <div id="deviceIconVisual1"></div>
 
             <div style="display: flex; flex-direction: column; gap: 10px;">
-                <div class="label-meta" style="color: var(--m3-on-p-c); opacity: 0.7; font-size: 0.85rem;">Selected Device</div>
+                <div class="label-meta" style="color: var(--m3-on-p-c); opacity: 0.7; font-size: 0.85rem;">Selected
+                    Device</div>
                 <h2 id="currentDeviceName2" style="margin: 0; color: var(--m3-on-p-c); line-height: 1.2;">Device</h2>
-                <p id="currentDeviceDesc2" style="margin: 0; font-size: 0.9rem; color: var(--m3-on-p-c); opacity: 0.8;"></p>
+                <p id="currentDeviceDesc2" style="margin: 0; font-size: 0.9rem; color: var(--m3-on-p-c); opacity: 0.8;">
+                </p>
             </div>
         </div>
 
@@ -125,8 +152,11 @@
 
     <div id="pageFirmwares" class="page page-hidden">
         <div class="top-app-bar">
-            <button style="background:none;border:none;" onclick="nav('pageVariants')"><span class="material-symbols-rounded">arrow_back_ios_new</span></button>
-            <div style="flex:1"><h1 id="modelCodeHeader" style="font-size: 1.2rem;">Model</h1></div>
+            <button style="background:none;border:none;" onclick="nav('pageVariants')"><span
+                    class="material-symbols-rounded">arrow_back_ios_new</span></button>
+            <div style="flex:1">
+                <h1 id="modelCodeHeader" style="font-size: 1.2rem;">Model</h1>
+            </div>
 
             <a href="https://www.buymeacoffee.com/redstoneinvente" target="_blank" class="coffee-btn-bar">
                 <span class="material-symbols-rounded">coffee</span>
@@ -134,12 +164,18 @@
             </a>
 
             <a href="./community_admin.html" class="info-btn-bar">
-                 <span class="material-symbols-rounded">edit_note</span> <span style="white-space: nowrap;">Add Info</span> </a>
+                <span class="material-symbols-rounded">edit_note</span> <span style="white-space: nowrap;">Add
+                    Info</span> </a>
 
+            <a href="./Articles/articles.html" class="m3-btn-bar">
+                <span class="material-symbols-rounded">menu_book</span>
+                <span style="white-space: nowrap;">Articles</span>
+            </a>
 
-            <div class="profile-circle profileBtn" onclick="toggleModal(document.getElementById('profileDropdown').style.display !== 'block')">?</div>
+            <div class="profile-circle profileBtn"
+                onclick="toggleModal(document.getElementById('profileDropdown').style.display !== 'block')">?</div>
         </div>
-        
+
         <div class="m3-card" style="
             background: var(--m3-p-c); 
             border: none; 
@@ -148,13 +184,14 @@
             align-items: center; 
             padding: 16px; 
             gap: 16px;">
-            
+
             <div id="deviceIconVisual2"></div>
 
             <div style="display: flex; flex-direction: column; gap: 10px;">
                 <div class="label-meta" style="color: var(--m3-on-p-c); opacity: 0.7;">Selected Device</div>
                 <h2 id="currentDeviceName" style="margin: 4px 0; color: var(--m3-on-p-c);">Device</h2>
-                <p id="currentDeviceDesc" style="margin: 0; font-size: 0.9rem; color: var(--m3-on-p-c); opacity: 0.8;"></p>
+                <p id="currentDeviceDesc" style="margin: 0; font-size: 0.9rem; color: var(--m3-on-p-c); opacity: 0.8;">
+                </p>
             </div>
         </div>
 
@@ -171,10 +208,11 @@
         <div id="fwList"></div>
     </div>
 
-    
+
     <div id="pageDetail" class="page page-hidden">
         <div class="top-app-bar">
-            <button style="background:none;border:none;" onclick="nav('pageFirmwares')"><span class="material-symbols-rounded">arrow_back_ios_new</span></button>
+            <button style="background:none;border:none;" onclick="nav('pageFirmwares')"><span
+                    class="material-symbols-rounded">arrow_back_ios_new</span></button>
             <h1 style="font-size: 1.1rem; flex:1; text-align: center;">Firmware Intelligence</h1>
 
             <a href="https://www.buymeacoffee.com/redstoneinvente" target="_blank" class="coffee-btn-bar">
@@ -183,16 +221,22 @@
             </a>
 
             <a href="./community_admin.html" class="info-btn-bar">
-                 <span class="material-symbols-rounded">edit_note</span> <span style="white-space: nowrap;">Add Info</span> </a>
+                <span class="material-symbols-rounded">edit_note</span> <span style="white-space: nowrap;">Add
+                    Info</span> </a>
 
+            <a href="./Articles/articles.html" class="m3-btn-bar">
+                <span class="material-symbols-rounded">menu_book</span>
+                <span style="white-space: nowrap;">Articles</span>
+            </a>
 
             <button class="icon-btn" style="margin: 0 12px 0 0px;" onclick="copyShareLink('pageDetail')" title="Share">
                 <span class="material-symbols-rounded">share</span>
             </button>
 
-            <div class="profile-circle profileBtn" onclick="toggleModal(document.getElementById('profileDropdown').style.display !== 'block')">?</div>
+            <div class="profile-circle profileBtn"
+                onclick="toggleModal(document.getElementById('profileDropdown').style.display !== 'block')">?</div>
         </div>
-        
+
         <div class="m3-card" style="background: var(--m3-on-p-c); color: white; border: none;">
             <div style="display: flex; justify-content: space-between; align-items: center;">
                 <div>
@@ -227,7 +271,8 @@
 
         <div class="m3-card" style="text-align: center;">
             <div class="label-meta">Community Stability Vote</div>
-            <div class="star-input" id="starSelector" style="display: flex; justify-content: center; gap: 4px; margin: 12px 0;">
+            <div class="star-input" id="starSelector"
+                style="display: flex; justify-content: center; gap: 4px; margin: 12px 0;">
                 <span class="material-symbols-rounded" data-v="1">star</span>
                 <span class="material-symbols-rounded" data-v="2">star</span>
                 <span class="material-symbols-rounded" data-v="3">star</span>
@@ -243,25 +288,31 @@
                 <option value="improvement">Stable Performance</option>
                 <option value="bug">Bug Encountered</option>
             </select>
-            <textarea id="contributionText" style="width: 100%; height: 80px; padding: 12px; border-radius: 12px; margin: 12px 0; box-sizing: border-box;" placeholder="Add details..."></textarea>
+            <textarea id="contributionText"
+                style="width: 100%; height: 80px; padding: 12px; border-radius: 12px; margin: 12px 0; box-sizing: border-box;"
+                placeholder="Add details..."></textarea>
             <button class="m3-btn" style="background: #1d1b20;" onclick="submitTextReport()">Submit Report</button>
         </div>
     </div>
 
     <div id="profileDropdown" class="profile-dropdown">
         <div style="padding: 20px; background: var(--m3-p-c); display: flex; align-items: center; gap: 12px;">
-            <div id="compAvatar" style="width: 40px; height: 40px; background: var(--m3-p); color: white; border-radius: 50%; display: grid; place-items: center; font-weight: bold;">U</div>
+            <div id="compAvatar"
+                style="width: 40px; height: 40px; background: var(--m3-p); color: white; border-radius: 50%; display: grid; place-items: center; font-weight: bold;">
+                U</div>
             <div style="overflow: hidden;">
-                <div id="compUserName" style="font-weight: 700; font-size: 0.9rem; white-space: nowrap; text-overflow: ellipsis;">User</div>
-                <div id="compUserEmail" style="font-size: 0.75rem; color: var(--m3-on-p-c); opacity: 0.7; white-space: nowrap; text-overflow: ellipsis;">email@example.com</div>
+                <div id="compUserName"
+                    style="font-weight: 700; font-size: 0.9rem; white-space: nowrap; text-overflow: ellipsis;">User
+                </div>
+                <div id="compUserEmail"
+                    style="font-size: 0.75rem; color: var(--m3-on-p-c); opacity: 0.7; white-space: nowrap; text-overflow: ellipsis;">
+                    email@example.com</div>
             </div>
         </div>
 
         <div class="menu-item" onclick="window.open('https://discord.com/invite/S935qhUwqS', '_blank')">
-            <img src="https://cdn.jsdelivr.net/npm/simple-icons@v11/icons/discord.svg"
-            alt="Discord"
-            width="20"
-            height="20">
+            <img src="https://cdn.jsdelivr.net/npm/simple-icons@v11/icons/discord.svg" alt="Discord" width="20"
+                height="20">
 
             <span>Join Our Discord</span>
         </div>
@@ -271,7 +322,7 @@
             <span>Suggest Change</span>
         </div>
 
-         <div class="menu-divider"></div>
+        <div class="menu-divider"></div>
 
         <div class="menu-item" onclick="window.location.href='settings.html'">
             <span class="material-symbols-rounded">settings</span>
@@ -279,11 +330,11 @@
         </div>
 
         <div id="sin" class="menu-item" onclick="handleLoginRedirect()">
-    <span class="material-symbols-rounded">login</span>
-    <span>Sign In</span>
-</div>
+            <span class="material-symbols-rounded">login</span>
+            <span>Sign In</span>
+        </div>
 
-        
+
         <div id="sout" class="menu-item" style="color: #ba1a1a;" onclick="handleLogout()">
             <span class="material-symbols-rounded">logout</span>
             <span>Sign Out</span>
@@ -304,25 +355,33 @@
     </div>
 
     <div id="pageLogin" class="page page-hidden">
-        <div style="height: 100%; display: flex; flex-direction: column; justify-content: center; align-items: center; padding: 20px;">
-            <div style="width: 80px; height: 80px; background: var(--m3-p-c); border-radius: 24px; display: grid; place-items: center; margin-bottom: 24px;">
+        <div
+            style="height: 100%; display: flex; flex-direction: column; justify-content: center; align-items: center; padding: 20px;">
+            <div
+                style="width: 80px; height: 80px; background: var(--m3-p-c); border-radius: 24px; display: grid; place-items: center; margin-bottom: 24px;">
                 <span class="material-symbols-rounded" style="font-size: 40px; color: var(--m3-p);">cloud</span>
             </div>
             <h1 id="authTitle">XperiVerdict</h1>
             <div class="m3-card" style="width: 100%; max-width: 320px; box-sizing: border-box;">
-                <input type="email" id="loginEmail" placeholder="Email" style="width:100%; padding:14px; border-radius:12px; border:1px solid var(--m3-out-var); margin-bottom:12px; box-sizing:border-box;">
-                <input type="password" id="loginPass" placeholder="Password" style="width:100%; padding:14px; border-radius:12px; border:1px solid var(--m3-out-var); margin-bottom:20px; box-sizing:border-box;">
-                
+                <input type="email" id="loginEmail" placeholder="Email"
+                    style="width:100%; padding:14px; border-radius:12px; border:1px solid var(--m3-out-var); margin-bottom:12px; box-sizing:border-box;">
+                <input type="password" id="loginPass" placeholder="Password"
+                    style="width:100%; padding:14px; border-radius:12px; border:1px solid var(--m3-out-var); margin-bottom:20px; box-sizing:border-box;">
+
                 <div style="text-align: right; margin: -8px 0 16px 0;">
-                    <button type="button" style="background:none; border:none; color:var(--m3-p); font-size:0.8rem; cursor:pointer; font-weight:500;" onclick="handleForgotPassword()">
+                    <button type="button"
+                        style="background:none; border:none; color:var(--m3-p); font-size:0.8rem; cursor:pointer; font-weight:500;"
+                        onclick="handleForgotPassword()">
                         Forgot password?
                     </button>
                 </div>
 
                 <button id="mainAuthBtn" class="m3-btn" onclick="handleLogin()">Sign In</button>
-                
+
                 <div style="margin-top: 16px; text-align: center;">
-                    <button id="toggleAuthBtn" style="background:none; border:none; color:var(--m3-p); font-weight:600; cursor:pointer;" onclick="toggleAuthMode()">Create an account</button>
+                    <button id="toggleAuthBtn"
+                        style="background:none; border:none; color:var(--m3-p); font-weight:600; cursor:pointer;"
+                        onclick="toggleAuthMode()">Create an account</button>
                 </div>
             </div>
         </div>
@@ -362,4 +421,5 @@
     <script type="module" src="./main.js"></script>
     <script type="module" src="./tracking.js"></script>
 </body>
+
 </html>
