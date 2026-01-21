@@ -1,0 +1,439 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+
+    <!-- Primary SEO -->
+    <title>How to Update Sony Xperia Software (2026 Guide) – OTA, Xperia Companion, Fixes | XperiVerdict</title>
+    <meta name="description"
+        content="Step-by-step guide to update Sony Xperia software: OTA updates, Xperia Companion (PC/Mac), prep checklist, and fixes for updates not showing." />
+    <link rel="canonical" href="https://redstoneinvente.github.io/XperiVerdict/guide-update-xperia.html" />
+    <meta name="robots" content="index,follow,max-image-preview:large" />
+    <meta name="theme-color" content="#6750a4" />
+
+    <!-- Open Graph -->
+    <meta property="og:type" content="article" />
+    <meta property="og:title" content="How to Update Sony Xperia Software – OTA, Companion, Fixes" />
+    <meta property="og:description"
+        content="Update your Xperia safely: OTA steps, Xperia Companion via PC/Mac, what to do if the update is not showing, and how to avoid data loss." />
+    <meta property="og:url" content="https://redstoneinvente.github.io/XperiVerdict/guide-update-xperia.html" />
+
+    <!-- Twitter/X -->
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content="How to Update Sony Xperia Software – OTA, Companion, Fixes" />
+    <meta name="twitter:description"
+        content="Update your Xperia safely: OTA steps, Xperia Companion via PC/Mac, what to do if the update is not showing, and how to avoid data loss." />
+
+    <link
+        href="https://fonts.googleapis.com/css2?family=Google+Sans:wght@400;500;700&family=Google+Sans+Text:wght@400;500&display=swap"
+        rel="stylesheet">
+    <link href="./styles.css" rel="stylesheet" />
+
+    <link
+        href="https://fonts.googleapis.com/css2?family=Material+Symbols+Rounded:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200&display=swap"
+        rel="stylesheet">
+    <link
+        href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200&display=swap"
+        rel="stylesheet">
+
+    <link href="./extra css/guide-page.css" rel="stylesheet" />
+    <!-- Structured data: Article + FAQ -->
+    <script type="application/ld+json">
+  {
+    "@context":"https://schema.org",
+    "@type":"Article",
+    "headline":"How to Update Sony Xperia Software (OTA, Xperia Companion, Fixes)",
+    "description":"Step-by-step guide to update Sony Xperia software: OTA updates, Xperia Companion (PC/Mac), prep checklist, and fixes for updates not showing.",
+    "author":{"@type":"Organization","name":"XperiVerdict"},
+    "publisher":{"@type":"Organization","name":"XperiVerdict"},
+    "mainEntityOfPage":"https://redstoneinvente.github.io/XperiVerdict/guide-update-xperia.html"
+  }
+  </script>
+
+    <script type="application/ld+json">
+  {
+    "@context":"https://schema.org",
+    "@type":"FAQPage",
+    "mainEntity":[
+      {
+        "@type":"Question",
+        "name":"Why is my Xperia update not showing?",
+        "acceptedAnswer":{
+          "@type":"Answer",
+          "text":"Xperia updates roll out by region, model code, and sometimes carrier. Reboot, disable VPN, try another network, and check again. If OTA still doesn’t appear, check via Xperia Companion on PC/Mac."
+        }
+      },
+      {
+        "@type":"Question",
+        "name":"Will updating Xperia delete my data?",
+        "acceptedAnswer":{
+          "@type":"Answer",
+          "text":"A normal OTA update typically keeps your data, but interrupted installs can cause issues. Back up important files first. Xperia Companion repair may wipe data depending on the option used."
+        }
+      },
+      {
+        "@type":"Question",
+        "name":"Is it safe to update Xperia immediately?",
+        "acceptedAnswer":{
+          "@type":"Answer",
+          "text":"Sometimes yes, sometimes no. Check changelogs and community stability intel first, then update once early reports look clean."
+        }
+      }
+    ]
+  }
+  </script>
+</head>
+
+<body>
+    <div class="page" style="position:relative; inset:auto; min-height:100vh;">
+        <!-- Top bar (no profile / no dropdown) -->
+        <div class="top-app-bar">
+            <a href="./index.html" style="text-decoration:none; color:inherit;">
+                <h1 style="margin:0;">XperiVerdict</h1>
+            </a>
+
+            <a href="https://www.buymeacoffee.com/redstoneinvente" target="_blank" class="coffee-btn-bar"
+                rel="noopener">
+                <span class="material-symbols-rounded">coffee</span>
+                <span style="white-space: nowrap;">Support</span>
+            </a>
+        </div>
+
+        <div class="guide-wrap">
+            <div class="guide-toc">
+                <div class="guide-toc-grid">
+                    <a class="toc-chip" href="#prep">
+                        <span class="material-symbols-rounded">checklist</span>
+                        <span>Prep</span>
+                    </a>
+
+                    <a class="toc-chip" href="#ota">
+                        <span class="material-symbols-rounded">system_update</span>
+                        <span>OTA Steps</span>
+                    </a>
+
+                    <a class="toc-chip" href="#companion">
+                        <span class="material-symbols-rounded">computer</span>
+                        <span>Xperia Companion</span>
+                    </a>
+
+                    <a class="toc-chip" href="#notshowing">
+                        <span class="material-symbols-rounded">troubleshoot</span>
+                        <span>Not Showing</span>
+                    </a>
+
+                    <a class="toc-chip" href="#after">
+                        <span class="material-symbols-rounded">auto_fix_high</span>
+                        <span>After</span>
+                    </a>
+
+                    <a class="toc-chip" href="#cta">
+                        <span class="material-symbols-rounded">verified</span>
+                        <span>Check Build</span>
+                    </a>
+                </div>
+            </div>
+
+            <!-- Hero -->
+            <div class="m3-card guide-hero guide" style="margin-top:16px;">
+                <div class="label-meta">Guide</div>
+
+                <h2 class="guide-title" style="margin:10px 0 10px 0; font-size:1.75rem; line-height:1.15;">
+                    How to Update Sony Xperia Software
+                </h2>
+
+                <p class="guide-lead" style="margin:0;">
+                    Safe methods to update your Xperia: OTA updates, Xperia Companion on PC/Mac, and fixes when the
+                    update
+                    is not showing.
+                </p>
+
+                <div class="guide-segmented" role="navigation" aria-label="Quick links">
+                    <a class="seg-item" href="./index.html">
+                        <span class="material-symbols-rounded">travel_explore</span>
+                        <span>XperiVerdict</span>
+                    </a>
+
+                    <a class="seg-item"
+                        href="https://www.sony.com/electronics/support/articles/SX901001"
+                        target="_blank" rel="noopener noreferrer">
+                        <span class="material-symbols-rounded">menu_book</span>
+                        <span>Sony Official Guide</span>
+                    </a>
+
+                    <a class="seg-item"
+                        href="https://www.sony.com/electronics/support/mobile-phones-tablets-mobile-phones/downloads"
+                        target="_blank" rel="noopener noreferrer">
+                        <span class="material-symbols-rounded">download</span>
+                        <span>Xperia Companion</span>
+                    </a>
+                </div>
+
+            </div>
+
+
+            <!-- Preparation -->
+            <div id="prep" class="m3-card guide-section">
+                <div class="section-head">
+                    <div>
+                        <div class="section-kicker">Preparation</div>
+                        <h3 style="margin:6px 0 0 0;">Before you update</h3>
+                    </div>
+                </div>
+
+                <div class="step-list">
+                    <div class="step-card">
+                        <div class="step-num">1</div>
+                        <div class="step-body">
+                            <h4>Charge the phone</h4>
+                            <p>Keep at least <strong>50%</strong> battery (70%+ recommended) and plug in during install.
+                            </p>
+                        </div>
+                    </div>
+
+                    <div class="step-card">
+                        <div class="step-num">2</div>
+                        <div class="step-body">
+                            <h4>Use reliable Wi-Fi</h4>
+                            <p>Large updates fail more often on unstable networks.</p>
+                        </div>
+                    </div>
+
+                    <div class="step-card">
+                        <div class="step-num">3</div>
+                        <div class="step-body">
+                            <h4>Back up what matters</h4>
+                            <p>Photos + critical files. OTA usually preserves data, but don’t gamble.</p>
+                        </div>
+                    </div>
+
+                    <div class="step-card">
+                        <div class="step-num">4</div>
+                        <div class="step-body">
+                            <h4>Free storage</h4>
+                            <p>Keep <strong>5–10 GB</strong> available. Low space is a common update failure cause.</p>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="section-divider"></div>
+
+                <div class="callout tip">
+                    <strong>Tip:</strong> If you care about stability, check your build on XperiVerdict and scan early
+                    community intel before updating.
+                </div>
+
+                <a href="./index.html"
+                    style="display:inline-block; margin-top:12px; color:var(--m3-p); font-weight:800; text-decoration:none;">
+                    Open XperiVerdict tracker →
+                </a>
+            </div>
+
+
+            <!-- OTA Update -->
+            <div id="ota" class="m3-card guide-section">
+                <div class="section-head">
+                    <div>
+                        <div class="section-kicker">Method 1</div>
+                        <h3 style="margin:6px 0 0 0;">Update over-the-air (OTA)</h3>
+                    </div>
+                </div>
+
+                <div class="step-list">
+                    <div class="step-card">
+                        <div class="step-num">1</div>
+                        <div class="step-body">
+                            <h4>Open System Update</h4>
+                            <p>Settings → System → <strong>System update</strong> (wording varies by Android version).
+                            </p>
+                        </div>
+                    </div>
+
+                    <div class="step-card">
+                        <div class="step-num">2</div>
+                        <div class="step-body">
+                            <h4>Check and download</h4>
+                            <p>Tap <strong>Check for update</strong>, then download if available.</p>
+                        </div>
+                    </div>
+
+                    <div class="step-card">
+                        <div class="step-num">3</div>
+                        <div class="step-body">
+                            <h4>Install safely</h4>
+                            <p>Tap <strong>Install</strong>. Keep it charging. Don’t reboot mid-install.</p>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="section-divider"></div>
+
+                <div class="callout warn">
+                    <strong>Warning:</strong> If the phone reboots or dies mid-install, you can end up in a boot loop.
+                    Keep it charged.
+                </div>
+            </div>
+
+
+            <!-- Companion -->
+            <div id="companion" class="m3-card guide-section">
+                <div class="section-head">
+                    <div>
+                        <div class="section-kicker">Method 2</div>
+                        <h3 style="margin:6px 0 0 0;">Update via Xperia Companion (PC/Mac)</h3>
+                    </div>
+                </div>
+
+                <p style="margin:0 0 12px 0; color:var(--m3-on-surf-var); line-height:1.7;">
+                    Use this if OTA is failing or the update is not appearing. It’s slower, but more reliable.
+                </p>
+
+                <div class="step-list">
+                    <div class="step-card">
+                        <div class="step-num">1</div>
+                        <div class="step-body">
+                            <h4>Install Xperia Companion</h4>
+                            <p>Install the Sony tool on Windows or macOS.</p>
+                        </div>
+                    </div>
+
+                    <div class="step-card">
+                        <div class="step-num">2</div>
+                        <div class="step-body">
+                            <h4>Connect via USB</h4>
+                            <p>Use a stable cable and connect directly (avoid flaky hubs).</p>
+                        </div>
+                    </div>
+
+                    <div class="step-card">
+                        <div class="step-num">3</div>
+                        <div class="step-body">
+                            <h4>Run Software update</h4>
+                            <p>Select <strong>Software update</strong> and follow prompts without disconnecting.</p>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="section-divider"></div>
+
+                <div class="callout warn">
+                    <strong>Warning:</strong> “Repair” flows may wipe data depending on the option used. Back up first
+                    when possible.
+                </div>
+            </div>
+
+
+            <!-- Not showing -->
+            <div id="notshowing" class="m3-card guide-section">
+                <div class="section-head">
+                    <div>
+                        <div class="section-kicker">Troubleshooting</div>
+                        <h3 style="margin:6px 0 0 0;">Update not showing</h3>
+                    </div>
+                </div>
+
+                <div class="step-list">
+                    <div class="step-card">
+                        <div class="step-num">1</div>
+                        <div class="step-body">
+                            <h4>Staged rollout is normal</h4>
+                            <p>Updates roll out by <strong>region</strong>, <strong>model code</strong>, and sometimes
+                                carrier.</p>
+                        </div>
+                    </div>
+
+                    <div class="step-card">
+                        <div class="step-num">2</div>
+                        <div class="step-body">
+                            <h4>Try basic fixes</h4>
+                            <p>Reboot, disable VPN, and check again on another network.</p>
+                        </div>
+                    </div>
+
+                    <div class="step-card">
+                        <div class="step-num">3</div>
+                        <div class="step-body">
+                            <h4>Use Xperia Companion</h4>
+                            <p>Companion sometimes detects updates before your OTA feed catches up.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+
+            <!-- Post update -->
+            <div id="after" class="m3-card guide-section">
+                <div class="section-head">
+                    <div>
+                        <div class="section-kicker">Post-update</div>
+                        <h3 style="margin:6px 0 0 0;">After updating (stability checklist)</h3>
+                    </div>
+                </div>
+
+                <div class="step-list">
+                    <div class="step-card">
+                        <div class="step-num">1</div>
+                        <div class="step-body">
+                            <h4>Let it settle</h4>
+                            <p>Keep it charging for 15–30 minutes after first boot (background optimisation).</p>
+                        </div>
+                    </div>
+
+                    <div class="step-card">
+                        <div class="step-num">2</div>
+                        <div class="step-body">
+                            <h4>Restart once if needed</h4>
+                            <p>If heat/battery drain is odd on day one, restart once before panicking.</p>
+                        </div>
+                    </div>
+
+                    <div class="step-card">
+                        <div class="step-num">3</div>
+                        <div class="step-body">
+                            <h4>Update apps</h4>
+                            <p>Play Store updates reduce compatibility issues after OS/security changes.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div id="cta" class="m3-card guide-section">
+                <div class="section-head">
+                    <div>
+                        <div class="section-kicker">Next step</div>
+                        <h3 style="margin:6px 0 0 0;">Check your build on XperiVerdict</h3>
+                    </div>
+                </div>
+
+                <p style="margin:0; line-height:1.7; color:var(--m3-on-surf-var);">
+                    Track firmware releases, patch levels, changelogs, and community stability reports—before you
+                    install.
+                </p>
+
+                <a href="./index.html" class="m3-btn"
+                    style="margin-top:14px; text-decoration:none; white-space: normal; max-width:100%;">
+                    Open XperiVerdict →
+                </a>
+            </div>
+
+        </div> <!-- .guide-wrap -->
+
+        <!-- Footer (simple, static) -->
+        <footer class="legal-footer">
+            <div class="legal-text">
+                <p><strong>XperiVerdict</strong> is an independent community resource.</p>
+                <p>This platform is <strong>not affiliated with, authorized, or endorsed by Sony Group
+                        Corporation</strong> or its subsidiaries.</p>
+                <p>SONY and Xperia are registered trademarks of Sony Group Corporation. All other product names,
+                    logos,
+                    and brands are property of their respective owners.</p>
+                <p>© 2026 XperiVerdict • <a href="terms-and-service.html" class="legal-link">Terms of Service</a>
+                </p>
+            </div>
+        </footer>
+    </div>
+</body>
+
+</html>
