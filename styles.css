@@ -1009,31 +1009,72 @@ textarea:focus {
   transform: scale(0.96);
 }
 
-/* Second row: action buttons scroll horizontally on small screens */
+/* Desktop: single row as usual */
+.topbar-responsive {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+}
+
+.topbar-title {
+  margin: 0;
+  flex: 1;
+  min-width: 0;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
 .topbar-actions {
   display: flex;
+  align-items: center;
   gap: 10px;
-  overflow-x: auto;
-  padding-bottom: 4px;
-  scrollbar-width: none;
-  -webkit-overflow-scrolling: touch;
+  flex-shrink: 0;
 }
 
-.topbar-actions::-webkit-scrollbar { display: none; }
+/* Mobile: wrap actions below title cleanly */
+@media (max-width: 520px) {
+  .topbar-responsive {
+    flex-wrap: wrap;
+    align-items: flex-start;
+  }
 
-/* Make action buttons consistent and not oversized */
-.topbar-actions .coffee-btn-bar,
-.topbar-actions .info-btn-bar,
-.topbar-actions .m3-btn-bar {
-  flex: 0 0 auto;
-  margin: 0;         /* override existing margins */
-  height: auto;      /* avoid cramped fixed heights */
-  padding: 10px 14px;
-  border-radius: 999px;
-  white-space: nowrap;
-}
+  .topbar-title {
+    flex: 1 1 100%;
+  }
 
-/* If coffee is too visually loud, tone it down slightly on mobile */
-@media (max-width: 420px) {
-  .topbar-actions .coffee-btn-bar { padding: 10px 12px; }
+  .topbar-actions {
+    width: 100%;
+    flex: 1 1 100%;
+    justify-content: flex-start;
+    flex-wrap: wrap;
+    gap: 8px;
+  }
+
+  /* Make all action buttons smaller */
+  .topbar-actions .coffee-btn-bar,
+  .topbar-actions .info-btn-bar,
+  .topbar-actions .m3-btn-bar {
+    padding: 8px 12px;
+    border-radius: 999px;
+    margin: 0;             /* neutralize existing margins */
+    font-size: 0.8rem;
+  }
+
+  /* Keep icons tight */
+  .topbar-actions .material-symbols-rounded {
+    font-size: 20px;
+  }
+
+  /* Optional: hide labels if it still feels cramped */
+  .topbar-actions .btn-label {
+    display: none;
+  }
+
+  /* Keep profile visible and aligned */
+  .topbar-actions .profile-circle {
+    width: 38px;
+    height: 38px;
+  }
 }
